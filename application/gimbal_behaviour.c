@@ -1,0 +1,209 @@
+#include "gimbal_behaviour.h"
+#include "detect_task.h"
+
+static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set);
+void gimbal_behaviour_mode_set(gimbal_control_t *gimbal_mode_set);
+static void gimbal_relative_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
+
+
+/**
+  * @brief          遥控器的死区判断，因为遥控器的拨杆在中位的时候，不一定为0，
+  * @param          输入的遥控器值
+  * @param          输出的死区处理后遥控器值
+  * @param          死区值
+  */
+#define rc_deadband_limit(input, output, dealine)        \
+    {                                                    \
+        if ((input) > (dealine) || (input) < -(dealine)) \
+        {                                                \
+            (output) = (input);                          \
+        }                                                \
+        else                                             \
+        {                                                \
+            (output) = 0;                                \
+        }                                                \
+    }
+
+
+
+/**
+  * @brief          云台陀螺仪控制，电机是陀螺仪角度控制，
+  * @param[out]     yaw: yaw轴角度控制，为角度的增量 单位 rad
+  * @param[out]     pitch:pitch轴角度控制，为角度的增量 单位 rad
+  * @param[in]      gimbal_control_set:云台数据指针
+  * @retval         none
+  */
+static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set)
+{
+    if (yaw == NULL || pitch == NULL || gimbal_control_set == NULL)
+    {
+        return;
+    }
+
+    static int16_t yaw_channel = 0, pitch_channel = 0;
+
+    rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[YAW_CHANNEL], yaw_channel, RC_DEADBAND);
+    rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[PITCH_CHANNEL], pitch_channel, RC_DEADBAND);
+
+    *yaw = yaw_channel * YAW_RC_SEN - gimbal_control_set->gimbal_rc_ctrl->mouse.x * YAW_MOUSE_SEN;
+    *pitch = -(pitch_channel * PITCH_RC_SEN + gimbal_control_set->gimbal_rc_ctrl->mouse.y * PITCH_MOUSE_SEN);
+
+
+//    {
+//        static uint16_t last_turn_keyboard = 0;
+//        static uint8_t gimbal_turn_flag = 0;
+//        static fp32 gimbal_end_angle = 0.0f;
+
+//        if ((gimbal_control_set->gimbal_rc_ctrl->key.v & TURN_KEYBOARD) && !(last_turn_keyboard & TURN_KEYBOARD))
+//        {
+//            if (gimbal_turn_flag == 0)
+//            {
+//                gimbal_turn_flag = 1;
+//                //保存掉头的目标值
+//                gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI);
+//            }
+//        }
+//        last_turn_keyboard = gimbal_control_set->gimbal_rc_ctrl->key.v ;
+
+//        if (gimbal_turn_flag)
+//        {
+//            //不断控制到掉头的目标值，正转，反装是随机
+//            if (rad_format(gimbal_end_angle - gimbal_control_set->gimbal_yaw_motor.absolute_angle) > 0.0f)
+//            {
+//                *yaw += TURN_SPEED;
+//            }
+//            else
+//            {
+//                *yaw -= TURN_SPEED;
+//            }
+//        }
+//        //到达pi （180°）后停止
+//        if (gimbal_turn_flag && fabs(rad_format(gimbal_end_angle - gimbal_control_set->gimbal_yaw_motor.absolute_angle)) < 0.01f)
+//        {
+//            gimbal_turn_flag = 0;
+//        }
+//    }
+}
+
+
+/**
+  * @brief          云台行为控制，根据不同行为采用不同控制函数
+  * @param[out]     add_yaw:设置的yaw角度增加值，单位 rad
+  * @param[out]     add_pitch:设置的pitch角度增加值，单位 rad
+  * @param[in]      gimbal_mode_set:云台数据指针
+  * @retval         none
+  */
+void gimbal_behaviour_control_set(fp32 *add_yaw, fp32 *add_pitch, gimbal_control_t *gimbal_control_set)
+{
+
+    if (add_yaw == NULL || add_pitch == NULL || gimbal_control_set == NULL)
+    {
+        return;
+    }
+
+
+    if (gimbal_control_set->gimbal_behaviour == GIMBAL_ABSOLUTE_ANGLE )
+    {
+        gimbal_absolute_angle_control(add_yaw, add_pitch, gimbal_control_set);
+    }
+    else if (gimbal_control_set->gimbal_behaviour == GIMBAL_RELATIVE_ANGLE)
+    {
+        gimbal_relative_angle_control(add_yaw, add_pitch, gimbal_control_set);
+    }
+
+
+}
+
+
+
+
+/**
+  * @brief          被gimbal_set_mode函数调用在gimbal_task.c,云台行为状态机以及电机状态机设置
+  * @param[out]     gimbal_mode_set: 云台数据指针
+  * @retval         none
+  */
+
+void gimbal_behaviour_mode_set(gimbal_control_t *gimbal_mode_set)
+{
+    if (gimbal_mode_set == NULL)
+    {
+        return;
+    }
+    //set gimbal_behaviour variable
+    //云台行为状态机设置（6种模式，但是只用的上陀螺仪绝对角度控制和编码器相对角度控制）
+    gimbal_behavour_set(gimbal_mode_set);
+
+    //accoring to gimbal_behaviour, set motor control mode
+    //根据云台行为状态机设置电机状态机
+    if (gimbal_mode_set->gimbal_behaviour == GIMBAL_ABSOLUTE_ANGLE)
+    {
+        gimbal_mode_set->gimbal_yaw_motor.gimbal_motor_mode = GIMBAL_MOTOR_GYRO;
+        gimbal_mode_set->gimbal_pitch_motor.gimbal_motor_mode = GIMBAL_MOTOR_GYRO;
+    }
+    else if (gimbal_mode_set->gimbal_behaviour == GIMBAL_RELATIVE_ANGLE)
+    {
+        gimbal_mode_set->gimbal_yaw_motor.gimbal_motor_mode = GIMBAL_MOTOR_ENCONDE;
+        gimbal_mode_set->gimbal_pitch_motor.gimbal_motor_mode = GIMBAL_MOTOR_ENCONDE;
+    }
+		else if (gimbal_mode_set->gimbal_behaviour == GIMBAL_AIMBOT_ANGLE)
+		{
+			  gimbal_mode_set->gimbal_yaw_motor.gimbal_motor_mode = GIMBAL_MOTOR_AIMBOT;
+        gimbal_mode_set->gimbal_pitch_motor.gimbal_motor_mode = GIMBAL_MOTOR_AIMBOT;
+
+		}
+
+}
+
+/**
+  * @brief          云台行为状态机设置.
+  * @param[in]      gimbal_mode_set: 云台数据指针
+  * @retval         none
+  */
+static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
+{
+    if (gimbal_mode_set == NULL)
+    {
+        return;
+    }
+
+    if (switch_is_mid(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
+    {
+        gimbal_mode_set->gimbal_behaviour = GIMBAL_RELATIVE_ANGLE;
+    }
+    else if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
+    {
+        gimbal_mode_set->gimbal_behaviour = GIMBAL_ABSOLUTE_ANGLE;
+    }
+		else if (switch_is_down(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
+		{
+				gimbal_mode_set->gimbal_behaviour = GIMBAL_AIMBOT_ANGLE;
+		}
+
+
+}
+
+
+/**
+  * @brief          云台编码值控制，电机是相对角度控制，
+  * @param[in]      yaw: yaw轴角度控制，为角度的增量 单位 rad
+  * @param[in]      pitch: pitch轴角度控制，为角度的增量 单位 rad
+  * @param[in]      gimbal_control_set: 云台数据指针
+  * @retval         none
+  */
+static void gimbal_relative_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set)
+{
+    if (yaw == NULL || pitch == NULL || gimbal_control_set == NULL)
+    {
+        return;
+    }
+    static int16_t yaw_channel = 0, pitch_channel = 0;
+
+    rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[YAW_CHANNEL], yaw_channel, RC_DEADBAND);
+    rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[PITCH_CHANNEL], pitch_channel, RC_DEADBAND);
+
+    *yaw = yaw_channel * YAW_RC_SEN - gimbal_control_set->gimbal_rc_ctrl->mouse.x * YAW_MOUSE_SEN;
+    *pitch = pitch_channel * PITCH_RC_SEN + gimbal_control_set->gimbal_rc_ctrl->mouse.y * PITCH_MOUSE_SEN;
+
+
+}
+
