@@ -11,7 +11,7 @@ union
 
 
 fp32 pitch_receive,yaw_receive;
-fp32 angle_receive[8];
+uint8_t angle_receive[8];
 void get_mini_data(gimbal_control_t *gimbal_control_mini)
 {
 //	pitch_set.bytes[0] = usb_recive_buffer[0];
@@ -32,21 +32,21 @@ void get_mini_data(gimbal_control_t *gimbal_control_mini)
 	angle_receive[6] = usb_recive_buffer[6];
 	angle_receive[7] = usb_recive_buffer[7];
 	
-	if(angle_receive[0] == 1)
+	if(usb_recive_buffer[0] == 1)
 	{
-		pitch_receive = usb_recive_buffer[1];
+		pitch_receive = (float)usb_recive_buffer[1];
 	}
-	else if(angle_receive[0] == 0)
+	else if(usb_recive_buffer[0] == 0)
 	{
-		pitch_receive = -usb_recive_buffer[1];
+		pitch_receive = -(float)usb_recive_buffer[1];
 	}
-	if(angle_receive[2] == 1)
+	if(usb_recive_buffer[4] == 1)
 	{
-		yaw_receive = usb_recive_buffer[3];
+		yaw_receive = (float)usb_recive_buffer[5];
 	}
-	else if(angle_receive[2] == 0)
+	else if(usb_recive_buffer[4] == 0)
 	{
-		yaw_receive = -usb_recive_buffer[3];
+		yaw_receive = -(float)usb_recive_buffer[5];
 	}
 //	
 //	pitch_receive = pitch_set.value;
