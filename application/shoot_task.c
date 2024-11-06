@@ -1,13 +1,15 @@
 #include "shoot_task.h"
 
-
+fp32 delta_angle=0;
+fp32 trig_angle_set=0;
+int64_t  trig_ecd_sum=0;
 shoot_control_t shoot_control;
 
 //在当前比例下摩擦轮最大能到达转速29-->9300rpm差不多
 int16_t trig=0,fric1=0,fric2=0;
 
 static void shoot_init(shoot_control_t *shoot_init);
-static void shoot_motor_speed_control(shoot_motor_t *shoot_motor);
+static void shoot_motor_control(shoot_motor_t *shoot_motor);
 static void gimbal_feedback_update(shoot_control_t *feedback_update);
 static void gimbal_control_loop(shoot_control_t *control_loop);
 static void Shoot_Debug_get_data(void);
@@ -32,7 +34,8 @@ void shoot_task(void const * argument)
       }
       else
       {
-				CAN_cmd_trigger_firc(0,0,0);
+				CAN_cmd_trigger_firc(shoot_control.shoot_trig_motor.current_set,shoot_control.shoot_fric_L_motor.current_set,shoot_control.shoot_fric_R_motor.current_set);
+				//CAN_cmd_trigger_firc(0,0,0);
 				//CAN_cmd_trigger_firc(shoot_control.shoot_fric_L_motor.current_set,shoot_control.shoot_fric_R_motor.current_set,shoot_control.shoot_trig_motor.current_set);
       }
 			osDelay(1);
@@ -52,6 +55,8 @@ void shoot_task(void const * argument)
 static void shoot_init(shoot_control_t *shoot_init)
 {
 	static const fp32 Shoot_trig_speed_pid[3] = {TRIG_SPEED_PID_KP,TRIG_SPEED_PID_KI,TRIG_SPEED_PID_KD};
+	static const fp32 Shoot_trig_angle_pid[3] = {TRIG_ANGLE_PID_KP,TRIG_ANGLE_PID_KI,TRIG_ANGLE_PID_KD};
+
 	static const fp32 Shoot_fric_L_speed_pid[3] = {FRIC_L_SPEED_PID_KP,FRIC_L_SPEED_PID_KI,FRIC_L_SPEED_PID_KD};
 	static const fp32 Shoot_fric_R_speed_pid[3] = {FRIC_L_SPEED_PID_KP,FRIC_L_SPEED_PID_KI,FRIC_L_SPEED_PID_KD};
 	
@@ -64,18 +69,18 @@ static void shoot_init(shoot_control_t *shoot_init)
 	shoot_init->shoot_rc_ctrl = get_remote_control_point();
 
 	//初始化Trig电机速度pid
-	K_FF_init(&shoot_init->shoot_trig_motor.shoot_speed_pid,PID_POSITION,Shoot_trig_speed_pid,TRIG_SPEEDD_PID_MAX_OUT,TRIG_SPEEDD_PID_MAX_IOUT,TRIG_SPEED_KF_STATIC,TRIG_SPEED_KF_DYNAMIC);
-
-    //初始化firc电机速度pid
-	K_FF_init(&shoot_init->shoot_fric_L_motor.shoot_speed_pid,PID_POSITION,Shoot_fric_L_speed_pid,FRIC_L_SPEEDD_PID_MAX_OUT,FRIC_L_SPEEDD_PID_MAX_IOUT,FRIC_L_SPEED_KF_STATIC,FRIC_L_SPEED_KF_DYNAMIC);
-	K_FF_init(&shoot_init->shoot_fric_R_motor.shoot_speed_pid,PID_POSITION,Shoot_fric_R_speed_pid,FRIC_R_SPEEDD_PID_MAX_OUT,FRIC_R_SPEEDD_PID_MAX_IOUT,FRIC_R_SPEED_KF_STATIC,FRIC_R_SPEED_KF_DYNAMIC);
+	K_FF_init(&shoot_init->shoot_trig_motor.shoot_speed_pid,PID_POSITION,Shoot_trig_speed_pid,TRIG_SPEED_PID_MAX_OUT,TRIG_SPEED_PID_MAX_IOUT,TRIG_SPEED_KF_STATIC,TRIG_SPEED_KF_DYNAMIC);
+	K_FF_init(&shoot_init->shoot_trig_motor.shoot_angle_pid,PID_POSITION,Shoot_trig_angle_pid,TRIG_ANGLE_PID_MAX_OUT,TRIG_ANGLE_PID_MAX_IOUT,TRIG_ANGLE_KF_STATIC,TRIG_ANGLE_KF_DYNAMIC);
+  //初始化firc电机速度pid
+	K_FF_init(&shoot_init->shoot_fric_L_motor.shoot_speed_pid,PID_POSITION,Shoot_fric_L_speed_pid,FRIC_L_SPEED_PID_MAX_OUT,FRIC_L_SPEED_PID_MAX_IOUT,FRIC_L_SPEED_KF_STATIC,FRIC_L_SPEED_KF_DYNAMIC);
+	K_FF_init(&shoot_init->shoot_fric_R_motor.shoot_speed_pid,PID_POSITION,Shoot_fric_R_speed_pid,FRIC_R_SPEED_PID_MAX_OUT,FRIC_R_SPEED_PID_MAX_IOUT,FRIC_R_SPEED_KF_STATIC,FRIC_R_SPEED_KF_DYNAMIC);
 
 	gimbal_feedback_update(shoot_init);
 }
 
 
 
-
+int a=0;
 /**
   * @brief          底盘测量数据更新，包括电机速度，欧拉角度，机器人速度
   * @param[out]     gimbal_feedback_update:"gimbal_control"变量指针.
@@ -83,6 +88,8 @@ static void shoot_init(shoot_control_t *shoot_init)
   */
 static void gimbal_feedback_update(shoot_control_t *feedback_update)
 {
+	static int16_t trig_ecd_error;
+	
     if (feedback_update == NULL)
     {
         return;
@@ -90,7 +97,29 @@ static void gimbal_feedback_update(shoot_control_t *feedback_update)
 	
 	feedback_update->shoot_fric_L_motor.motor_speed = feedback_update->shoot_fric_L_motor.shoot_motor_measure->rpm*FRIC_RPM_TO_SPEED_SEN;
 	feedback_update->shoot_fric_R_motor.motor_speed = feedback_update->shoot_fric_R_motor.shoot_motor_measure->rpm*FRIC_RPM_TO_SPEED_SEN;
-	feedback_update->shoot_trig_motor.motor_speed = feedback_update->shoot_trig_motor.shoot_motor_measure->rpm*TRIG_RPM_TO_SPEED_SEN;
+	feedback_update->shoot_trig_motor.motor_speed = feedback_update->shoot_trig_motor.shoot_motor_measure->rpm;//*TRIG_RPM_TO_SPEED_SEN;//rpm最大14000以上
+		
+
+
+		
+	trig_ecd_error = feedback_update->shoot_trig_motor.shoot_motor_measure->ecd -feedback_update->shoot_trig_motor.shoot_motor_measure->last_ecd;
+	trig_ecd_error = trig_ecd_error >  4095 ?   trig_ecd_error - 8191 : trig_ecd_error;
+	trig_ecd_error = trig_ecd_error < -4095 ?   trig_ecd_error + 8191 : trig_ecd_error;
+	trig_ecd_sum += trig_ecd_error;
+		
+	if(feedback_update->shoot_rc_ctrl->rc.s[1] == 1)
+	{
+		
+		//trig_ecd_sum-=10*8191;
+		a++;
+		
+	}
+	
+		
+		//feedback_update->shoot_trig_motor.shoot_motor_measure->last_ecd = feedback_update->shoot_trig_motor.shoot_motor_measure->ecd;
+
+		
+		
 #ifdef SHOOT_DEBUG
 	Shoot_Debug_get_data();
 #endif
@@ -117,19 +146,19 @@ static void gimbal_control_loop(shoot_control_t *control_loop)
       {
 				control_loop->shoot_fric_L_motor.motor_speed_set = 0;
 				control_loop->shoot_fric_R_motor.motor_speed_set = 0;
-				control_loop->shoot_trig_motor.motor_speed_set = 0;
+				//control_loop->shoot_trig_motor.motor_speed_set = 0;
       }
   else
 	{
 				control_loop->shoot_fric_L_motor.motor_speed_set = fric1;
 				control_loop->shoot_fric_R_motor.motor_speed_set = fric2;
-				control_loop->shoot_trig_motor.motor_speed_set = trig;
+				//control_loop->shoot_trig_motor.motor_speed_set = trig;
 
 	}
 		
-  shoot_motor_speed_control(&control_loop->shoot_fric_L_motor);
-	shoot_motor_speed_control(&control_loop->shoot_fric_R_motor);
-	shoot_motor_speed_control(&control_loop->shoot_trig_motor);
+  shoot_motor_control(&control_loop->shoot_fric_L_motor);
+	shoot_motor_control(&control_loop->shoot_fric_R_motor);
+	shoot_motor_control(&control_loop->shoot_trig_motor);
 
 }
 
@@ -138,15 +167,27 @@ static void gimbal_control_loop(shoot_control_t *control_loop)
 
 
 
-static void shoot_motor_speed_control(shoot_motor_t *shoot_motor)
+static void shoot_motor_control(shoot_motor_t *shoot_motor)
 {
     if (shoot_motor == NULL)
     {
         return;
     }
-    //角度环，速度环串级pid调试
-	shoot_motor->current_set = K_FF_Cal_shoot(&shoot_motor->shoot_speed_pid,shoot_motor->motor_speed,shoot_motor->motor_speed_set,29,0);
+	//拨弹盘双环控制
+	else if(shoot_motor == &shoot_control.shoot_trig_motor)
+	{
+		shoot_motor->motor_speed_set = K_FF_Cal(&shoot_motor->shoot_angle_pid,trig_ecd_sum,0/*trig_angle_set*8191*/);
+		shoot_motor->current_set = K_FF_Cal(&shoot_motor->shoot_speed_pid,shoot_motor->shoot_motor_measure->rpm,shoot_motor->motor_speed_set);
+		
+		
+	}
+	else if((shoot_motor == &shoot_control.shoot_fric_L_motor) || (shoot_motor == &shoot_control.shoot_fric_R_motor))
+	{
+    //速度环单环控制
+		shoot_motor->current_set = K_FF_Cal_shoot(&shoot_motor->shoot_speed_pid,shoot_motor->motor_speed,shoot_motor->motor_speed_set,29,0);
+	}
 }
+
 
 
 /* -------------------------------vofa调参-------------------------------- */
@@ -154,10 +195,13 @@ static void Shoot_Debug_get_data(void)
 {
 	shoot_control.shoot_debug1.data1 = shoot_control.shoot_fric_L_motor.motor_speed;
 	shoot_control.shoot_debug1.data2 = shoot_control.shoot_fric_R_motor.motor_speed;
-	shoot_control.shoot_debug1.data3 = shoot_control.shoot_trig_motor.motor_speed;
+	//shoot_control.shoot_debug1.data3 = shoot_control.shoot_trig_motor.motor_speed;
+	shoot_control.shoot_debug1.data3 = shoot_control.shoot_trig_motor.shoot_motor_measure->ecd;
+	
 	shoot_control.shoot_debug1.data4 = shoot_control.shoot_fric_L_motor.motor_speed_set;
 	shoot_control.shoot_debug1.data5 = shoot_control.shoot_fric_R_motor.motor_speed_set;
-	shoot_control.shoot_debug1.data6 = shoot_control.shoot_trig_motor.motor_speed_set;
+	shoot_control.shoot_debug1.data6 = trig_angle_set;
+	//shoot_control.shoot_debug1.data6 = shoot_control.shoot_trig_motor.motor_speed_set;
 
 }
 const DebugData* get_shoot_PID_Debug(void)

@@ -224,7 +224,7 @@ static fp32 motor_ecd_to_angle_change(uint16_t ecd, uint16_t offset_ecd)
 
 fp32 aim_yaw_set;
 fp32 aim_pitch_set;
-extern fp32 pitch_receive,yaw_receive;
+
 /**
   * @brief          设置云台控制设定值，控制值是通过gimbal_behaviour_control_set函数设置的
   * @param[out]     gimbal_set_control:"gimbal_control"变量指针.

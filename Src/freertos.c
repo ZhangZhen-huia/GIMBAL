@@ -53,6 +53,7 @@ osThreadId INS_TASKHandle;
 osThreadId DETECT_TASKHandle;
 osThreadId SHOOT_TASKHandle;
 osThreadId VOFA_TASKHandle;
+osThreadId AIMBOTS_TASKHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -65,6 +66,7 @@ void INS_task(void const * argument);
 void detect_task(void const * argument);
 void shoot_task(void const * argument);
 void vofa_task(void const * argument);
+void aimbots_task(void const * argument);
 
 extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -135,6 +137,10 @@ void MX_FREERTOS_Init(void) {
   /* definition and creation of VOFA_TASK */
   osThreadDef(VOFA_TASK, vofa_task, osPriorityBelowNormal, 0, 128);
   VOFA_TASKHandle = osThreadCreate(osThread(VOFA_TASK), NULL);
+
+  /* definition and creation of AIMBOTS_TASK */
+  osThreadDef(AIMBOTS_TASK, aimbots_task, osPriorityNormal, 0, 128);
+  AIMBOTS_TASKHandle = osThreadCreate(osThread(AIMBOTS_TASK), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -251,6 +257,24 @@ __weak void vofa_task(void const * argument)
     osDelay(1);
   }
   /* USER CODE END vofa_task */
+}
+
+/* USER CODE BEGIN Header_aimbots_task */
+/**
+* @brief Function implementing the AIMBOTS_TASK thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_aimbots_task */
+__weak void aimbots_task(void const * argument)
+{
+  /* USER CODE BEGIN aimbots_task */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END aimbots_task */
 }
 
 /* Private application code --------------------------------------------------*/

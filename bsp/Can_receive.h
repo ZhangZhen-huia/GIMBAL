@@ -31,22 +31,22 @@ typedef enum
 /*----------can1½ÓÊÕid----------*/
 
 
-//	
-//	/*---²¦µ¯ÅÌ---*/
-//	CAN_TRIGGER_MOTOR_ID = 0x201, //1
-//	/*---Ä¦²ÁÂÖ---*/
-//  CAN_Fric_L_ID = 0x202,			//2
-//  CAN_Fric_R_ID = 0x203,			//3
-//	
-//	
+	
+	/*---²¦µ¯ÅÌ---*/
+	CAN_TRIGGER_MOTOR_ID = 0x201, //1
+	/*---Ä¦²ÁÂÖ---*/
+  CAN_Fric_L_ID = 0x202,			//2
+  CAN_Fric_R_ID = 0x203,			//3
+	
+	
 	
 	
 		
-	/*---²¦µ¯ÅÌ---*/
-	CAN_TRIGGER_MOTOR_ID = 0x203, //3
-	/*---Ä¦²ÁÂÖ---*/
-  CAN_Fric_L_ID = 0x201,			//1
-  CAN_Fric_R_ID = 0x202,			//2
+//	/*---²¦µ¯ÅÌ---*/
+//	CAN_TRIGGER_MOTOR_ID = 0x203, //3
+//	/*---Ä¦²ÁÂÖ---*/
+//  CAN_Fric_L_ID = 0x201,			//1
+//  CAN_Fric_R_ID = 0x202,			//2
 	
 	
 	/*---ÔÆÌ¨---*/

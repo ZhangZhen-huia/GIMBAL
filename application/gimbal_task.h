@@ -156,7 +156,7 @@ typedef struct
 		const bmi088_real_data_t *gimbal_bmi088_data;     										//获取陀螺仪解算出的欧拉角指针
     gimbal_motor_t gimbal_yaw_motor;																			//yaw轴电机数据
     gimbal_motor_t gimbal_pitch_motor;																		//pitch轴电机数据
-   // gimbal_step_cali_t gimbal_cali;
+   //gimbal_step_cali_t gimbal_cali;
 		gimbal_behaviour_e  gimbal_behaviour;																	//云台状态控制
 		gimbal_behaviour_e  last_gimbal_behaviour;														//云台状态控制
 		
