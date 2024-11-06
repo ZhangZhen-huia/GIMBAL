@@ -62,5 +62,6 @@
 .\agv_gimbal\remote_control.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\math.h
 .\agv_gimbal\remote_control.o: ..\application\INS_task.h
 .\agv_gimbal\remote_control.o: ../components/devices/BMI088driver.h
+.\agv_gimbal\remote_control.o: ..\application\aimbots_task.h
 .\agv_gimbal\remote_control.o: ..\application\detect_task.h
 .\agv_gimbal\remote_control.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h

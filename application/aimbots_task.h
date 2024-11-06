@@ -1,19 +1,33 @@
-#ifndef AUTO_TASK_H
-#define AUTO_TASK_H
+#ifndef AIMBOT_TASK_H
+#define AIMBOT_TASK_H
 
 
-#include "gimbal_task.h"
-#include "aimbots_task.h"
+#include "main.h"
+typedef enum
+{
+	ceasefire = 0,
+	fire = 1,
+}Fire_e;
+
+typedef union
+{
+    uint8_t bytes[4];
+    float value;
+}angle_rec;
+
+typedef struct
+{
+	angle_rec rec_mini_yaw;
+	angle_rec rec_mini_pitch;
+	Fire_e Auto_fire;
+	uint8_t yaw_PNflag;
+	uint8_t pitch_PNflag;
+	fp32 auto_pitch_set;
+	fp32 auto_yaw_set;
+}mini_data_t;
 
 
-void get_mini_data(gimbal_control_t *gimbal_control_mini);
-
-
-
-
-
-
-
+const mini_data_t* get_mini_data_point(void);
 
 
 

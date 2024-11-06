@@ -61,13 +61,14 @@
 .\agv_gimbal\gimbal_task.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\math.h
 .\agv_gimbal\gimbal_task.o: ..\application\INS_task.h
 .\agv_gimbal\gimbal_task.o: ../components/devices/BMI088driver.h
+.\agv_gimbal\gimbal_task.o: ..\application\aimbots_task.h
 .\agv_gimbal\gimbal_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 .\agv_gimbal\gimbal_task.o: ../components/algorithm/Include/arm_math.h
 .\agv_gimbal\gimbal_task.o: ../Drivers/CMSIS/Include/core_cm4.h
 .\agv_gimbal\gimbal_task.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\string.h
+.\agv_gimbal\gimbal_task.o: ..\application\gimbal_task.h
 .\agv_gimbal\gimbal_task.o: ..\application\gimbal_behaviour.h
+.\agv_gimbal\gimbal_task.o: ..\application\gimbal_task.h
 .\agv_gimbal\gimbal_task.o: ..\application\detect_task.h
 .\agv_gimbal\gimbal_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 .\agv_gimbal\gimbal_task.o: ../components/algorithm/user_lib.h
-.\agv_gimbal\gimbal_task.o: ..\application\aimbots_task.h
-.\agv_gimbal\gimbal_task.o: ..\application\aimbots_task.h

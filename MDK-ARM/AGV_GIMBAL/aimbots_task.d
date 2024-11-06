@@ -1,6 +1,5 @@
 .\agv_gimbal\aimbots_task.o: ..\application\aimbots_task.c
 .\agv_gimbal\aimbots_task.o: ..\application\aimbots_task.h
-.\agv_gimbal\aimbots_task.o: ..\application\gimbal_task.h
 .\agv_gimbal\aimbots_task.o: ../Inc/main.h
 .\agv_gimbal\aimbots_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 .\agv_gimbal\aimbots_task.o: ../Inc/stm32f4xx_hal_conf.h
@@ -39,6 +38,7 @@
 .\agv_gimbal\aimbots_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h
 .\agv_gimbal\aimbots_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h
 .\agv_gimbal\aimbots_task.o: ../Inc/struct_typedef.h
+.\agv_gimbal\aimbots_task.o: ..\application\gimbal_task.h
 .\agv_gimbal\aimbots_task.o: ../bsp/Can_receive.h
 .\agv_gimbal\aimbots_task.o: ../Inc/can.h
 .\agv_gimbal\aimbots_task.o: ../components/controller/pid.h
@@ -62,7 +62,6 @@
 .\agv_gimbal\aimbots_task.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\math.h
 .\agv_gimbal\aimbots_task.o: ..\application\INS_task.h
 .\agv_gimbal\aimbots_task.o: ../components/devices/BMI088driver.h
-.\agv_gimbal\aimbots_task.o: ..\application\aimbots_task.h
 .\agv_gimbal\aimbots_task.o: ..\application\shoot_task.h
 .\agv_gimbal\aimbots_task.o: ..\application\detect_task.h
 .\agv_gimbal\aimbots_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
