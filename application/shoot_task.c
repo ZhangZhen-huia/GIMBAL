@@ -1,12 +1,12 @@
 #include "shoot_task.h"
-
+#include "tim.h"
 fp32 delta_angle=0;
 fp32 trig_angle_set=0;
 int64_t  trig_ecd_sum=0;
 shoot_control_t shoot_control;
-
+uint8_t trig_flag=0;
 //在当前比例下摩擦轮最大能到达转速29-->9300rpm差不多
-int16_t trig=0,fric1=0,fric2=0;
+int16_t trig=0,fric1=-20,fric2=20;
 
 static void shoot_init(shoot_control_t *shoot_init);
 static void shoot_motor_control(shoot_motor_t *shoot_motor);
@@ -107,14 +107,25 @@ static void gimbal_feedback_update(shoot_control_t *feedback_update)
 	trig_ecd_error = trig_ecd_error < -4095 ?   trig_ecd_error + 8191 : trig_ecd_error;
 	trig_ecd_sum += trig_ecd_error;
 		
-	if(feedback_update->shoot_rc_ctrl->rc.s[1] == 1)
+	if(feedback_update->shoot_rc_ctrl->rc.s[1] == 1 )//&& trig_flag == 1)
 	{
 		
-		//trig_ecd_sum-=10*8191;
-		a++;
+		
+		//HAL_TIM_Base_Start_IT(&htim5);
+//		if(trig_flag==1)
+//		{
+//			trig_flag = 0;
+			//a++;
+			trig_ecd_sum-=10*8191;
+
+			
+
+//		}
+		
 		
 	}
-	
+//	else if(feedback_update->shoot_rc_ctrl->rc.s[1] == 0)
+//		trig_ecd_sum=0;
 		
 		//feedback_update->shoot_trig_motor.shoot_motor_measure->last_ecd = feedback_update->shoot_trig_motor.shoot_motor_measure->ecd;
 
@@ -208,4 +219,7 @@ const DebugData* get_shoot_PID_Debug(void)
 {
 	return &shoot_control.shoot_debug1;
 }
+
+
+
 

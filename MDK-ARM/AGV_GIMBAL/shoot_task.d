@@ -60,3 +60,4 @@
 .\agv_gimbal\shoot_task.o: ..\application\remote_control.h
 .\agv_gimbal\shoot_task.o: ../bsp/boards/bsp_rc.h
 .\agv_gimbal\shoot_task.o: ..\application\vofa_task.h
+.\agv_gimbal\shoot_task.o: ../Inc/tim.h
