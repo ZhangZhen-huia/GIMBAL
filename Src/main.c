@@ -92,12 +92,11 @@ int main(void)
   MX_SPI1_Init();
   MX_TIM4_Init();
   MX_USART3_UART_Init();
-  MX_CAN2_Init();
   MX_USART1_UART_Init();
   MX_USART6_UART_Init();
   MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
-	//HAL_TIM_Base_Start_IT(&htim5);
+	HAL_TIM_Base_Start_IT(&htim5);
 	remote_control_init();
 	Buzzer_Init();
 	canfilter_init_start();
@@ -187,7 +186,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	if(htim->Instance == TIM5)
 	{
 		trig_flag = 1;
-		HAL_TIM_Base_Stop_IT(htim);
+//		HAL_TIM_Base_Stop_IT(htim);
 	}
   /* USER CODE END Callback 0 */
   if (htim->Instance == TIM6) {

@@ -1,5 +1,7 @@
 #include "shoot_task.h"
 #include "tim.h"
+#include "math.h"
+
 fp32 delta_angle=0;
 fp32 trig_angle_set=0;
 int64_t  trig_ecd_sum=0;
@@ -80,7 +82,7 @@ static void shoot_init(shoot_control_t *shoot_init)
 
 
 
-int a=0;
+
 /**
   * @brief          底盘测量数据更新，包括电机速度，欧拉角度，机器人速度
   * @param[out]     gimbal_feedback_update:"gimbal_control"变量指针.
@@ -106,16 +108,28 @@ static void gimbal_feedback_update(shoot_control_t *feedback_update)
 	trig_ecd_error = trig_ecd_error >  4095 ?   trig_ecd_error - 8191 : trig_ecd_error;
 	trig_ecd_error = trig_ecd_error < -4095 ?   trig_ecd_error + 8191 : trig_ecd_error;
 	trig_ecd_sum += trig_ecd_error;
-		
-	if(feedback_update->shoot_rc_ctrl->rc.s[1] == 1 )//&& trig_flag == 1)
+
+	if( feedback_update->shoot_trig_motor.shoot_motor_measure->rpm<20 && trig_ecd_sum<-2000 && trig_flag ==1)
+	{
+		trig_ecd_sum=0;
+		trig_ecd_sum+=200*8191;
+		trig_flag=0;
+	}
+	else if(feedback_update->shoot_trig_motor.shoot_motor_measure->rpm>-20 && trig_ecd_sum>2000 && trig_flag ==1)
+	{
+		trig_ecd_sum=0;
+		trig_ecd_sum-=200*8191;
+		trig_flag=0;
+	}
+		//2500单点,385连发
+	else if((feedback_update->shoot_rc_ctrl->rc.s[1] == 1 )&& trig_flag == 1)
 	{
 		
 		
 		//HAL_TIM_Base_Start_IT(&htim5);
 //		if(trig_flag==1)
 //		{
-//			trig_flag = 0;
-			//a++;
+			trig_flag = 0;
 			trig_ecd_sum-=10*8191;
 
 			

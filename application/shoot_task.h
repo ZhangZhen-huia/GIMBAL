@@ -32,7 +32,7 @@
 #define TRIG_ANGLE_PID_KP           0.30f
 #define TRIG_ANGLE_PID_KI           0.0f
 #define TRIG_ANGLE_PID_KD           0.0f
-#define TRIG_ANGLE_PID_MAX_OUT     30000.0f
+#define TRIG_ANGLE_PID_MAX_OUT     300.0f//30000
 #define TRIG_ANGLE_PID_MAX_IOUT    0.0f
 
 #define TRIG_ANGLE_KF_STATIC        0.0f
