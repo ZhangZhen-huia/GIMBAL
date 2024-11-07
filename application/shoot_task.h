@@ -85,6 +85,7 @@ typedef struct
     shoot_motor_t shoot_fric_L_motor;
     shoot_motor_t shoot_fric_R_motor;
 		DebugData shoot_debug1;
+	
 }shoot_control_t;
 
 

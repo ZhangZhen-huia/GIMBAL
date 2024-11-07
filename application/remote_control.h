@@ -98,7 +98,7 @@ typedef __packed struct
 {
         __packed struct
         {
-                int16_t ch[5];		//ch[0]右水平，ch[1]右竖直，ch[2]左水平，ch[3]左竖直，左正下负，ch[5]侧边
+                int16_t ch[5];		//ch[0]右水平，ch[1]右竖直，ch[2]左水平，ch[3]左竖直，左正下负，ch[4]侧边
                 char s[2];				//s[0]右边，s[1]左边
         } rc;
         __packed struct

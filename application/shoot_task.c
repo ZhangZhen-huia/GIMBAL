@@ -1,12 +1,15 @@
 #include "shoot_task.h"
 #include "tim.h"
 #include "math.h"
+#include "shoot_behaviour.h"
 
-fp32 delta_angle=0;
-fp32 trig_angle_set=0;
-int64_t  trig_ecd_sum=0;
+//fp32 trig_angle_set=0;
+
 shoot_control_t shoot_control;
+
+/*用于 过零检测 和 堵转检测 的变量*/
 uint8_t trig_flag=0;
+int64_t  trig_ecd_sum=0;
 //在当前比例下摩擦轮最大能到达转速29-->9300rpm差不多
 int16_t trig=0,fric1=-20,fric2=20;
 
@@ -15,6 +18,7 @@ static void shoot_motor_control(shoot_motor_t *shoot_motor);
 static void gimbal_feedback_update(shoot_control_t *feedback_update);
 static void gimbal_control_loop(shoot_control_t *control_loop);
 static void Shoot_Debug_get_data(void);
+void trig_motor_control(shoot_control_t * control_loop);
 
 
 void shoot_task(void const * argument)
@@ -27,6 +31,7 @@ void shoot_task(void const * argument)
 		while(1)
 		{
 		  gimbal_feedback_update(&shoot_control);
+			trig_motor_control(&shoot_control);
 			gimbal_control_loop(&shoot_control);
 
 			if (toe_is_error(DBUS_TOE))
@@ -90,7 +95,7 @@ static void shoot_init(shoot_control_t *shoot_init)
   */
 static void gimbal_feedback_update(shoot_control_t *feedback_update)
 {
-	static int16_t trig_ecd_error;
+
 	
     if (feedback_update == NULL)
     {
@@ -104,40 +109,9 @@ static void gimbal_feedback_update(shoot_control_t *feedback_update)
 
 
 		
-	trig_ecd_error = feedback_update->shoot_trig_motor.shoot_motor_measure->ecd -feedback_update->shoot_trig_motor.shoot_motor_measure->last_ecd;
-	trig_ecd_error = trig_ecd_error >  4095 ?   trig_ecd_error - 8191 : trig_ecd_error;
-	trig_ecd_error = trig_ecd_error < -4095 ?   trig_ecd_error + 8191 : trig_ecd_error;
-	trig_ecd_sum += trig_ecd_error;
 
-	if( feedback_update->shoot_trig_motor.shoot_motor_measure->rpm<20 && trig_ecd_sum<-2000 && trig_flag ==1)
-	{
-		trig_ecd_sum=0;
-		trig_ecd_sum+=200*8191;
-		trig_flag=0;
-	}
-	else if(feedback_update->shoot_trig_motor.shoot_motor_measure->rpm>-20 && trig_ecd_sum>2000 && trig_flag ==1)
-	{
-		trig_ecd_sum=0;
-		trig_ecd_sum-=200*8191;
-		trig_flag=0;
-	}
-		//2500单点,385连发
-	else if((feedback_update->shoot_rc_ctrl->rc.s[1] == 1 )&& trig_flag == 1)
-	{
-		
-		
-		//HAL_TIM_Base_Start_IT(&htim5);
-//		if(trig_flag==1)
-//		{
-			trig_flag = 0;
-			trig_ecd_sum-=10*8191;
 
-			
-
-//		}
-		
-		
-	}
+	
 //	else if(feedback_update->shoot_rc_ctrl->rc.s[1] == 0)
 //		trig_ecd_sum=0;
 		
@@ -214,6 +188,47 @@ static void shoot_motor_control(shoot_motor_t *shoot_motor)
 }
 
 
+void trig_motor_control(shoot_control_t * control_loop)
+{
+	static int16_t trig_ecd_error;
+	trig_ecd_error = control_loop->shoot_trig_motor.shoot_motor_measure->ecd -control_loop->shoot_trig_motor.shoot_motor_measure->last_ecd;
+	trig_ecd_error = trig_ecd_error >  4095 ?   trig_ecd_error - 8191 : trig_ecd_error;
+	trig_ecd_error = trig_ecd_error < -4095 ?   trig_ecd_error + 8191 : trig_ecd_error;
+	trig_ecd_sum += trig_ecd_error;
+	
+	if( control_loop->shoot_trig_motor.shoot_motor_measure->rpm<20 && trig_ecd_sum<-2000 && trig_flag ==1)
+	{
+		trig_ecd_sum=0;
+		trig_ecd_sum+=200*8191;
+		trig_flag=0;
+	}
+	else if(control_loop->shoot_trig_motor.shoot_motor_measure->rpm>-20 && trig_ecd_sum>2000 && trig_flag ==1)
+	{
+		trig_ecd_sum=0;
+		trig_ecd_sum-=200*8191;
+		trig_flag=0;
+	}
+		//2500单点,385连发
+	//该宏定义用来给定时器arr寄存器赋值
+	//__HAL_TIM_SET_AUTORELOAD(&htim5,2500);
+	//__HAL_TIM_SET_AUTORELOAD(&htim5,385);
+	else if((control_loop->shoot_rc_ctrl->rc.s[1] == 1 )&& trig_flag == 1)
+	{
+		
+		
+		//HAL_TIM_Base_Start_IT(&htim5);
+//		if(trig_flag==1)
+//		{
+			trig_flag = 0;
+			trig_ecd_sum-=10*8191;
+
+			
+
+//		}
+		
+		
+	}
+}
 
 /* -------------------------------vofa调参-------------------------------- */
 static void Shoot_Debug_get_data(void)
@@ -225,7 +240,7 @@ static void Shoot_Debug_get_data(void)
 	
 	shoot_control.shoot_debug1.data4 = shoot_control.shoot_fric_L_motor.motor_speed_set;
 	shoot_control.shoot_debug1.data5 = shoot_control.shoot_fric_R_motor.motor_speed_set;
-	shoot_control.shoot_debug1.data6 = trig_angle_set;
+	shoot_control.shoot_debug1.data6 = trig_ecd_sum;
 	//shoot_control.shoot_debug1.data6 = shoot_control.shoot_trig_motor.motor_speed_set;
 
 }
