@@ -300,11 +300,7 @@ __weak void aimbots_task(void const * argument)
   }
   /* USER CODE END aimbots_task */
 }
-#ifndef NDEBUG
-#define ASSERT(condition) if (!(condition)) { taskDISABLE_INTERRUPTS(); for(;;); }
-#else
-#define ASSERT(condition) (void)0
-#endif
+
 
 /* ShootTimer_Callback function */
 void ShootTimer_Callback(void const * argument)

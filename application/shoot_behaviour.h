@@ -12,16 +12,6 @@
 #define Serial_ARR 	385
 
 #define TIRG_MODE_CHANNEL 1
-typedef enum
-{
-	Single_fire,
-	Serial_fire,
-	Cease_fire,
-
-}trig_fire_mode_e;
-
-
-
 
 
 

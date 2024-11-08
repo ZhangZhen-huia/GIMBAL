@@ -17,7 +17,7 @@
 #define TRIG_RPM_TO_SPEED_SEN   0.0031416
 
 //任务初始化时间
-#define SHOOT_TASK_INIT_TIME    1000
+#define SHOOT_TASK_INIT_TIME    500
 
 //拨弹盘速度pid
 #define TRIG_SPEED_PID_KP           15.0f
@@ -77,6 +77,16 @@ typedef struct
 	pid_type_def shoot_angle_pid;
 
 } shoot_motor_t;
+
+typedef enum
+{
+	Single_fire=0,
+	Serial_fire,
+	Cease_fire,
+
+}trig_fire_mode_e;
+
+
 
 
 

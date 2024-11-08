@@ -159,7 +159,7 @@ typedef struct
    //gimbal_step_cali_t gimbal_cali;
 		gimbal_behaviour_e  gimbal_behaviour;																	//云台状态控制
 		gimbal_behaviour_e  last_gimbal_behaviour;														//云台状态控制
-		
+		fp32 final_yaw;																												//经过处理过后的yaw轴数据
 } gimbal_control_t;
 
 

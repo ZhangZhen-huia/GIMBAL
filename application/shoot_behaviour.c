@@ -3,7 +3,7 @@
 #include "tim.h"
 
 extern osTimerId ShootTimerHandle;
-uint8_t shoot_switch_flag;
+
 
 static void shoot_trig_motor_behaviour_set(shoot_control_t *shoot_behaviour);
 
@@ -29,6 +29,7 @@ static void shoot_trig_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 
 	shoot_behaviour->last_trig_fire_mode = shoot_behaviour->trig_fire_mode;
 }
+
 
 //static void shoot_trig_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 //{
@@ -56,6 +57,7 @@ static void shoot_trig_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 //	}
 //	shoot_behaviour->last_trig_fire_mode = shoot_behaviour->trig_fire_mode;
 //}
+
 
 
 //2500单点,385连发
