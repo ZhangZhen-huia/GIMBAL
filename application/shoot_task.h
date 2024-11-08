@@ -95,6 +95,7 @@ typedef struct
 
 const DebugData* get_shoot_PID_Debug(void);
 extern int64_t  trig_ecd_sum;
+extern shoot_control_t shoot_control;
 
 extern void shoot_trig_motor_mode_set(shoot_control_t *shoot_mode);
 

@@ -51,3 +51,14 @@
 .\agv_gimbal\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h
 .\agv_gimbal\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h
 .\agv_gimbal\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
+.\agv_gimbal\freertos.o: ../application/shoot_task.h
+.\agv_gimbal\freertos.o: ../components/controller/pid.h
+.\agv_gimbal\freertos.o: ../bsp/Can_receive.h
+.\agv_gimbal\freertos.o: ../Inc/can.h
+.\agv_gimbal\freertos.o: ../application/detect_task.h
+.\agv_gimbal\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
+.\agv_gimbal\freertos.o: ../Inc/usart.h
+.\agv_gimbal\freertos.o: ../application/remote_control.h
+.\agv_gimbal\freertos.o: ../bsp/boards/bsp_rc.h
+.\agv_gimbal\freertos.o: ../application/vofa_task.h
+.\agv_gimbal\freertos.o: ../application/shoot_behaviour.h

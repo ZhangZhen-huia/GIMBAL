@@ -25,7 +25,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "shoot_task.h"
+#include "shoot_behaviour.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,7 +46,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-
+extern uint8_t shoot_switch_flag;
 /* USER CODE END Variables */
 osThreadId TEST_TASKHandle;
 osThreadId GIMBAL_TASKHandle;
@@ -54,6 +55,7 @@ osThreadId DETECT_TASKHandle;
 osThreadId SHOOT_TASKHandle;
 osThreadId VOFA_TASKHandle;
 osThreadId AIMBOTS_TASKHandle;
+osTimerId ShootTimerHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -67,12 +69,16 @@ void detect_task(void const * argument);
 void shoot_task(void const * argument);
 void vofa_task(void const * argument);
 void aimbots_task(void const * argument);
+void ShootTimer_Callback(void const * argument);
 
 extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /* GetIdleTaskMemory prototype (linked to static allocation support) */
 void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize );
+
+/* GetTimerTaskMemory prototype (linked to static allocation support) */
+void vApplicationGetTimerTaskMemory( StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize );
 
 /* USER CODE BEGIN GET_IDLE_TASK_MEMORY */
 static StaticTask_t xIdleTaskTCBBuffer;
@@ -86,6 +92,19 @@ void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackTy
   /* place for user code */
 }
 /* USER CODE END GET_IDLE_TASK_MEMORY */
+
+/* USER CODE BEGIN GET_TIMER_TASK_MEMORY */
+static StaticTask_t xTimerTaskTCBBuffer;
+static StackType_t xTimerStack[configTIMER_TASK_STACK_DEPTH];
+
+void vApplicationGetTimerTaskMemory( StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize )
+{
+  *ppxTimerTaskTCBBuffer = &xTimerTaskTCBBuffer;
+  *ppxTimerTaskStackBuffer = &xTimerStack[0];
+  *pulTimerTaskStackSize = configTIMER_TASK_STACK_DEPTH;
+  /* place for user code */
+}
+/* USER CODE END GET_TIMER_TASK_MEMORY */
 
 /**
   * @brief  FreeRTOS initialization
@@ -104,6 +123,11 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
   /* USER CODE END RTOS_SEMAPHORES */
+
+  /* Create the timer(s) */
+  /* definition and creation of ShootTimer */
+  osTimerDef(ShootTimer, ShootTimer_Callback);
+  ShootTimerHandle = osTimerCreate(osTimer(ShootTimer), osTimerOnce, NULL);
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
@@ -275,6 +299,25 @@ __weak void aimbots_task(void const * argument)
     osDelay(1);
   }
   /* USER CODE END aimbots_task */
+}
+#ifndef NDEBUG
+#define ASSERT(condition) if (!(condition)) { taskDISABLE_INTERRUPTS(); for(;;); }
+#else
+#define ASSERT(condition) (void)0
+#endif
+
+/* ShootTimer_Callback function */
+void ShootTimer_Callback(void const * argument)
+{
+  /* USER CODE BEGIN ShootTimer_Callback */
+
+	if(switch_is_up(shoot_control.shoot_rc_ctrl->rc.s[TIRG_MODE_CHANNEL]))
+	{
+		shoot_control.trig_fire_mode = Serial_fire;
+	}
+
+
+  /* USER CODE END ShootTimer_Callback */
 }
 
 /* Private application code --------------------------------------------------*/

@@ -2,16 +2,15 @@
 #include "tim.h"
 #include "math.h"
 
-
-//fp32 trig_angle_set=0;
-
+extern osTimerId ShootTimerHandle;
 shoot_control_t shoot_control;
 
 /*用于 过零检测 和 堵转检测 的变量*/
 uint8_t trig_flag=0;
 static int64_t  trig_ecd_sum=0;
+
 //在当前比例下摩擦轮最大能到达转速29-->9300rpm差不多
-int16_t trig=0,fric1=-20,fric2=20;
+int16_t fric1=-20,fric2=20;
 
 static void shoot_init(shoot_control_t *shoot_init);
 static void shoot_motor_control(shoot_motor_t *shoot_motor);
@@ -26,7 +25,7 @@ void shoot_task(void const * argument)
 	vTaskDelay(SHOOT_TASK_INIT_TIME);
 
     shoot_init(&shoot_control);
-
+//osTimerStart(ShootTimerHandle,200);
 
 		while(1)
 		{
@@ -81,8 +80,7 @@ static void shoot_init(shoot_control_t *shoot_init)
   //初始化firc电机速度pid
 	K_FF_init(&shoot_init->shoot_fric_L_motor.shoot_speed_pid,PID_POSITION,Shoot_fric_L_speed_pid,FRIC_L_SPEED_PID_MAX_OUT,FRIC_L_SPEED_PID_MAX_IOUT,FRIC_L_SPEED_KF_STATIC,FRIC_L_SPEED_KF_DYNAMIC);
 	K_FF_init(&shoot_init->shoot_fric_R_motor.shoot_speed_pid,PID_POSITION,Shoot_fric_R_speed_pid,FRIC_R_SPEED_PID_MAX_OUT,FRIC_R_SPEED_PID_MAX_IOUT,FRIC_R_SPEED_KF_STATIC,FRIC_R_SPEED_KF_DYNAMIC);
-
-	shoot_init->trig_fire_mode = Serial_fire;
+	shoot_init->trig_fire_mode = Cease_fire;
 	gimbal_feedback_update(shoot_init);
 }
 
@@ -108,17 +106,6 @@ static void gimbal_feedback_update(shoot_control_t *feedback_update)
 	feedback_update->shoot_trig_motor.motor_speed = feedback_update->shoot_trig_motor.shoot_motor_measure->rpm;//*TRIG_RPM_TO_SPEED_SEN;//rpm最大14000以上
 		
 
-
-		
-
-
-	
-//	else if(feedback_update->shoot_rc_ctrl->rc.s[1] == 0)
-//		trig_ecd_sum=0;
-		
-		//feedback_update->shoot_trig_motor.shoot_motor_measure->last_ecd = feedback_update->shoot_trig_motor.shoot_motor_measure->ecd;
-
-		
 		
 #ifdef SHOOT_DEBUG
 	Shoot_Debug_get_data();

@@ -2,7 +2,8 @@
 #include "shoot_task.h"
 #include "tim.h"
 
-
+extern osTimerId ShootTimerHandle;
+uint8_t shoot_switch_flag;
 
 static void shoot_trig_motor_behaviour_set(shoot_control_t *shoot_behaviour);
 
@@ -29,6 +30,32 @@ static void shoot_trig_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 	shoot_behaviour->last_trig_fire_mode = shoot_behaviour->trig_fire_mode;
 }
 
+//static void shoot_trig_motor_behaviour_set(shoot_control_t *shoot_behaviour)
+//{
+//	static uint8_t first=1;
+//	if(switch_is_up(shoot_behaviour->shoot_rc_ctrl->rc.s[TIRG_MODE_CHANNEL]))
+//	{
+//		if(first)
+//		{
+//			osTimerStart(ShootTimerHandle,500);
+//			first=0;
+//		}
+//		if(shoot_behaviour->last_trig_fire_mode == Cease_fire)
+//		shoot_control.trig_fire_mode = Single_fire;
+
+//	}
+//	else if(switch_is_down(shoot_behaviour->shoot_rc_ctrl->rc.s[TIRG_MODE_CHANNEL]))
+//	{
+//		first=1;
+//		shoot_behaviour->trig_fire_mode = Cease_fire;
+//	}
+//	else
+//	{
+//		first=1;
+//		shoot_behaviour->trig_fire_mode = Cease_fire;
+//	}
+//	shoot_behaviour->last_trig_fire_mode = shoot_behaviour->trig_fire_mode;
+//}
 
 
 //2500单点,385连发
