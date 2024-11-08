@@ -9,6 +9,8 @@
 #include "detect_task.h"
 #include "remote_control.h"
 #include "vofa_task.h"
+#include "shoot_behaviour.h"
+
 
 //rpm转换到线速度的比率，还未给
 #define FRIC_RPM_TO_SPEED_SEN   0.0031416
@@ -32,7 +34,7 @@
 #define TRIG_ANGLE_PID_KP           0.30f
 #define TRIG_ANGLE_PID_KI           0.0f
 #define TRIG_ANGLE_PID_KD           0.0f
-#define TRIG_ANGLE_PID_MAX_OUT     300.0f//30000
+#define TRIG_ANGLE_PID_MAX_OUT     10000.0f   //输出10000rpm有点大了
 #define TRIG_ANGLE_PID_MAX_IOUT    0.0f
 
 #define TRIG_ANGLE_KF_STATIC        0.0f
@@ -60,8 +62,9 @@
 #define FRIC_R_SPEED_KF_STATIC      10000.0f
 #define FRIC_R_SPEED_KF_DYNAMIC     0.0f
 
+#define MAX_SPEED   29
+#define MID_SPEED		20
 
-#define TRIG_CHANNEL   1
 
 //shoot相关电机信息数据包
 typedef struct
@@ -85,10 +88,14 @@ typedef struct
     shoot_motor_t shoot_fric_L_motor;
     shoot_motor_t shoot_fric_R_motor;
 		DebugData shoot_debug1;
-	
+		trig_fire_mode_e trig_fire_mode;
+		trig_fire_mode_e last_trig_fire_mode;
 }shoot_control_t;
 
 
 const DebugData* get_shoot_PID_Debug(void);
+extern int64_t  trig_ecd_sum;
+
+extern void shoot_trig_motor_mode_set(shoot_control_t *shoot_mode);
 
 #endif

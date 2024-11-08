@@ -55,6 +55,7 @@ void MX_FREERTOS_Init(void);
 
 
 uint8_t data1=1;
+
 /* USER CODE END 0 */
 
 /**

@@ -426,7 +426,7 @@ static void gimbal_motor_absolute_angle_control(gimbal_motor_t *gimbal_motor)
 			else if(gimbal_motor->gimbal_motor_mode == GIMBAL_MOTOR_AIMBOT)
 			{
 				//角度环，速度环串级pid调试
-				gimbal_motor->motor_gyro_set = K_FF_Cal(&gimbal_motor->gimbal_motor_absolute_angle_pid,gimbal_motor->absolute_angle,gimbal_motor->absolute_angle_set);
+				gimbal_motor->motor_gyro_set = K_FF_Cal(&gimbal_motor->gimbal_motor_absolute_angle_pid,final_yaw/*gimbal_motor->absolute_angle*/,gimbal_motor->absolute_angle_set);
 				gimbal_motor->current_set = K_FF_Cal(&gimbal_motor->gimbal_motor_gyro_pid,gimbal_motor->motor_gyro, gimbal_motor->motor_gyro_set);
 			}
 
@@ -497,11 +497,13 @@ static void gimbal_aimbot_angle_limit(gimbal_motor_t *gimbal_motor,fp32 aim_angl
 	{
 		if(aim_angle>180.0f)
 		{
-			aim_angle = 180.0f;
+			aim_angle -= 180.0f;
+			final_yaw-=180.0f;
 		}
 		else if(aim_angle < -180.0f)
 		{
-				aim_angle = -180.0f;
+				aim_angle += 180.0f;
+				final_yaw +=180.0f;
 		}
 		gimbal_motor->absolute_angle_set  = aim_angle;
 	}

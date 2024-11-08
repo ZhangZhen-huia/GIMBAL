@@ -66,3 +66,4 @@
 .\agv_gimbal\aimbots_task.o: ..\application\detect_task.h
 .\agv_gimbal\aimbots_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 .\agv_gimbal\aimbots_task.o: ..\application\vofa_task.h
+.\agv_gimbal\aimbots_task.o: ..\application\shoot_behaviour.h

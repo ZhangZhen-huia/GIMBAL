@@ -20,8 +20,8 @@ typedef struct
 	angle_rec rec_mini_yaw;
 	angle_rec rec_mini_pitch;
 	Fire_e Auto_fire;
-	uint8_t yaw_PNflag;
-	uint8_t pitch_PNflag;
+	int8_t yaw_PNflag;
+	int8_t pitch_PNflag;
 	fp32 auto_pitch_set;
 	fp32 auto_yaw_set;
 }mini_data_t;

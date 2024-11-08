@@ -60,6 +60,6 @@
 .\agv_gimbal\shoot_task.o: ..\application\remote_control.h
 .\agv_gimbal\shoot_task.o: ../bsp/boards/bsp_rc.h
 .\agv_gimbal\shoot_task.o: ..\application\vofa_task.h
+.\agv_gimbal\shoot_task.o: ..\application\shoot_behaviour.h
 .\agv_gimbal\shoot_task.o: ../Inc/tim.h
 .\agv_gimbal\shoot_task.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\math.h
-.\agv_gimbal\shoot_task.o: ..\application\shoot_behaviour.h

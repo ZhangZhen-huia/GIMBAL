@@ -61,3 +61,4 @@
 .\agv_gimbal\vofa_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 .\agv_gimbal\vofa_task.o: ..\application\remote_control.h
 .\agv_gimbal\vofa_task.o: ../bsp/boards/bsp_rc.h
+.\agv_gimbal\vofa_task.o: ..\application\shoot_behaviour.h
