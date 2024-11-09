@@ -20,6 +20,7 @@
 #include "remote_control.h"
 #include "bsp_buzzer.h"
 #include "usb_device.h"
+#include "event_groups.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -41,6 +42,7 @@
 
 /* USER CODE BEGIN PV */
 
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -54,7 +56,7 @@ void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN 0 */
 
 
-uint8_t data1=1;
+
 
 /* USER CODE END 0 */
 
@@ -97,11 +99,11 @@ int main(void)
   MX_USART6_UART_Init();
   MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
-	HAL_TIM_Base_Start_IT(&htim5);
+	
 	remote_control_init();
 	Buzzer_Init();
 	canfilter_init_start();
-	 MX_USB_DEVICE_Init();
+	MX_USB_DEVICE_Init();
 
   /* USER CODE END 2 */
 
@@ -172,7 +174,7 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 extern uint8_t trig_flag;
 /* USER CODE END 4 */
-
+BaseType_t a;
 /**
   * @brief  Period elapsed callback in non blocking mode
   * @note   This function is called  when TIM6 interrupt took place, inside
@@ -184,10 +186,12 @@ extern uint8_t trig_flag;
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;  
 	if(htim->Instance == TIM5)
 	{
-		trig_flag = 1;
-//		HAL_TIM_Base_Stop_IT(htim);
+		a = xEventGroupSetBitsFromISR(my_shootEventGroupHandle,ShootEvent_1,&xHigherPriorityTaskWoken);
+		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+//		trig_flag = 1;
 	}
   /* USER CODE END Callback 0 */
   if (htim->Instance == TIM6) {

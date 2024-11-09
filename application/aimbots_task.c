@@ -23,6 +23,24 @@ void aimbots_task(void const * argument)
 
 
 
+/*小电脑发送的时候直接发浮点数，小端开头，使用移位操作来把浮点数分解为4个8位的数*/
+//static void dispose_usb_data(mini_data_t *auto_data)
+//{
+//	
+//	
+//	auto_data->rec_mini_pitch.bytes[0] = usb_recive_buffer[0];
+//	auto_data->rec_mini_pitch.bytes[1] = usb_recive_buffer[1];
+//	auto_data->rec_mini_pitch.bytes[2] = usb_recive_buffer[2];
+//	auto_data->rec_mini_pitch.bytes[3] = usb_recive_buffer[3];
+//	auto_data->auto_pitch_set=auto_data->rec_mini_pitch.value;
+//	
+//	
+//	auto_data->rec_mini_yaw.bytes[0] = usb_recive_buffer[4];
+//	auto_data->rec_mini_yaw.bytes[1] = usb_recive_buffer[5];
+//	auto_data->rec_mini_yaw.bytes[2] = usb_recive_buffer[6];
+//	auto_data->rec_mini_yaw.bytes[3] = usb_recive_buffer[7];;
+//	auto_data->auto_yaw_set=auto_data->rec_mini_yaw.value;
+//}
 
 //static void dispose_usb_data(mini_data_t *auto_data)
 //{

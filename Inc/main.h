@@ -33,10 +33,17 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "struct_typedef.h"
+#include "FreeRTOS.h"
+#include "cmsis_os.h"
+#include "event_groups.h"
+
+
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+extern EventGroupHandle_t my_shootEventGroupHandle;
 
 /* USER CODE END ET */
 
@@ -47,7 +54,6 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -63,7 +69,8 @@ void Error_Handler(void);
 #define CS1_GYRO_Pin GPIO_PIN_0
 #define CS1_GYRO_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
-
+#define ShootEvent_1 (1<<1)
+#define Event_2 (1<<2)
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

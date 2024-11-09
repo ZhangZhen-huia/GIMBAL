@@ -11,7 +11,7 @@ uint8_t trig_flag=0;
 static int64_t  trig_ecd_sum=0;
 
 //在当前比例下摩擦轮最大能到达转速29-->9300rpm差不多
-int16_t fric1=-20,fric2=20;
+int16_t fric1=-25,fric2=25;
 
 static void shoot_init(shoot_control_t *shoot_init);
 static void shoot_motor_control(shoot_motor_t *shoot_motor);
@@ -170,35 +170,36 @@ static void trig_motor_control(shoot_control_t * control_loop)
   */
 int64_t trig_block_detect(shoot_control_t * control_loop,int64_t angle_set)
 {
+	EventBits_t shootEnevnt_rec;
+	shootEnevnt_rec = xEventGroupWaitBits(my_shootEventGroupHandle,ShootEvent_1,pdTRUE,pdFALSE,0); 
 
 	if(control_loop->trig_fire_mode != Cease_fire)
 	{
-		if( control_loop->shoot_trig_motor.shoot_motor_measure->rpm<20 && angle_set<-2000 && trig_flag ==1)
+		if( control_loop->shoot_trig_motor.shoot_motor_measure->rpm<20 && angle_set<-2000 && shootEnevnt_rec ==ShootEvent_1)
 		{
 			angle_set=0;
 			angle_set+=20*8191;
-			trig_flag=0;
+			//trig_flag=0;
 		}
-		else if(control_loop->shoot_trig_motor.shoot_motor_measure->rpm>-20 && angle_set>2000 && trig_flag ==1)
+		else if(control_loop->shoot_trig_motor.shoot_motor_measure->rpm>-20 && angle_set>2000 && shootEnevnt_rec ==ShootEvent_1)
 		{
 			angle_set=0;
 			angle_set-=20*8191;
-			trig_flag=0;
+			//trig_flag=0;
 		}
 
-		else if((control_loop->trig_fire_mode == Single_fire || control_loop->trig_fire_mode == Serial_fire)&& trig_flag == 1)
+		else if((control_loop->trig_fire_mode == Single_fire || control_loop->trig_fire_mode == Serial_fire)&& shootEnevnt_rec == ShootEvent_1)
 		{
-				trig_flag = 0;
+				//trig_flag = 0;
 				angle_set-=10*8191;
 		}
 	}
 	else 
 	{
-		trig_flag = 0;
+		//trig_flag = 0;
 		angle_set = 0;
 	}
 	return angle_set;
-	
 }
 
 

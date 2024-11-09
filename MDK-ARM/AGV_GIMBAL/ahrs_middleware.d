@@ -43,3 +43,17 @@
 .\agv_gimbal\ahrs_middleware.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h
 .\agv_gimbal\ahrs_middleware.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h
 .\agv_gimbal\ahrs_middleware.o: ../Inc/struct_typedef.h
+.\agv_gimbal\ahrs_middleware.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
+.\agv_gimbal\ahrs_middleware.o: ../Inc/FreeRTOSConfig.h
+.\agv_gimbal\ahrs_middleware.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
+.\agv_gimbal\ahrs_middleware.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h
+.\agv_gimbal\ahrs_middleware.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h
+.\agv_gimbal\ahrs_middleware.o: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/portmacro.h
+.\agv_gimbal\ahrs_middleware.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h
+.\agv_gimbal\ahrs_middleware.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
+.\agv_gimbal\ahrs_middleware.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
+.\agv_gimbal\ahrs_middleware.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
+.\agv_gimbal\ahrs_middleware.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h
+.\agv_gimbal\ahrs_middleware.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h
+.\agv_gimbal\ahrs_middleware.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h
+.\agv_gimbal\ahrs_middleware.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h

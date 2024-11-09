@@ -21,9 +21,11 @@
 #include "INS_task.h"
 #include "tim.h"
 #include "bsp_buzzer.h"
+#include "shoot_task.h"
 uint8_t Bee_flag=1;
 uint16_t psc = 1;
 uint16_t pwm = 5000;
+
 
 
 /**
@@ -41,6 +43,7 @@ void test_task(void const * argument)
 
     while(1)
     {
+
 			if(Bee_flag==1)
 			{	
 					Bee_flag=0;

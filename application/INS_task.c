@@ -75,7 +75,7 @@ void INS_task(void const * argument)
 
 	//	CAN_cmd_INS(bmi088_real_data.INS_angle[0], -bmi088_real_data.INS_angle[1], bmi088_real_data.gyro[2], bmi088_real_data.gyro[1]);
 		//计算周期为2ms（与四元数解算中的解算频率有关）
-		osDelay(2);
+		osDelay(1);
 	}
 }
 

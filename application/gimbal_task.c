@@ -47,7 +47,7 @@ gimbal_control_t gimbal_control;
 void gimbal_task(void const *pvParameters)
 {
     //等待陀螺仪任务更新陀螺仪数据
-		vTaskDelay(GIMBAL_TASK_INIT_TIME);
+		osDelay(GIMBAL_TASK_INIT_TIME);
 
     //云台初始化
     gimbal_init(&gimbal_control);
@@ -156,10 +156,7 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update)
     feedback_update->gimbal_yaw_motor.absolute_angle = feedback_update->gimbal_bmi088_data->INS_angle[INS_YAW_ADDRESS_OFFSET];
     feedback_update->gimbal_yaw_motor.relative_angle = -motor_ecd_to_angle_change(feedback_update->gimbal_yaw_motor.gimbal_motor_measure->ecd,feedback_update->gimbal_yaw_motor.offset_ecd);
 		feedback_update->gimbal_yaw_motor.motor_gyro  = feedback_update->gimbal_bmi088_data->gyro[INS_GYRO_Z_ADDRESS_OFFSET];
-		
-		
-		//get_mini_data(feedback_update);
-		
+				
 		//yaw轴过零处理
 		yaw_err=feedback_update->gimbal_yaw_motor.absolute_angle-last_yaw;
 		feedback_update->final_yaw+=yaw_err;

@@ -27,6 +27,8 @@
 /* USER CODE BEGIN Includes */
 #include "shoot_task.h"
 #include "shoot_behaviour.h"
+#include "event_groups.h"
+#include "tim.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -37,6 +39,7 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -46,7 +49,9 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-extern uint8_t shoot_switch_flag;
+
+EventGroupHandle_t my_shootEventGroupHandle;
+
 /* USER CODE END Variables */
 osThreadId TEST_TASKHandle;
 osThreadId GIMBAL_TASKHandle;
@@ -113,7 +118,12 @@ void vApplicationGetTimerTaskMemory( StaticTask_t **ppxTimerTaskTCBBuffer, Stack
   */
 void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
-
+	my_shootEventGroupHandle = xEventGroupCreate();
+	if(my_shootEventGroupHandle == NULL)
+	{
+		return;
+	}
+	HAL_TIM_Base_Start_IT(&htim5);
   /* USER CODE END Init */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -301,7 +311,6 @@ __weak void aimbots_task(void const * argument)
   /* USER CODE END aimbots_task */
 }
 
-
 /* ShootTimer_Callback function */
 void ShootTimer_Callback(void const * argument)
 {
@@ -309,6 +318,7 @@ void ShootTimer_Callback(void const * argument)
 
 	if(switch_is_up(shoot_control.shoot_rc_ctrl->rc.s[TIRG_MODE_CHANNEL]))
 	{
+		//xEventGroupSetBits(my_shootEventGroupHandle,ShootEvent_1);
 		shoot_control.trig_fire_mode = Serial_fire;
 	}
 
