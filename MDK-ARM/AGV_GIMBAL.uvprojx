@@ -819,6 +819,11 @@
               <FileType>1</FileType>
               <FilePath>..\application\shoot_behaviour.c</FilePath>
             </File>
+            <File>
+              <FileName>user_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\application\user_task.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

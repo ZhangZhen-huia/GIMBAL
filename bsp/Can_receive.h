@@ -31,6 +31,10 @@ typedef enum
 /*----------can1接收id----------*/
 
 
+
+		
+	//双板通信发送id
+	CHASSIS_ID = 0x222,
 	//舵步
 	/*---拨弹盘---*/
 	CAN_TRIGGER_MOTOR_ID = 0x201, //1
@@ -38,16 +42,16 @@ typedef enum
   CAN_Fric_L_ID = 0x202,			//2
   CAN_Fric_R_ID = 0x203,			//3
 	
+//	
 	
 	
-	
-//		平衡
+//	//平衡
 //	/*---拨弹盘---*/
 //	CAN_TRIGGER_MOTOR_ID = 0x203, //3
 //	/*---摩擦轮---*/
 //  CAN_Fric_L_ID = 0x201,			//1
 //  CAN_Fric_R_ID = 0x202,			//2
-	
+//	
 	
 	/*---云台---*/
 	CAN_YAW_MOTOR_ID = 0x205,		//1
@@ -57,6 +61,8 @@ typedef enum
 
 /*------------------------------*/
 
+/*----------can1双板通信发送id---------*/
+	RC_ID = 0x111,
 } can_msg_id_e;
 
 

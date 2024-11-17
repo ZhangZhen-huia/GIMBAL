@@ -65,6 +65,16 @@
 .\agv_gimbal\aimbots_task.o: ../components/devices/BMI088driver.h
 .\agv_gimbal\aimbots_task.o: ..\application\shoot_task.h
 .\agv_gimbal\aimbots_task.o: ..\application\detect_task.h
-.\agv_gimbal\aimbots_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 .\agv_gimbal\aimbots_task.o: ..\application\vofa_task.h
 .\agv_gimbal\aimbots_task.o: ..\application\shoot_behaviour.h
+.\agv_gimbal\aimbots_task.o: ../Inc/usbd_cdc_if.h
+.\agv_gimbal\aimbots_task.o: ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h
+.\agv_gimbal\aimbots_task.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h
+.\agv_gimbal\aimbots_task.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h
+.\agv_gimbal\aimbots_task.o: ../Inc/usbd_conf.h
+.\agv_gimbal\aimbots_task.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\stdio.h
+.\agv_gimbal\aimbots_task.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\stdlib.h
+.\agv_gimbal\aimbots_task.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\string.h
+.\agv_gimbal\aimbots_task.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h
+.\agv_gimbal\aimbots_task.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h
+.\agv_gimbal\aimbots_task.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h

@@ -31,6 +31,7 @@
 ".\agv_gimbal\shoot_task.o"
 ".\agv_gimbal\vofa_task.o"
 ".\agv_gimbal\shoot_behaviour.o"
+".\agv_gimbal\user_task.o"
 ".\agv_gimbal\bmi088driver.o"
 ".\agv_gimbal\bmi088middleware.o"
 ".\agv_gimbal\ahrs_middleware.o"

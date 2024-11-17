@@ -57,9 +57,8 @@
 .\agv_gimbal\shoot_behaviour.o: ../bsp/Can_receive.h
 .\agv_gimbal\shoot_behaviour.o: ../Inc/can.h
 .\agv_gimbal\shoot_behaviour.o: ..\application\detect_task.h
-.\agv_gimbal\shoot_behaviour.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
-.\agv_gimbal\shoot_behaviour.o: ../Inc/usart.h
 .\agv_gimbal\shoot_behaviour.o: ..\application\remote_control.h
 .\agv_gimbal\shoot_behaviour.o: ../bsp/boards/bsp_rc.h
 .\agv_gimbal\shoot_behaviour.o: ..\application\vofa_task.h
+.\agv_gimbal\shoot_behaviour.o: ../Inc/usart.h
 .\agv_gimbal\shoot_behaviour.o: ../Inc/tim.h

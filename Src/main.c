@@ -95,6 +95,7 @@ int main(void)
   MX_SPI1_Init();
   MX_TIM4_Init();
   MX_USART3_UART_Init();
+  
   MX_USART1_UART_Init();
   MX_USART6_UART_Init();
   MX_TIM5_Init();
@@ -172,9 +173,9 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-extern uint8_t trig_flag;
+//extern uint8_t trig_flag;
 /* USER CODE END 4 */
-BaseType_t a;
+
 /**
   * @brief  Period elapsed callback in non blocking mode
   * @note   This function is called  when TIM6 interrupt took place, inside
@@ -189,7 +190,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;  
 	if(htim->Instance == TIM5)
 	{
-		a = xEventGroupSetBitsFromISR(my_shootEventGroupHandle,ShootEvent_1,&xHigherPriorityTaskWoken);
+		xEventGroupSetBitsFromISR(my_shootEventGroupHandle,ShootEvent_1,&xHigherPriorityTaskWoken);
 		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 //		trig_flag = 1;
 	}

@@ -56,11 +56,10 @@
 .\agv_gimbal\shoot_task.o: ../bsp/Can_receive.h
 .\agv_gimbal\shoot_task.o: ../Inc/can.h
 .\agv_gimbal\shoot_task.o: ..\application\detect_task.h
-.\agv_gimbal\shoot_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
-.\agv_gimbal\shoot_task.o: ../Inc/usart.h
 .\agv_gimbal\shoot_task.o: ..\application\remote_control.h
 .\agv_gimbal\shoot_task.o: ../bsp/boards/bsp_rc.h
 .\agv_gimbal\shoot_task.o: ..\application\vofa_task.h
+.\agv_gimbal\shoot_task.o: ../Inc/usart.h
 .\agv_gimbal\shoot_task.o: ..\application\shoot_behaviour.h
 .\agv_gimbal\shoot_task.o: ../Inc/tim.h
 .\agv_gimbal\shoot_task.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\math.h

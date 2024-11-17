@@ -142,7 +142,10 @@ extern void remote_control_init(void);
 extern const RC_ctrl_t *get_remote_control_point(void);
 
 
+#define RC_sl_channel 1
+#define RC_sr_channel 0
 
+extern RC_ctrl_t rc_ctrl;
 uint8_t RC_data_is_error(void);
 void slove_RC_lost(void);
 void slove_data_error(void);

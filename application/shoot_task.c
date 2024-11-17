@@ -2,16 +2,19 @@
 #include "tim.h"
 #include "math.h"
 
-extern osTimerId ShootTimerHandle;
+
+
 shoot_control_t shoot_control;
+
 
 /*用于 过零检测 和 堵转检测 的变量*/
 /*后面可以试着把这些标志位用rtos试试写一下*/
-uint8_t trig_flag=0;
+
+//uint8_t trig_flag=0;//已经用事件组代替
 static int64_t  trig_ecd_sum=0;
 
 //在当前比例下摩擦轮最大能到达转速29-->9300rpm差不多
-int16_t fric1=-25,fric2=25;
+int16_t fric1=-10,fric2=10;
 
 static void shoot_init(shoot_control_t *shoot_init);
 static void shoot_motor_control(shoot_motor_t *shoot_motor);
@@ -21,6 +24,9 @@ static void Shoot_Debug_get_data(void);
 static void trig_motor_control(shoot_control_t * control_loop);
 static void fric_motor_control(shoot_control_t * control_loop);
 int64_t trig_block_detect(shoot_control_t * control_loop,int64_t angle_set);
+
+
+
 
 void shoot_task(void const * argument)
 {
@@ -42,11 +48,11 @@ void shoot_task(void const * argument)
 //      }
 //      else
 //      {
-//				
+////				
 				CAN_cmd_trigger_firc(shoot_control.shoot_trig_motor.current_set,shoot_control.shoot_fric_L_motor.current_set,shoot_control.shoot_fric_R_motor.current_set);
 				//CAN_cmd_trigger_firc(0,0,0);
 				//平步
-				//CAN_cmd_trigger_firc(shoot_control.shoot_fric_L_motor.current_set,shoot_control.shoot_fric_R_motor.current_set,shoot_control.shoot_trig_motor.current_set);
+//				CAN_cmd_trigger_firc(shoot_control.shoot_fric_L_motor.current_set,shoot_control.shoot_fric_R_motor.current_set,shoot_control.shoot_trig_motor.current_set);
 //      }
 			osDelay(1);
 		
@@ -62,6 +68,12 @@ void shoot_task(void const * argument)
 
 
 
+
+/**
+	* @brief          发射机构初始化
+  * @param[out]     shoot_init:"shoot_control"变量指针.
+  * @retval         none
+  */
 static void shoot_init(shoot_control_t *shoot_init)
 {
 	static const fp32 Shoot_trig_speed_pid[3] = {TRIG_SPEED_PID_KP,TRIG_SPEED_PID_KI,TRIG_SPEED_PID_KD};
@@ -84,7 +96,9 @@ static void shoot_init(shoot_control_t *shoot_init)
   //初始化firc电机速度pid
 	K_FF_init(&shoot_init->shoot_fric_L_motor.shoot_speed_pid,PID_POSITION,Shoot_fric_L_speed_pid,FRIC_L_SPEED_PID_MAX_OUT,FRIC_L_SPEED_PID_MAX_IOUT,FRIC_L_SPEED_KF_STATIC,FRIC_L_SPEED_KF_DYNAMIC);
 	K_FF_init(&shoot_init->shoot_fric_R_motor.shoot_speed_pid,PID_POSITION,Shoot_fric_R_speed_pid,FRIC_R_SPEED_PID_MAX_OUT,FRIC_R_SPEED_PID_MAX_IOUT,FRIC_R_SPEED_KF_STATIC,FRIC_R_SPEED_KF_DYNAMIC);
+	
 	shoot_init->trig_fire_mode = Cease_fire;
+	
 	shoot_feedback_update(shoot_init);
 }
 
@@ -92,8 +106,8 @@ static void shoot_init(shoot_control_t *shoot_init)
 
 
 /**
-  * @brief          底盘测量数据更新，包括电机速度，欧拉角度，机器人速度
-  * @param[out]     gimbal_feedback_update:"gimbal_control"变量指针.
+	* @brief          发射机构数据更新
+  * @param[out]     feedback_update:"shoot_control"变量指针.
   * @retval         none
   */
 static void shoot_feedback_update(shoot_control_t *feedback_update)
@@ -122,7 +136,7 @@ static void shoot_feedback_update(shoot_control_t *feedback_update)
 
 /**
   * @brief          控制循环，根据控制设定值，计算电机电流值，进行控制
-  * @param[out]     gimbal_control_loop:"gimbal_control"变量指针.
+  * @param[out]     control_loop:"shoot_control"变量指针.
   * @retval         none
   */
 static void shoot_control_loop(shoot_control_t *control_loop)
@@ -220,6 +234,7 @@ static void fric_motor_control(shoot_control_t * control_loop)
 	{
 		control_loop->shoot_fric_L_motor.motor_speed_set = 0;
 		control_loop->shoot_fric_R_motor.motor_speed_set = 0;
+
 	}
 	else if(control_loop->trig_fire_mode != Cease_fire)
 	{

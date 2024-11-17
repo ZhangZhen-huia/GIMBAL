@@ -71,5 +71,4 @@
 .\agv_gimbal\gimbal_task.o: ..\application\gimbal_behaviour.h
 .\agv_gimbal\gimbal_task.o: ..\application\gimbal_task.h
 .\agv_gimbal\gimbal_task.o: ..\application\detect_task.h
-.\agv_gimbal\gimbal_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 .\agv_gimbal\gimbal_task.o: ../components/algorithm/user_lib.h

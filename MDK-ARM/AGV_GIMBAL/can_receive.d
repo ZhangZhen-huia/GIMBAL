@@ -53,3 +53,4 @@
 .\agv_gimbal\can_receive.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
 .\agv_gimbal\can_receive.o: ..\bsp\Can_receive.h
 .\agv_gimbal\can_receive.o: ../Inc/can.h
+.\agv_gimbal\can_receive.o: ../application/user_task.h

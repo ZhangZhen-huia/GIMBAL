@@ -1,6 +1,9 @@
 #include "stm32f4xx_hal.h"
 #include "main.h"
 #include "Can_receive.h"
+#include "user_task.h"
+
+
 
 
 //µç»úÊı¾İ¶ÁÈ¡
@@ -14,9 +17,13 @@
 }
 
 
+
+
 //¶¨Òåyaw£¬pitch,Ä¦²ÁÂÖ£¬²¦µ¯ÅÌµç»úÊı¾İ½á¹¹Ìå
 motor_measure_t yaw_motor,pitch_motor,friction_motor[2],trigger_motor;
+
 uint8_t rx_data1[7],rx_data2[7];
+int16_t rec_rc[4];
 
 void canfilter_init_start(void)
 {
@@ -47,15 +54,6 @@ void canfilter_init_start(void)
 }
 
 
-//void Gim_Get_Motor_Data(uint8_t i,uint8_t data[],motor_measure_t* Revice_Data)//½ÓÊÕµçµ÷Êı¾İ²¢½âÂë
-//{
-//	Revice_Data[i].last_ecd = Revice_GimbalData[i].ecd;
-//	Revice_Data[i].ecd = (data[0]<<8)|data[1];
-//	Revice_Data[i].given_current = (data[4]<<8)|data[5];
-//	Revice_Data[i].rpm = (data[2]<<8)|data[3];
-//	Revice_Data[i].temperate = data[6];
-//}
-
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*hcan)//  CAN FIFO0µÄÖĞ¶Ï»Øµ÷º¯Êı£¬ÔÚÀïÃæÍê³ÉÊı¾İµÄ½ÓÊÕ
 {
@@ -75,6 +73,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*hcan)//  CAN FIFO0µÄÖĞ¶
 				break;
 			case CAN_TRIGGER_MOTOR_ID:get_motor_measure(&trigger_motor,rx_data1);
 				break;
+
 
 
 
