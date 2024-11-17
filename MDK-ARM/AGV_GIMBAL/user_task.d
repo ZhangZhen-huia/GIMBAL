@@ -58,3 +58,9 @@
 .\agv_gimbal\user_task.o: ../bsp/Can_receive.h
 .\agv_gimbal\user_task.o: ..\application\remote_control.h
 .\agv_gimbal\user_task.o: ../bsp/boards/bsp_rc.h
+.\agv_gimbal\user_task.o: ..\application\gimbal_task.h
+.\agv_gimbal\user_task.o: ../components/controller/pid.h
+.\agv_gimbal\user_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
+.\agv_gimbal\user_task.o: ../Inc/usart.h
+.\agv_gimbal\user_task.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\math.h
+.\agv_gimbal\user_task.o: ..\application\aimbots_task.h

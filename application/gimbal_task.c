@@ -46,6 +46,7 @@ gimbal_control_t gimbal_control;
 //云台总任务
 void gimbal_task(void const *pvParameters)
 {
+		gimbal_control.gimbal_behaviour = GIMBAL_INIT;
     //等待陀螺仪任务更新陀螺仪数据
 		osDelay(GIMBAL_TASK_INIT_TIME);
 

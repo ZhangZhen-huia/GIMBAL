@@ -9,19 +9,13 @@ typedef enum
 	fire = 1,
 }Fire_e;
 
-typedef union
-{
-    uint8_t bytes[4];
-    float value;
-}angle_rec;
+
 
 typedef struct
 {
-	angle_rec rec_mini_yaw;
-	angle_rec rec_mini_pitch;
+	uint8_t heading[2];
+	uint8_t tailing[2];
 	Fire_e Auto_fire;
-	int8_t yaw_PNflag;
-	int8_t pitch_PNflag;
 	fp32 auto_pitch_set;
 	fp32 auto_yaw_set;
 }mini_data_t;

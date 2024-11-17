@@ -179,7 +179,7 @@ void MX_FREERTOS_Init(void) {
   AIMBOTS_TASKHandle = osThreadCreate(osThread(AIMBOTS_TASK), NULL);
 
   /* definition and creation of USER_TASK */
-  osThreadDef(USER_TASK, user_task, osPriorityBelowNormal, 0, 256);
+  osThreadDef(USER_TASK, user_task, osPriorityAboveNormal, 0, 256);
   USER_TASKHandle = osThreadCreate(osThread(USER_TASK), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */

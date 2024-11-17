@@ -63,6 +63,7 @@ typedef enum
 
 /*----------can1Ë«°åÍ¨ÐÅ·¢ËÍid---------*/
 	RC_ID = 0x111,
+	GIMBAL_ID = 0x222,
 } can_msg_id_e;
 
 
