@@ -67,8 +67,6 @@
 .\agv_gimbal\gimbal_task.o: ../components/algorithm/Include/arm_math.h
 .\agv_gimbal\gimbal_task.o: ../Drivers/CMSIS/Include/core_cm4.h
 .\agv_gimbal\gimbal_task.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\string.h
-.\agv_gimbal\gimbal_task.o: ..\application\gimbal_task.h
 .\agv_gimbal\gimbal_task.o: ..\application\gimbal_behaviour.h
-.\agv_gimbal\gimbal_task.o: ..\application\gimbal_task.h
 .\agv_gimbal\gimbal_task.o: ..\application\detect_task.h
 .\agv_gimbal\gimbal_task.o: ../components/algorithm/user_lib.h

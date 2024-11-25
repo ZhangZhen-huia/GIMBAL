@@ -2,7 +2,7 @@
 #include "main.h"
 #include "Can_receive.h"
 #include "user_task.h"
-
+#include "detect_task.h"
 
 
 
@@ -23,18 +23,16 @@
 motor_measure_t yaw_motor,pitch_motor,friction_motor[2],trigger_motor;
 
 uint8_t rx_data1[7],rx_data2[7];
-int16_t rec_rc[4];
+
 
 void canfilter_init_start(void)
 {
-	CAN_FilterTypeDef can_filter_st;	                //¶¨Òå¹ýÂËÆ÷½á¹¹Ìå
+		CAN_FilterTypeDef can_filter_st;	                //¶¨Òå¹ýÂËÆ÷½á¹¹Ìå
     can_filter_st.FilterActivation = ENABLE;			//ENABLEÊ¹ÄÜ¹ýÂËÆ÷
     can_filter_st.FilterMode = CAN_FILTERMODE_IDMASK;	//ÉèÖÃ¹ýÂËÆ÷Ä£Ê½--±êÊ¶·ûÆÁ±ÎÎ»Ä£Ê½
     can_filter_st.FilterScale = CAN_FILTERSCALE_32BIT;	//¹ýÂËÆ÷µÄÎ»¿í 32 Î»
     can_filter_st.FilterIdHigh = 0x0000;				//ID¸ßÎ»
     can_filter_st.FilterIdLow = 0x0000;					//IDµÍÎ»
-	
-	//1±íÊ¾¸ÃÎ»ÒªÓëÉÏÃæµÄIDÏà¹ØÎ»Ò»ÄªÒ»Ñù
     can_filter_st.FilterMaskIdHigh = 0x0000;			//¹ýÂËÆ÷ÑÚÂë¸ßÎ»
     can_filter_st.FilterMaskIdLow = 0x0000;				//¹ýÂËÆ÷ÑÚÂëµÍÎ»
     
@@ -57,21 +55,35 @@ void canfilter_init_start(void)
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*hcan)//  CAN FIFO0µÄÖÐ¶Ï»Øµ÷º¯Êý£¬ÔÚÀïÃæÍê³ÉÊý¾ÝµÄ½ÓÊÕ
 {
-	CAN_RxHeaderTypeDef rx_header1;
-	if(hcan->Instance==CAN1)
+	CAN_RxHeaderTypeDef rx_header2,rx_header1;
+	if(hcan->Instance==CAN2)
 	{
-		HAL_CAN_GetRxMessage(&hcan1,CAN_RX_FIFO0,&rx_header1,rx_data1);
-		switch(rx_header1.StdId)
+		HAL_CAN_GetRxMessage(&hcan2,CAN_RX_FIFO0,&rx_header2,rx_data2);
+		switch(rx_header2.StdId)
 		{
-			case CAN_YAW_MOTOR_ID:get_motor_measure(&yaw_motor,rx_data1);
+			case CAN_YAW_MOTOR_ID:
+				get_motor_measure(&yaw_motor,rx_data2);
+				detect_hook(YAW_TOE);
 				break;
-			case CAN_PIT_MOTOR_ID:get_motor_measure(&pitch_motor,rx_data1);
+			
+			case CAN_PIT_MOTOR_ID:
+				get_motor_measure(&pitch_motor,rx_data2);
+				detect_hook(PITCH_TOE);
 				break;
-			case CAN_Fric_L_ID:get_motor_measure(&friction_motor[Fric_L],rx_data1);
+			
+			case CAN_Fric_L_ID:
+				get_motor_measure(&friction_motor[Fric_L],rx_data2);
+				detect_hook(FRIC_L_TOE);
 				break;
-			case CAN_Fric_R_ID:get_motor_measure(&friction_motor[Fric_R],rx_data1);
+			
+			case CAN_Fric_R_ID:
+				get_motor_measure(&friction_motor[Fric_R],rx_data2);
+				detect_hook(FRIC_R_TOE);	
 				break;
-			case CAN_TRIGGER_MOTOR_ID:get_motor_measure(&trigger_motor,rx_data1);
+			
+			case CAN_TRIGGER_MOTOR_ID:
+				get_motor_measure(&trigger_motor,rx_data2);
+				detect_hook(TRIG_TOE);
 				break;
 
 
@@ -79,26 +91,14 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*hcan)//  CAN FIFO0µÄÖÐ¶
 
 		}
 	}
-
-//	else if(hcan->Instance==CAN2)
-//	{
-//		HAL_CAN_GetRxMessage(&hcan2,CAN_RX_FIFO0,&rx_header2,rx_data2);
-//		switch(rx_header2.StdId)
-//		{
-//			case GIM_M1_ID:
-//				Gim_Get_Motor_Data(MOTOR1,rx_data2,Revice_GimbalData);
-//				break;
-//			case GIM_M2_ID:
-//				Gim_Get_Motor_Data(MOTOR2,rx_data2,Revice_GimbalData);
-//				break;
-//			case GIM_M3_ID:
-//				Gim_Get_Motor_Data(MOTOR3,rx_data2,Revice_GimbalData);
-//				break;
-//			case GIM_M4_ID:
-//				Gim_Get_Motor_Data(MOTOR4,rx_data2,Revice_GimbalData);
-//				break;
-//		}
-//	}
+	else if(hcan->Instance == CAN1)
+	{
+			HAL_CAN_GetRxMessage(&hcan1,CAN_RX_FIFO0,&rx_header1,rx_data1);
+		if(rx_header1.StdId == 0x209)
+		{
+				get_motor_measure(&yaw_motor,rx_data1);
+		}
+	}
 	
 }
 
@@ -106,25 +106,49 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*hcan)//  CAN FIFO0µÄÖÐ¶
 
 
 //·¢ËÍÔÆÌ¨ pitch ºÍ yaw
-void CAN_cmd_gimbal(int16_t yaw, int16_t pitch)
+void CAN_cmd_gimbal_pitch(int16_t pitch)
 {
   uint32_t send_mail_box;
 	CAN_TxHeaderTypeDef gimbal_tx_message;
-	static uint8_t    gimbal_can_send_data[4];
+	static uint8_t    gimbal_can_send_data[2];
 
 	//0x1ff
   gimbal_tx_message.StdId = CAN_GIMBAL_ALL_ID;
   gimbal_tx_message.IDE = CAN_ID_STD;
   gimbal_tx_message.RTR = CAN_RTR_DATA;
-  gimbal_tx_message.DLC = 0x08;
-  gimbal_can_send_data[0] = (yaw >> 8);
-  gimbal_can_send_data[1] = yaw;
-  gimbal_can_send_data[2] = (pitch >> 8);
-  gimbal_can_send_data[3] = pitch;
+  gimbal_tx_message.DLC = 0x02;
+  gimbal_can_send_data[0] = (pitch >> 8);
+  gimbal_can_send_data[1] = pitch;
+//  gimbal_can_send_data[2] = (pitch >> 8);
+//  gimbal_can_send_data[3] = pitch;
 
-  HAL_CAN_AddTxMessage(&hcan1, &gimbal_tx_message, gimbal_can_send_data, &send_mail_box);
+  HAL_CAN_AddTxMessage(&hcan2, &gimbal_tx_message, gimbal_can_send_data, &send_mail_box);
+	
+//	  gimbal_tx_message.StdId = 0x2ff;
+//		  gimbal_can_send_data[0] = (yaw >> 8);
+//  gimbal_can_send_data[1] = yaw;
+//  HAL_CAN_AddTxMessage(&hcan1, &gimbal_tx_message, gimbal_can_send_data, &send_mail_box);
+
 }
 
+//·¢ËÍÔÆÌ¨ pitch ºÍ yaw
+void CAN_cmd_gimbal_yaw(int16_t yaw)
+{
+  uint32_t send_mail_box;
+	CAN_TxHeaderTypeDef gimbal_tx_message;
+	static uint8_t    gimbal_can_send_data[2];
+
+	//0x1ff
+  gimbal_tx_message.StdId = 0x2ff;
+  gimbal_tx_message.IDE = CAN_ID_STD;
+  gimbal_tx_message.RTR = CAN_RTR_DATA;
+  gimbal_tx_message.DLC = 0x02;
+	
+	gimbal_can_send_data[0] = (yaw >> 8);
+  gimbal_can_send_data[1] = yaw;
+  HAL_CAN_AddTxMessage(&hcan1, &gimbal_tx_message, gimbal_can_send_data, &send_mail_box);
+
+}
 
 //·¢ËÍ²¦µ¯ÅÌºÍÄ¦²ÁÂÖµç»úµçÁ÷
 void CAN_cmd_trigger_firc(int16_t trigger_current,int16_t L_fric_current,int16_t R_fric_current)
@@ -137,7 +161,7 @@ void CAN_cmd_trigger_firc(int16_t trigger_current,int16_t L_fric_current,int16_t
   trigger_shoot_tx_message.StdId = CAN_Fric_Trg_ALL_ID;
   trigger_shoot_tx_message.IDE = CAN_ID_STD;
   trigger_shoot_tx_message.RTR = CAN_RTR_DATA;
-  trigger_shoot_tx_message.DLC = 0x08;
+  trigger_shoot_tx_message.DLC = 0x06;
 	
   trigger_shoot_can_send_data[0] = (trigger_current >> 8);
   trigger_shoot_can_send_data[1] = trigger_current;
@@ -146,7 +170,7 @@ void CAN_cmd_trigger_firc(int16_t trigger_current,int16_t L_fric_current,int16_t
   trigger_shoot_can_send_data[4] = (R_fric_current >> 8);
   trigger_shoot_can_send_data[5] = R_fric_current;
 
-  HAL_CAN_AddTxMessage(&hcan1, &trigger_shoot_tx_message, trigger_shoot_can_send_data, &send_mail_box);
+  HAL_CAN_AddTxMessage(&hcan2, &trigger_shoot_tx_message, trigger_shoot_can_send_data, &send_mail_box);
 }
 
 

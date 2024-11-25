@@ -54,3 +54,4 @@
 .\agv_gimbal\can_receive.o: ..\bsp\Can_receive.h
 .\agv_gimbal\can_receive.o: ../Inc/can.h
 .\agv_gimbal\can_receive.o: ../application/user_task.h
+.\agv_gimbal\can_receive.o: ../application/detect_task.h

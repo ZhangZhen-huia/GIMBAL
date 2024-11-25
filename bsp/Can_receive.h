@@ -54,23 +54,25 @@ typedef enum
 //	
 	
 	/*---云台---*/
-	CAN_YAW_MOTOR_ID = 0x205,		//1
-  CAN_PIT_MOTOR_ID = 0x206,		//2
-
+	CAN_YAW_MOTOR_ID = 0x20A,		//1
+  CAN_PIT_MOTOR_ID = 0x205,		//2
+ 
 	
 
 /*------------------------------*/
 
 /*----------can1双板通信发送id---------*/
-	RC_ID = 0x111,
-	GIMBAL_ID = 0x222,
+	
+	GIMBAL_ID = 0x111,
 } can_msg_id_e;
 
 
 
 
 void canfilter_init_start(void);
-void CAN_cmd_gimbal(int16_t yaw, int16_t pitch);
+void CAN_cmd_gimbal_pitch(int16_t pitch);
+
+void CAN_cmd_gimbal_yaw(int16_t yaw);
 void CAN_cmd_trigger_firc(int16_t trigger_current,int16_t L_fric_current,int16_t R_fric_current);
 
 const motor_measure_t *get_gimbal_friction_motor_measure_point(uint8_t id);

@@ -209,11 +209,12 @@ static void detect_init(uint32_t time)
 		uint16_t set_item[ERROR_LIST_LENGHT][3] =
 				{
 						{30, 40, 15},   //SBUS
-//            {10, 10, 11},   //motor1
-//            {10, 10, 10},   //motor2
-//            {10, 10, 9},    //motor3
-//            {10, 10, 8},    //motor4
-//            {2, 3, 14},     //yaw
+            {10, 10, 11},   //yaw
+						{10, 10, 10},   //pitch
+            {10, 10, 10},    //trig
+            {10, 10, 10},    //fric_l
+            {10, 10, 10},     //fric_r
+						
 //            {2, 3, 13},     //pitch
 //            {10, 10, 12},   //trigger
 //            {2, 3, 7},      //board gyro

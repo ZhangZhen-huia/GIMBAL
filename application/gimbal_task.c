@@ -67,11 +67,13 @@ void gimbal_task(void const *pvParameters)
 
             if (toe_is_error(DBUS_TOE))
             {
-                CAN_cmd_gimbal(0, 0);
+                CAN_cmd_gimbal_yaw(0);
+								CAN_cmd_gimbal_pitch(0);
             }
             else
             {
-                CAN_cmd_gimbal(gimbal_control.gimbal_yaw_motor.current_set,gimbal_control.gimbal_pitch_motor.current_set);
+							CAN_cmd_gimbal_yaw(gimbal_control.gimbal_yaw_motor.current_set);
+              CAN_cmd_gimbal_pitch(gimbal_control.gimbal_pitch_motor.current_set);
             }
         
 		osDelay(1);
@@ -86,9 +88,9 @@ void gimbal_task(void const *pvParameters)
   */
 static void gimbal_init(gimbal_control_t *init)
 {
-	uint16_t Pitch_offset_ecd = 7325;
-	fp32 pitch_max_relative_angle=6484;
-	fp32 pitch_min_relative_angle=8166;
+	uint16_t Pitch_offset_ecd = 4121;
+	fp32 pitch_max_relative_angle=3220;
+	fp32 pitch_min_relative_angle=4416;
 	
 	static const fp32 Yaw_speed_pid[3] = {YAW_SPEED_PID_KP, YAW_SPEED_PID_KI, YAW_SPEED_PID_KD};
 	static const fp32 Yaw_GYRO_ABSOLUTE_pid[3] = {YAW_GYRO_ABSOLUTE_PID_KP, YAW_GYRO_ABSOLUTE_PID_KI, YAW_GYRO_ABSOLUTE_PID_KD};
@@ -149,9 +151,9 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update)
     }
 		
 		    //云台数据更新（更新Yaw和Pitch的绝对角度和相对角度、角速度）
-    feedback_update->gimbal_pitch_motor.absolute_angle = feedback_update->gimbal_bmi088_data->INS_angle[INS_PITCH_ADDRESS_OFFSET];
+    feedback_update->gimbal_pitch_motor.absolute_angle = -feedback_update->gimbal_bmi088_data->INS_angle[INS_PITCH_ADDRESS_OFFSET];
     feedback_update->gimbal_pitch_motor.relative_angle = -motor_ecd_to_angle_change(feedback_update->gimbal_pitch_motor.gimbal_motor_measure->ecd,feedback_update->gimbal_pitch_motor.offset_ecd);
-		feedback_update->gimbal_pitch_motor.motor_gyro = feedback_update->gimbal_bmi088_data->gyro[INS_GYRO_Y_ADDRESS_OFFSET];
+		feedback_update->gimbal_pitch_motor.motor_gyro = -feedback_update->gimbal_bmi088_data->gyro[INS_GYRO_Y_ADDRESS_OFFSET];
 
 		
     feedback_update->gimbal_yaw_motor.absolute_angle = feedback_update->gimbal_bmi088_data->INS_angle[INS_YAW_ADDRESS_OFFSET];

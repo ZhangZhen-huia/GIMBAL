@@ -14,7 +14,7 @@ shoot_control_t shoot_control;
 static int64_t  trig_ecd_sum=0;
 
 //在当前比例下摩擦轮最大能到达转速29-->9300rpm差不多
-int16_t fric1=-10,fric2=10;
+int16_t fric1=10,fric2=-10;
 
 static void shoot_init(shoot_control_t *shoot_init);
 static void shoot_motor_control(shoot_motor_t *shoot_motor);
@@ -41,19 +41,19 @@ void shoot_task(void const * argument)
 			fric_motor_control(&shoot_control);					//摩擦轮控制量配置
 			shoot_control_loop(&shoot_control);					//摩擦轮和拨弹盘输出值计算
 
-//			if (toe_is_error(DBUS_TOE))
-//      {
-//				CAN_cmd_trigger_firc(0,0,0);
+			if (toe_is_error(DBUS_TOE))
+      {
+				CAN_cmd_trigger_firc(0,0,0);
 
-//      }
-//      else
-//      {
-////				
+      }
+      else
+      {
+				
 				CAN_cmd_trigger_firc(shoot_control.shoot_trig_motor.current_set,shoot_control.shoot_fric_L_motor.current_set,shoot_control.shoot_fric_R_motor.current_set);
 				//CAN_cmd_trigger_firc(0,0,0);
 				//平步
-//				CAN_cmd_trigger_firc(shoot_control.shoot_fric_L_motor.current_set,shoot_control.shoot_fric_R_motor.current_set,shoot_control.shoot_trig_motor.current_set);
-//      }
+				//CAN_cmd_trigger_firc(shoot_control.shoot_fric_L_motor.current_set,shoot_control.shoot_fric_R_motor.current_set,shoot_control.shoot_trig_motor.current_set);
+      }
 			osDelay(1);
 		
 		}
