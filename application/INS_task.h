@@ -40,4 +40,7 @@ void ins_task(void const * argument);
 const bmi088_real_data_t* get_INS_data_point(void);
 extern bmi088_real_data_t bmi088_real_data;
 
+extern fp32 bmi088_radians[3];
+
+
 #endif

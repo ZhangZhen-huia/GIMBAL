@@ -17,7 +17,7 @@ static pid_type_def imu_temp_pid;
 fp32 INS_quat[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 fp32 INS_angle[3] = {0.0f, 0.0f, 0.0f};      //euler angle, unit rad.欧拉角 单位 rad
 fp32 gyro_offset[3];
-
+fp32 bmi088_radians[3];
 
 void AHRS_init(fp32 quat[4]);
 void get_angle(fp32 q[4], fp32 *yaw, fp32 *pitch, fp32 *roll);
@@ -64,7 +64,8 @@ void INS_task(void const * argument)
 		//四元数计算（六轴）
 		MahonyAHRSupdateIMU(INS_quat,bmi088_real_data.gyro[0],bmi088_real_data.gyro[1],bmi088_real_data.gyro[2],bmi088_real_data.accel[0],bmi088_real_data.accel[1],bmi088_real_data.accel[2]);
 		get_angle(INS_quat, bmi088_real_data.INS_angle + INS_YAW_ADDRESS_OFFSET, bmi088_real_data.INS_angle + INS_PITCH_ADDRESS_OFFSET, bmi088_real_data.INS_angle + INS_ROLL_ADDRESS_OFFSET);
-		
+		for(uint8_t i=0;i<3;i++)
+		bmi088_radians[i] = bmi088_real_data.INS_angle[i];
 		//转换成度
 		for(uint8_t i=0;i<3;i++)
 		{

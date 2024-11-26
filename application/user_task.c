@@ -6,7 +6,7 @@
 #include "gimbal_task.h"
 #include "detect_task.h"
 
-static void can_cmd_to_chassis(CAN_HandleTypeDef*hcan,int16_t can_id,uint8_t *buf);
+static void can_cmd_to_chassis(CAN_HandleTypeDef*hcan,int16_t can_id,int8_t *buf);
 static void Rc_data_transfer(void);
 
 
@@ -28,21 +28,20 @@ void user_task(void const * argument)
 
 
 
-
-
-uint8_t buf[8];
+fp32 yaw_data;
+int8_t buf[8];
 static void Rc_data_transfer(void)
 {
 
 	
 	
-	uint8_t vx_set = (rc_ctrl.rc.ch[CHASSIS_X_CHANNEL]+660)/10.0f;
-	uint8_t vy_set = (rc_ctrl.rc.ch[CHASSIS_Y_CHANNEL]+660)/10.0f;
-	uint8_t wz_set = (rc_ctrl.rc.ch[CHASSIS_W_CHANNEL]+660)/10.0f;
-	uint8_t rc_err = (uint8_t)toe_is_error(DBUS_TOE);
-	uint8_t rc_sl = rc_ctrl.rc.s[RC_sl_channel];
-	uint8_t rc_sr = rc_ctrl.rc.s[RC_sr_channel];
-	fp32 yaw_data = (200*bmi088_real_data.INS_angle[INS_YAW_ADDRESS_OFFSET]/57.2957795f/4.0f);	
+	int8_t vx_set = (rc_ctrl.rc.ch[CHASSIS_X_CHANNEL]+660)/20.0f;//0-66
+	int8_t vy_set = (rc_ctrl.rc.ch[CHASSIS_Y_CHANNEL]+660)/20.0f;//0-66
+	int8_t wz_set = (rc_ctrl.rc.ch[CHASSIS_W_CHANNEL]+660)/20.0f;//0-66
+	int8_t rc_err = (uint8_t)toe_is_error(DBUS_TOE);
+	int8_t rc_sl = rc_ctrl.rc.s[RC_sl_channel];
+	int8_t rc_sr = rc_ctrl.rc.s[RC_sr_channel];
+	yaw_data = (bmi088_radians[INS_YAW_ADDRESS_OFFSET]+3.1415926f)/8.0f*100.0f;//0-78.5
 		
 	uint8_t gimbal_mode = 0;
 	if(gimbal_control.gimbal_behaviour == GIMBAL_INIT)
@@ -56,7 +55,7 @@ static void Rc_data_transfer(void)
 	buf[3] = rc_err;
 	buf[4] = rc_sl;
 	buf[5] = rc_sr;
-	buf[6] = (uint8_t)yaw_data;
+	buf[6] = yaw_data;
 	buf[7] = gimbal_mode;
 
 	
@@ -65,11 +64,11 @@ static void Rc_data_transfer(void)
 }
 
 
-static void can_cmd_to_chassis(CAN_HandleTypeDef*hcan,int16_t can_id,uint8_t *buf)
+static void can_cmd_to_chassis(CAN_HandleTypeDef*hcan,int16_t can_id,int8_t *buf)
 {
 	uint32_t send_mail_box;
 	CAN_TxHeaderTypeDef chassis_tx_message;
-	uint8_t    chassis_can_send_data[8];
+	int8_t    chassis_can_send_data[8];
 	
 	chassis_tx_message.StdId = can_id;
 	chassis_tx_message.DLC = 8;
@@ -83,7 +82,7 @@ static void can_cmd_to_chassis(CAN_HandleTypeDef*hcan,int16_t can_id,uint8_t *bu
 //	}
 
 
-	HAL_CAN_AddTxMessage(hcan,&chassis_tx_message,chassis_can_send_data, &send_mail_box);
+	HAL_CAN_AddTxMessage(hcan,&chassis_tx_message,(uint8_t*)chassis_can_send_data, &send_mail_box);
 
 }
 

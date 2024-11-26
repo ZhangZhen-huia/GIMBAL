@@ -25,7 +25,7 @@ typedef enum
 	CAN_GIMBAL_ALL_ID = 0x1FF,
 	
 	/*---²¦µ¯ÅÌ+Ä¦²ÁÂÖ---*/
-	CAN_Fric_Trg_ALL_ID = 0x200,
+	CAN_Fric_ALL_ID = 0x200,
 	
 	
 /*----------can1½ÓÊÕid----------*/
@@ -36,11 +36,11 @@ typedef enum
 	//Ë«°åÍ¨ÐÅ·¢ËÍid
 	CHASSIS_ID = 0x222,
 	//¶æ²½
-	/*---²¦µ¯ÅÌ---*/
-	CAN_TRIGGER_MOTOR_ID = 0x201, //1
+//	/*---²¦µ¯ÅÌ---*/
+//	CAN_TRIGGER_MOTOR_ID = 0x201, //1
 	/*---Ä¦²ÁÂÖ---*/
-  CAN_Fric_L_ID = 0x202,			//2
-  CAN_Fric_R_ID = 0x203,			//3
+  CAN_Fric_L_ID = 0x201,			//1
+  CAN_Fric_R_ID = 0x202,			//2
 	
 //	
 	
@@ -73,10 +73,10 @@ void canfilter_init_start(void);
 void CAN_cmd_gimbal_pitch(int16_t pitch);
 
 void CAN_cmd_gimbal_yaw(int16_t yaw);
-void CAN_cmd_trigger_firc(int16_t trigger_current,int16_t L_fric_current,int16_t R_fric_current);
-
+//void CAN_cmd_trigger_firc(int16_t trigger_current,int16_t L_fric_current,int16_t R_fric_current);
+void CAN_cmd_firc(int16_t L_fric_current,int16_t R_fric_current);
 const motor_measure_t *get_gimbal_friction_motor_measure_point(uint8_t id);
-const motor_measure_t *get_gimbal_trigger_motor_measure_point(void);
+//const motor_measure_t *get_gimbal_trigger_motor_measure_point(void);
 const motor_measure_t *get_gimbal_pitch_motor_measure_point(void);
 const motor_measure_t *get_gimbal_yaw_motor_measure_point(void);
 

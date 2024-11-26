@@ -96,7 +96,7 @@ int main(void)
   MX_USART3_UART_Init();
   MX_USART1_UART_Init();
   MX_USART6_UART_Init();
-  MX_TIM5_Init();
+//  MX_TIM5_Init();
   MX_CAN1_Init();
   MX_CAN2_Init();
   /* USER CODE BEGIN 2 */
@@ -187,11 +187,11 @@ void SystemClock_Config(void)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
-	BaseType_t xHigherPriorityTaskWoken = pdFALSE;  
+//	BaseType_t xHigherPriorityTaskWoken = pdFALSE;  
 	if(htim->Instance == TIM5)
 	{
-		xEventGroupSetBitsFromISR(my_shootEventGroupHandle,ShootEvent_1,&xHigherPriorityTaskWoken);
-		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+//		xEventGroupSetBitsFromISR(my_shootEventGroupHandle,ShootEvent_1,&xHigherPriorityTaskWoken);
+//		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 //		trig_flag = 1;
 	}
   /* USER CODE END Callback 0 */
