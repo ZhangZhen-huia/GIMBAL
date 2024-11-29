@@ -40,7 +40,7 @@ static void gimbal_aimbot_angle_limit(gimbal_motor_t *gimbal_motor,fp32 aim_angl
 
 /*云台任务总结构体*/
 gimbal_control_t gimbal_control;	
-
+fp32 yaw_relative_init;
 
 
 //云台总任务
@@ -76,7 +76,7 @@ void gimbal_task(void const *pvParameters)
               CAN_cmd_gimbal_pitch(gimbal_control.gimbal_pitch_motor.current_set);
             }
         
-		osDelay(1);
+		osDelay(2);
     }
 }
 
@@ -89,14 +89,15 @@ void gimbal_task(void const *pvParameters)
 static void gimbal_init(gimbal_control_t *init)
 {
 	uint16_t Pitch_offset_ecd = 4121;
-	fp32 pitch_max_relative_angle=3220;
-	fp32 pitch_min_relative_angle=4416;
+	fp32 pitch_max_relative_angle=3260;
+	fp32 pitch_min_relative_angle=4426;
+	uint16_t Yaw_offset_ecd = 3473;
 	
 	static const fp32 Yaw_speed_pid[3] = {YAW_SPEED_PID_KP, YAW_SPEED_PID_KI, YAW_SPEED_PID_KD};
 	static const fp32 Yaw_GYRO_ABSOLUTE_pid[3] = {YAW_GYRO_ABSOLUTE_PID_KP, YAW_GYRO_ABSOLUTE_PID_KI, YAW_GYRO_ABSOLUTE_PID_KD};
 	static const fp32 Pitch_speed_pid[3] = {PITCH_SPEED_PID_KP, PITCH_SPEED_PID_KI, PITCH_SPEED_PID_KD};
 	static const fp32 Pitch_GYRO_ABSOLUTE_pid[3] = {PITCH_GYRO_ABSOLUTE_PID_KP, PITCH_GYRO_ABSOLUTE_PID_KI, PITCH_GYRO_ABSOLUTE_PID_KD};
-   
+
 	//电机数据指针获取
 	init->gimbal_yaw_motor.gimbal_motor_measure = get_gimbal_yaw_motor_measure_point();
 	init->gimbal_pitch_motor.gimbal_motor_measure = get_gimbal_pitch_motor_measure_point();
@@ -109,7 +110,7 @@ static void gimbal_init(gimbal_control_t *init)
 	init->gimbal_mini_data = get_mini_data_point();
 	
 	//初始化pitch电机INS角度和速度pid
-	K_FF_init(&init->gimbal_pitch_motor.gimbal_motor_absolute_angle_pid,PID_POSITION,Pitch_GYRO_ABSOLUTE_pid,PITCH_GYRO_ABSOLUTE_PID_MAX_OUT,PITCH_GYRO_ABSOLUTE_PID_MAX_IOUT,PITCH_GYRO_ABSOLUTE_KF_STATIC,PITCH_GYRO_ABSOLUTE_KF_DYNAMIC);
+	K_FF_init_evolution(&init->gimbal_pitch_motor.gimbal_motor_absolute_angle_pid,PID_POSITION,Pitch_GYRO_ABSOLUTE_pid,PITCH_GYRO_ABSOLUTE_PID_MAX_OUT,PITCH_GYRO_ABSOLUTE_PID_MAX_IOUT,PITCH_GYRO_ABSOLUTE_KF_STATIC_P,PITCH_GYRO_ABSOLUTE_KF_STATIC_N,PITCH_GYRO_ABSOLUTE_KF_DYNAMIC);
 	K_FF_init(&init->gimbal_pitch_motor.gimbal_motor_gyro_pid,PID_POSITION,Pitch_speed_pid,PITCH_SPEED_PID_MAX_OUT,PITCH_SPEED_PID_MAX_IOUT,PITCH_SPEED_KF_STATIC,PITCH_SPEED_KF_DYNAMIC);
 
     //初始化yaw电机pid
@@ -126,9 +127,11 @@ static void gimbal_init(gimbal_control_t *init)
 	init->gimbal_pitch_motor.max_relative_angle =  -motor_ecd_to_angle_change(pitch_max_relative_angle,Pitch_offset_ecd);
 	init->gimbal_pitch_motor.min_relative_angle =  -motor_ecd_to_angle_change(pitch_min_relative_angle,Pitch_offset_ecd);
 	
-  gimbal_feedback_update(init);
+	ecd_format(Yaw_offset_ecd);
+	init->gimbal_yaw_motor.offset_ecd = Yaw_offset_ecd;
+	yaw_relative_init = -motor_ecd_to_angle_change(init->gimbal_yaw_motor.gimbal_motor_measure->ecd,init->gimbal_yaw_motor.offset_ecd);
+	gimbal_feedback_update(init);
 
-	
 	init->gimbal_pitch_motor.absolute_angle_set = init->gimbal_pitch_motor.absolute_angle;
 	init->gimbal_yaw_motor.absolute_angle_set = init->gimbal_yaw_motor.absolute_angle;
 
@@ -281,6 +284,7 @@ static void gimbal_absolute_angle_limit(gimbal_motor_t *gimbal_motor, fp32 add)
 			else if(gimbal_motor->absolute_angle_set<-180)
 			{
 				gimbal_control.final_yaw+=180;
+				
 				gimbal_motor->absolute_angle_set+=180;
 			}
 		}
@@ -459,7 +463,7 @@ static void gimbal_motor_absolute_angle_control(gimbal_motor_t *gimbal_motor)
 		}
 		else if(gimbal_motor == &gimbal_control.gimbal_pitch_motor)
 		{
-			gimbal_motor->motor_gyro_set = K_FF_Cal(&gimbal_motor->gimbal_motor_absolute_angle_pid,gimbal_motor->absolute_angle,gimbal_motor->absolute_angle_set);
+			gimbal_motor->motor_gyro_set = K_FF_Cal_evolution(&gimbal_motor->gimbal_motor_absolute_angle_pid,gimbal_motor->absolute_angle,gimbal_motor->absolute_angle_set);
 			gimbal_motor->current_set = K_FF_Cal(&gimbal_motor->gimbal_motor_gyro_pid,gimbal_motor->motor_gyro, gimbal_motor->motor_gyro_set);
 		}
 }

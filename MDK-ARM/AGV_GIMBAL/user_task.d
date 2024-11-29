@@ -65,3 +65,4 @@
 .\agv_gimbal\user_task.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\math.h
 .\agv_gimbal\user_task.o: ..\application\aimbots_task.h
 .\agv_gimbal\user_task.o: ..\application\detect_task.h
+.\agv_gimbal\user_task.o: ../components/algorithm/user_lib.h

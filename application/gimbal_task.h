@@ -37,21 +37,23 @@
 ///*--------------------------------------Pitch--------------------------------------*/
 
 //pitch 速度环 PID参数以及 PID最大输出，积分输出
-#define PITCH_SPEED_PID_KP        4000.0f
-#define PITCH_SPEED_PID_KI        0.0f
+#define PITCH_SPEED_PID_KP        2800.0f
+#define PITCH_SPEED_PID_KI        100.0f
 #define PITCH_SPEED_PID_KD        0.0f
 #define PITCH_SPEED_PID_MAX_OUT   30000.0f
-#define PITCH_SPEED_PID_MAX_IOUT  0.0f
+#define PITCH_SPEED_PID_MAX_IOUT  500.0f
 #define PITCH_SPEED_KF_STATIC     0.0f
 #define PITCH_SPEED_KF_DYNAMIC     0.0f
 
 //pitch 角度环 角度由陀螺仪解算 PID参数以及 PID最大输出，积分输出
-#define PITCH_GYRO_ABSOLUTE_PID_KP -0.6f
-#define PITCH_GYRO_ABSOLUTE_PID_KI -0.03f
+#define PITCH_GYRO_ABSOLUTE_PID_KP -0.8f
+#define PITCH_GYRO_ABSOLUTE_PID_KI -0.05f
 #define PITCH_GYRO_ABSOLUTE_PID_KD 0.0f
-#define PITCH_GYRO_ABSOLUTE_PID_MAX_OUT 10.0f
-#define PITCH_GYRO_ABSOLUTE_PID_MAX_IOUT 0.3f
-#define PITCH_GYRO_ABSOLUTE_KF_STATIC     -0.05f
+#define PITCH_GYRO_ABSOLUTE_PID_MAX_OUT 40.0f
+#define PITCH_GYRO_ABSOLUTE_PID_MAX_IOUT 0.5f
+#define PITCH_GYRO_ABSOLUTE_KF_STATIC_P     -0.0f
+#define PITCH_GYRO_ABSOLUTE_KF_STATIC_N     0.0f
+
 #define PITCH_GYRO_ABSOLUTE_KF_DYNAMIC     0.0f
 
 
@@ -69,7 +71,7 @@
 /*--------------------------------------Yaw--------------------------------------*/
 
 //yaw 速度环 PID参数以及 PID最大输出，积分输出
-#define YAW_SPEED_PID_KP        5000.0f //35000
+#define YAW_SPEED_PID_KP        8000.0f //35000
 #define YAW_SPEED_PID_KI        0.0f
 #define YAW_SPEED_PID_KD        0.0f
 #define YAW_SPEED_PID_MAX_OUT   30000.0f
@@ -78,11 +80,11 @@
 #define YAW_SPEED_KF_DYNAMIC     0.0f
 
 //yaw 角度环 角度由陀螺仪解算 PID参数以及 PID最大输出，积分输出
-#define YAW_GYRO_ABSOLUTE_PID_KP        0.3f //0.4
+#define YAW_GYRO_ABSOLUTE_PID_KP        1.3f //0.4
 #define YAW_GYRO_ABSOLUTE_PID_KI        0.01f
 #define YAW_GYRO_ABSOLUTE_PID_KD        0.0f
-#define YAW_GYRO_ABSOLUTE_PID_MAX_OUT   10.0f
-#define YAW_GYRO_ABSOLUTE_PID_MAX_IOUT  0.0f
+#define YAW_GYRO_ABSOLUTE_PID_MAX_OUT   360.0f
+#define YAW_GYRO_ABSOLUTE_PID_MAX_IOUT  0.5f
 #define YAW_GYRO_ABSOLUTE_KF_STATIC     0.0f
 #define YAW_GYRO_ABSOLUTE_KF_DYNAMIC     0.0f
 
@@ -238,7 +240,7 @@ extern gimbal_control_t gimbal_control;
 //摇杆死区
 #define RC_DEADBAND 10 
 extern gimbal_control_t gimbal_control;	
-
+extern fp32 yaw_relative_init;
 void gimbal_task(void const * argument);
 
 #endif

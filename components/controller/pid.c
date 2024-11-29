@@ -316,8 +316,7 @@ float K_FF_Cal_shoot(pid_type_def *pid, float ref, float set,float fabs_max,floa
 		
 
 
-		
-	uint8_t a=0.5;
+
     if (pid == NULL)
     {
         return 0.0f;
@@ -336,7 +335,7 @@ float K_FF_Cal_shoot(pid_type_def *pid, float ref, float set,float fabs_max,floa
     pid->error[1] = pid->error[0];
     pid->set = set;//目标值
     pid->fdb = ref;//返回值
-    pid->error[0] = a*pid->error[1]+(1-a)*(set - ref);//本次误差
+    pid->error[0] = set-ref;//a*pid->error[1]+(1-a)*(set - ref);//本次误差
     if (pid->mode == PID_POSITION)
     {
         pid->Pout = pid->Kp * pid->error[0];//比例项：Kp*误差
@@ -376,6 +375,63 @@ float K_FF_Cal_shoot(pid_type_def *pid, float ref, float set,float fabs_max,floa
 	}
     return (pid->out+pid->feedforward_dynamic_out+pid->feedforward_static_out); //这里不直接加是因为不影响本身pid的out值便于下一次pid计算，前馈与pid是互相独立的
 }
+
+
+//前馈PID
+float K_FF_Cal_evolution(pid_type_def *pid, float ref, float set)
+{
+	static TickType_t Real_Time,Last_Time,dt;
+	// 目标值的导数，即目标值的变化率，dt 是时间间隔
+    float aim_derivative = 0;
+	Real_Time = xTaskGetTickCount();
+	if(Last_Time != 0) //第一次不计算动态
+	{
+		dt = Real_Time - Last_Time;
+	}
+	Last_Time = Real_Time;
+    if (dt > 0)
+		{
+        aim_derivative = (set - pid->last_aim) / dt;
+    }
+    pid->last_aim = set;
+
+    // 计算静态前馈项
+    float K_ff_static_p = pid->K_ff_static_p; // 静态前馈增益
+		float K_ff_static_n = pid->K_ff_static_n; // 静态前馈增益
+		
+		if(set>0)
+			pid->feedforward_static_out = K_ff_static_p * set;
+		else if(set<0)
+    pid->feedforward_static_out = K_ff_static_n * set;
+
+    // 计算动态前馈项
+    float K_ff_dynamic = pid->K_ff_dynamic; // 动态前馈增益
+    pid->feedforward_dynamic_out= K_ff_dynamic * aim_derivative;
+		
+
+    pid->error[2] = pid->error[1];
+    pid->error[1] = pid->error[0];
+    pid->set = set;//目标值
+    pid->fdb = ref;//返回值
+    pid->error[0] = (set - ref);//本次误差
+    if (pid->mode == PID_POSITION)
+    {
+        pid->Pout = pid->Kp * pid->error[0];//比例项：Kp*误差
+			
+        pid->Iout += pid->Ki * pid->error[0];//积分项：Ki*误差积分
+			
+        pid->Dbuf[2] = pid->Dbuf[1];//误差之差
+        pid->Dbuf[1] = pid->Dbuf[0];
+        pid->Dbuf[0] = (pid->error[0] - pid->error[1]);//本次误差之差,即误差的微分
+        pid->Dout = pid->Kd * pid->Dbuf[0];//微分项：Kd*误差微分
+        LimitMax(pid->Iout, pid->max_iout);//PID积分限幅
+        pid->out = pid->Pout + pid->Iout + pid->Dout;//PID输出
+        LimitMax(pid->out, pid->max_out);//PID输出限幅
+    }
+
+    return (pid->out+pid->feedforward_dynamic_out+pid->feedforward_static_out); //这里不直接加是因为不影响本身pid的out值便于下一次pid计算，前馈与pid是互相独立的
+}
+
 
 //前馈PID
 float K_FF_Cal(pid_type_def *pid, float ref, float set)
@@ -463,6 +519,30 @@ float K_FF_Cal(pid_type_def *pid, float ref, float set)
 		LimitMax(pid->out, pid->max_out);//PID输出限幅
 	}
     return (pid->out+pid->feedforward_dynamic_out+pid->feedforward_static_out); //这里不直接加是因为不影响本身pid的out值便于下一次pid计算，前馈与pid是互相独立的
+}
+
+
+//前馈PID初始化
+void K_FF_init_evolution(pid_type_def *pid, uint8_t mode, const float PID[3], float max_out, float max_iout,float K_ff_static_P,float K_ff_static_N,float K_ff_dynamic)
+{
+    if (pid == NULL || PID == NULL)
+    {
+        return;
+    }
+		/*PID模式选择和三项输出*/
+    pid->mode = mode;
+    pid->Kp = PID[0];
+    pid->Ki = PID[1];
+    pid->Kd = PID[2];
+		/*PID输出限幅和积分限幅*/
+    pid->max_out = max_out;
+    pid->max_iout = max_iout;
+		/*先清除PID*/
+    pid->Dbuf[0] = pid->Dbuf[1] = pid->Dbuf[2] = 0.0f;
+    pid->error[0] = pid->error[1] = pid->error[2] = pid->Pout = pid->Iout = pid->Dout = pid->out = 0.0f;
+	pid->K_ff_static_p=K_ff_static_P;
+		pid->K_ff_static_n=K_ff_static_N;
+	pid->K_ff_dynamic=K_ff_dynamic;
 }
 
 

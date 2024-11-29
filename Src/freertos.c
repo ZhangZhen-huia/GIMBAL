@@ -61,7 +61,7 @@ osThreadId SHOOT_TASKHandle;
 osThreadId VOFA_TASKHandle;
 osThreadId AIMBOTS_TASKHandle;
 osThreadId USER_TASKHandle;
-//osTimerId ShootTimerHandle;
+osTimerId ShootTimerHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -76,7 +76,7 @@ void shoot_task(void const * argument);
 void vofa_task(void const * argument);
 void aimbots_task(void const * argument);
 void user_task(void const * argument);
-//void ShootTimer_Callback(void const * argument);
+void ShootTimer_Callback(void const * argument);
 
 extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -138,8 +138,8 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the timer(s) */
   /* definition and creation of ShootTimer */
-//  osTimerDef(ShootTimer, ShootTimer_Callback);
-//  ShootTimerHandle = osTimerCreate(osTimer(ShootTimer), osTimerOnce, NULL);
+  osTimerDef(ShootTimer, ShootTimer_Callback);
+  ShootTimerHandle = osTimerCreate(osTimer(ShootTimer), osTimerOnce, NULL);
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
@@ -335,10 +335,10 @@ __weak void user_task(void const * argument)
   /* USER CODE END user_task */
 }
 
-///* ShootTimer_Callback function */
-//void ShootTimer_Callback(void const * argument)
-//{
-//  /* USER CODE BEGIN ShootTimer_Callback */
+/* ShootTimer_Callback function */
+void ShootTimer_Callback(void const * argument)
+{
+  /* USER CODE BEGIN ShootTimer_Callback */
 
 //	if(switch_is_up(shoot_control.shoot_rc_ctrl->rc.s[TIRG_MODE_CHANNEL]))
 //	{
@@ -347,8 +347,8 @@ __weak void user_task(void const * argument)
 //	}
 
 
-//  /* USER CODE END ShootTimer_Callback */
-//}
+  /* USER CODE END ShootTimer_Callback */
+}
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
