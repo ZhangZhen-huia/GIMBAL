@@ -30,11 +30,6 @@ typedef enum
 	
 /*----------can1接收id----------*/
 
-
-
-		
-	//双板通信发送id
-	CHASSIS_ID = 0x222,
 	//舵步
 //	/*---拨弹盘---*/
 //	CAN_TRIGGER_MOTOR_ID = 0x201, //1
@@ -54,8 +49,8 @@ typedef enum
 //	
 	
 	/*---云台---*/
-	CAN_YAW_MOTOR_ID = 0x20A,		//1
-  CAN_PIT_MOTOR_ID = 0x205,		//2
+	CAN_YAW_MOTOR_ID = 0x209,		//5
+  CAN_PIT_MOTOR_ID = 0x205,		//1
  
 	
 
@@ -64,6 +59,7 @@ typedef enum
 /*----------can1双板通信发送id---------*/
 	
 	GIMBAL_ID = 0x111,
+	CHASSIS_ID = 0x222,
 } can_msg_id_e;
 
 

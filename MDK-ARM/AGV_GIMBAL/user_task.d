@@ -66,3 +66,6 @@
 .\agv_gimbal\user_task.o: ..\application\aimbots_task.h
 .\agv_gimbal\user_task.o: ..\application\detect_task.h
 .\agv_gimbal\user_task.o: ../components/algorithm/user_lib.h
+.\agv_gimbal\user_task.o: ..\application\shoot_task.h
+.\agv_gimbal\user_task.o: ..\application\vofa_task.h
+.\agv_gimbal\user_task.o: ..\application\shoot_behaviour.h

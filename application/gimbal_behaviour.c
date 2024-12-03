@@ -3,7 +3,7 @@
 
 static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set);
 void gimbal_behaviour_mode_set(gimbal_control_t *gimbal_mode_set);
-static void gimbal_relative_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
+static void gimbal_encode_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
 
 
 /**
@@ -33,7 +33,7 @@ static void gimbal_relative_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
   * @param[in]      gimbal_control_set:云台数据指针
   * @retval         none
   */
-static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set)
+static void gimbal_gyro_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set)
 {
     if (yaw == NULL || pitch == NULL || gimbal_control_set == NULL)
     {
@@ -87,6 +87,52 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
 
 
 /**
+  * @brief          云台编码值控制，电机是相对角度控制，
+  * @param[in]      yaw: yaw轴角度控制，为角度的增量 单位 rad
+  * @param[in]      pitch: pitch轴角度控制，为角度的增量 单位 rad
+  * @param[in]      gimbal_control_set: 云台数据指针
+  * @retval         none
+  */
+static void gimbal_encode_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set)
+{
+    if (yaw == NULL || pitch == NULL || gimbal_control_set == NULL)
+    {
+        return;
+    }
+    static int16_t yaw_channel = 0, pitch_channel = 0;
+
+    rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[YAW_CHANNEL], yaw_channel, RC_DEADBAND);
+    rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[PITCH_CHANNEL], pitch_channel, RC_DEADBAND);
+
+    *yaw = yaw_channel * YAW_RC_SEN - gimbal_control_set->gimbal_rc_ctrl->mouse.x * YAW_MOUSE_SEN;
+    *pitch = -(pitch_channel * PITCH_RC_SEN + gimbal_control_set->gimbal_rc_ctrl->mouse.y * PITCH_MOUSE_SEN);
+
+
+}
+
+fp32 aim_yaw_set;
+fp32 aim_pitch_set;
+/**
+  * @brief          云台编码值控制，电机是相对角度控制，
+  * @param[in]      yaw: yaw轴角度控制，为角度的增量 单位 rad
+  * @param[in]      pitch: pitch轴角度控制，为角度的增量 单位 rad
+  * @param[in]      gimbal_control_set: 云台数据指针
+  * @retval         none
+  */
+static void gimbal_auto_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set)
+{
+    if (yaw == NULL || pitch == NULL || gimbal_control_set == NULL)
+    {
+        return;
+    }
+
+    *yaw = aim_yaw_set;//gimbal_control_set->gimbal_mini_data->auto_yaw_set;
+    *pitch =aim_pitch_set;//gimbal_control_set->gimbal_mini_data->auto_pitch_set;
+
+
+}
+
+/**
   * @brief          云台行为控制，根据不同行为采用不同控制函数
   * @param[out]     add_yaw:设置的yaw角度增加值，单位 rad
   * @param[out]     add_pitch:设置的pitch角度增加值，单位 rad
@@ -102,13 +148,17 @@ void gimbal_behaviour_control_set(fp32 *add_yaw, fp32 *add_pitch, gimbal_control
     }
 
 
-    if (gimbal_control_set->gimbal_behaviour == GIMBAL_ABSOLUTE_ANGLE )
+    if (gimbal_control_set->gimbal_behaviour == GIMBAL_GYRO_ANGLE )
     {
-        gimbal_absolute_angle_control(add_yaw, add_pitch, gimbal_control_set);
+        gimbal_gyro_angle_control(add_yaw, add_pitch, gimbal_control_set);
     }
-    else if (gimbal_control_set->gimbal_behaviour == GIMBAL_RELATIVE_ANGLE)
+    else if (gimbal_control_set->gimbal_behaviour == GIMBAL_ENCODE_ANGLE)
     {
-        gimbal_relative_angle_control(add_yaw, add_pitch, gimbal_control_set);
+        gimbal_encode_angle_control(add_yaw, add_pitch, gimbal_control_set);
+    }
+		 else if (gimbal_control_set->gimbal_behaviour == GIMBAL_AUTO_ANGLE)
+    {
+        gimbal_auto_angle_control(add_yaw, add_pitch, gimbal_control_set);
     }
 
 
@@ -135,20 +185,20 @@ void gimbal_behaviour_mode_set(gimbal_control_t *gimbal_mode_set)
 
     //accoring to gimbal_behaviour, set motor control mode
     //根据云台行为状态机设置电机状态机
-    if (gimbal_mode_set->gimbal_behaviour == GIMBAL_ABSOLUTE_ANGLE)
+    if (gimbal_mode_set->gimbal_behaviour == GIMBAL_GYRO_ANGLE)
     {
         gimbal_mode_set->gimbal_yaw_motor.gimbal_motor_mode = GIMBAL_MOTOR_GYRO;
         gimbal_mode_set->gimbal_pitch_motor.gimbal_motor_mode = GIMBAL_MOTOR_GYRO;
     }
-    else if (gimbal_mode_set->gimbal_behaviour == GIMBAL_RELATIVE_ANGLE)
+    else if (gimbal_mode_set->gimbal_behaviour == GIMBAL_ENCODE_ANGLE)
     {
-        gimbal_mode_set->gimbal_yaw_motor.gimbal_motor_mode = GIMBAL_MOTOR_ENCONDE;
+        gimbal_mode_set->gimbal_yaw_motor.gimbal_motor_mode = GIMBAL_MOTOR_GYRO;
         gimbal_mode_set->gimbal_pitch_motor.gimbal_motor_mode = GIMBAL_MOTOR_ENCONDE;
     }
-		else if (gimbal_mode_set->gimbal_behaviour == GIMBAL_AIMBOT_ANGLE)
+		else if (gimbal_mode_set->gimbal_behaviour == GIMBAL_AUTO_ANGLE)
 		{
-			  gimbal_mode_set->gimbal_yaw_motor.gimbal_motor_mode = GIMBAL_MOTOR_AIMBOT;
-        gimbal_mode_set->gimbal_pitch_motor.gimbal_motor_mode = GIMBAL_MOTOR_AIMBOT;
+			  gimbal_mode_set->gimbal_yaw_motor.gimbal_motor_mode = GIMBAL_MOTOR_AUTO;
+        gimbal_mode_set->gimbal_pitch_motor.gimbal_motor_mode = GIMBAL_MOTOR_AUTO;
 
 		}
 
@@ -168,42 +218,18 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
 
     if (switch_is_mid(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
     {
-        gimbal_mode_set->gimbal_behaviour = GIMBAL_RELATIVE_ANGLE;
+        gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
     }
     else if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
     {
-        gimbal_mode_set->gimbal_behaviour = GIMBAL_ABSOLUTE_ANGLE;
+        gimbal_mode_set->gimbal_behaviour = GIMBAL_GYRO_ANGLE;
     }
 		else if (switch_is_down(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
 		{
-				gimbal_mode_set->gimbal_behaviour = GIMBAL_AIMBOT_ANGLE;
+				gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
 		}
 
 
 }
 
-
-/**
-  * @brief          云台编码值控制，电机是相对角度控制，
-  * @param[in]      yaw: yaw轴角度控制，为角度的增量 单位 rad
-  * @param[in]      pitch: pitch轴角度控制，为角度的增量 单位 rad
-  * @param[in]      gimbal_control_set: 云台数据指针
-  * @retval         none
-  */
-static void gimbal_relative_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set)
-{
-    if (yaw == NULL || pitch == NULL || gimbal_control_set == NULL)
-    {
-        return;
-    }
-    static int16_t yaw_channel = 0, pitch_channel = 0;
-
-    rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[YAW_CHANNEL], yaw_channel, RC_DEADBAND);
-    rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[PITCH_CHANNEL], pitch_channel, RC_DEADBAND);
-
-    *yaw = yaw_channel * YAW_RC_SEN - gimbal_control_set->gimbal_rc_ctrl->mouse.x * YAW_MOUSE_SEN;
-    *pitch = pitch_channel * PITCH_RC_SEN + gimbal_control_set->gimbal_rc_ctrl->mouse.y * PITCH_MOUSE_SEN;
-
-
-}
 

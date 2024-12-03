@@ -117,7 +117,7 @@ typedef struct
   * @param[in]      max_iout: pid最大积分输出
   * @retval         none
   */
-void PID_init(pid_type_def *pid, uint8_t mode, const float PID[3], float max_out, float max_iout);
+void PID_init(pid_type_def *pid, uint8_t mode,uint8_t data_mode, const float PID[3], float max_out, float max_iout);
 
 /**
   * @brief          pid计算
@@ -134,8 +134,8 @@ extern float PID_calc(pid_type_def *pid, float ref, float set);
   * @retval         none
   */
 extern void PID_clear(pid_type_def *pid);
+
 fp32 PID_Calc_Ecd(pid_type_def *pid, fp32 ref, fp32 set,uint16_t ecd_range);
-fp32 PID_Calc_Angle(pid_type_def *pid, fp32 ref, fp32 set);
 static fp32 ecd_zero(uint16_t ecd, uint16_t offset_ecd, uint16_t ecd_range);
 void K_FF_init(pid_type_def *pid, uint8_t mode, const float PID[3], float max_out, float max_iout,float K_ff_static,float K_ff_dynamic);
 float K_FF_Cal_shoot(pid_type_def *pid, float ref, float set,float fabs_max,float fabs_min);

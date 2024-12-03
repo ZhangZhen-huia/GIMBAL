@@ -13,91 +13,82 @@
 
 ///*--------------------------------------Pitch--------------------------------------*/
 
-////平步 pitch 速度环 PID参数以及 PID最大输出，积分输出
-//#define PITCH_SPEED_PID_KP        5000.0f
-//#define PITCH_SPEED_PID_KI        0.0f
-//#define PITCH_SPEED_PID_KD        0.0f
-//#define PITCH_SPEED_PID_MAX_OUT   30000.0f	//30000
-//#define PITCH_SPEED_PID_MAX_IOUT  0.0f	//5000
-//#define PITCH_SPEED_KF_STATIC     0.0f
-//#define PITCH_SPEED_KF_DYNAMIC     0.0f
+//陀螺仪
+#define PITCH_GYRO_SPEED_PID_KP        15000.0f
+#define PITCH_GYRO_SPEED_PID_KI        0.0f
+#define PITCH_GYRO_SPEED_PID_KD        0.0f
+#define PITCH_GYRO_SPEED_PID_MAX_OUT   30000.0f
+#define PITCH_GYRO_SPEED_PID_MAX_IOUT  0.0f
 
-////pitch 角度环 角度由陀螺仪解算 PID参数以及 PID最大输出，积分输出
-//#define PITCH_GYRO_ABSOLUTE_PID_KP -0.1f
-//#define PITCH_GYRO_ABSOLUTE_PID_KI 0.0f
-//#define PITCH_GYRO_ABSOLUTE_PID_KD 0.0f
-//#define PITCH_GYRO_ABSOLUTE_PID_MAX_OUT 10.0f			//60
-//#define PITCH_GYRO_ABSOLUTE_PID_MAX_IOUT 0.0f
-//#define PITCH_GYRO_ABSOLUTE_KF_STATIC     0.000f		//-0.005
-//#define PITCH_GYRO_ABSOLUTE_KF_DYNAMIC     0.0f
+#define PITCH_GYRO_ANGLE_PID_KP -0.8f
+#define PITCH_GYRO_ANGLE_PID_KI -0.01f
+#define PITCH_GYRO_ANGLE_PID_KD 0.0f
+#define PITCH_GYRO_ANGLE_PID_MAX_OUT 40.0f
+#define PITCH_GYRO_ANGLE_PID_MAX_IOUT 0.5f
 
+//编码器
+#define PITCH_ENCODE_SPEED_PID_KP        10000.0f
+#define PITCH_ENCODE_SPEED_PID_KI        0.0f
+#define PITCH_ENCODE_SPEED_PID_KD        0.0f
+#define PITCH_ENCODE_SPEED_PID_MAX_OUT   30000.0f
+#define PITCH_ENCODE_SPEED_PID_MAX_IOUT  0.0f
 
+#define PITCH_ENCODE_ANGLE_PID_KP -0.7f
+#define PITCH_ENCODE_ANGLE_PID_KI -0.05f
+#define PITCH_ENCODE_ANGLE_PID_KD 0.0f
+#define PITCH_ENCODE_ANGLE_PID_MAX_OUT 40.0f
+#define PITCH_ENCODE_ANGLE_PID_MAX_IOUT 0.5f
 
-
-///*--------------------------------------Pitch--------------------------------------*/
-
-//pitch 速度环 PID参数以及 PID最大输出，积分输出
-#define PITCH_SPEED_PID_KP        2800.0f
-#define PITCH_SPEED_PID_KI        100.0f
-#define PITCH_SPEED_PID_KD        0.0f
-#define PITCH_SPEED_PID_MAX_OUT   30000.0f
-#define PITCH_SPEED_PID_MAX_IOUT  500.0f
-#define PITCH_SPEED_KF_STATIC     0.0f
-#define PITCH_SPEED_KF_DYNAMIC     0.0f
-
-//pitch 角度环 角度由陀螺仪解算 PID参数以及 PID最大输出，积分输出
-#define PITCH_GYRO_ABSOLUTE_PID_KP -0.8f
-#define PITCH_GYRO_ABSOLUTE_PID_KI -0.05f
-#define PITCH_GYRO_ABSOLUTE_PID_KD 0.0f
-#define PITCH_GYRO_ABSOLUTE_PID_MAX_OUT 40.0f
-#define PITCH_GYRO_ABSOLUTE_PID_MAX_IOUT 0.5f
-#define PITCH_GYRO_ABSOLUTE_KF_STATIC_P     -0.0f
-#define PITCH_GYRO_ABSOLUTE_KF_STATIC_N     0.0f
-
-#define PITCH_GYRO_ABSOLUTE_KF_DYNAMIC     0.0f
+//自瞄
+#define PITCH_AUTO_SPEED_PID_KP        15000.0f
+#define PITCH_AUTO_SPEED_PID_KI        0.0f
+#define PITCH_AUTO_SPEED_PID_KD        0.0f
+#define PITCH_AUTO_SPEED_PID_MAX_OUT   30000.0f
+#define PITCH_AUTO_SPEED_PID_MAX_IOUT  0.0f
 
 
-////pitch 角度环 角度由编码器 PID参数以及 PID最大输出，积分输出
-//#define PITCH_ENCODE_RELATIVE_PID_KP 0.0f
-//#define PITCH_ENCODE_RELATIVE_PID_KI 0.00f
-//#define PITCH_ENCODE_RELATIVE_PID_KD 0.0f
-//#define PITCH_ENCODE_RELATIVE_PID_MAX_OUT 50.0f
-//#define PITCH_ENCODE_RELATIVE_PID_MAX_IOUT 0.0f
+#define PITCH_AUTO_ANGLE_PID_KP -0.7f
+#define PITCH_AUTO_ANGLE_PID_KI -0.05f
+#define PITCH_AUTO_ANGLE_PID_KD 0.0f
+#define PITCH_AUTO_ANGLE_PID_MAX_OUT 40.0f
+#define PITCH_AUTO_ANGLE_PID_MAX_IOUT 0.5f
 
-//#define PITCH_ENCODE_RELATIVE_KF_STATIC     0.0f
-//#define PITCH_ENCODE_RELATIVE_KF_DYNAMIC     0.0f
 
 
 /*--------------------------------------Yaw--------------------------------------*/
 
-//yaw 速度环 PID参数以及 PID最大输出，积分输出
-#define YAW_SPEED_PID_KP        8000.0f //35000
-#define YAW_SPEED_PID_KI        0.0f
-#define YAW_SPEED_PID_KD        0.0f
-#define YAW_SPEED_PID_MAX_OUT   30000.0f
-#define YAW_SPEED_PID_MAX_IOUT  0.0f
-#define YAW_SPEED_KF_STATIC     0.0f
-#define YAW_SPEED_KF_DYNAMIC     0.0f
+//陀螺仪
+#define YAW_GYRO_SPEED_PID_KP        15000.0f //35000
+#define YAW_GYRO_SPEED_PID_KI        0.0f
+#define YAW_GYRO_SPEED_PID_KD        0.0f
+#define YAW_GYRO_SPEED_PID_MAX_OUT   30000.0f
+#define YAW_GYRO_SPEED_PID_MAX_IOUT  0.0f
 
-//yaw 角度环 角度由陀螺仪解算 PID参数以及 PID最大输出，积分输出
-#define YAW_GYRO_ABSOLUTE_PID_KP        1.3f //0.4
-#define YAW_GYRO_ABSOLUTE_PID_KI        0.01f
-#define YAW_GYRO_ABSOLUTE_PID_KD        0.0f
-#define YAW_GYRO_ABSOLUTE_PID_MAX_OUT   360.0f
-#define YAW_GYRO_ABSOLUTE_PID_MAX_IOUT  0.5f
-#define YAW_GYRO_ABSOLUTE_KF_STATIC     0.0f
-#define YAW_GYRO_ABSOLUTE_KF_DYNAMIC     0.0f
+#define YAW_GYRO_ANGLE_PID_KP        0.8f //0.4
+#define YAW_GYRO_ANGLE_PID_KI        0.0f
+#define YAW_GYRO_ANGLE_PID_KD        0.0f
+#define YAW_GYRO_ANGLE_PID_MAX_OUT   360.0f
+#define YAW_GYRO_ANGLE_PID_MAX_IOUT  0.0f
 
 
-//yaw 角度环 角度由编码器 PID参数以及 PID最大输出，积分输出
-#define YAW_ENCODE_RELATIVE_PID_KP        0.0f
-#define YAW_ENCODE_RELATIVE_PID_KI        0.0f
-#define YAW_ENCODE_RELATIVE_PID_KD        0.0f
-#define YAW_ENCODE_RELATIVE_PID_MAX_OUT   0.0f
-#define YAW_ENCODE_RELATIVE_PID_MAX_IOUT  0.0f
+//自瞄
+#define YAW_AUTO_SPEED_PID_KP        15000.0f //35000
+#define YAW_AUTO_SPEED_PID_KI        0.0f
+#define YAW_AUTO_SPEED_PID_KD        0.0f
+#define YAW_AUTO_SPEED_PID_MAX_OUT   30000.0f
+#define YAW_AUTO_SPEED_PID_MAX_IOUT  0.0f
 
-#define YAW_ENCODE_RELATIVE_KF_STATIC     0.0f
-#define YAW_ENCODE_RELATIVE_KF_DYNAMIC     0.0f
+
+#define YAW_AUTO_ANGLE_PID_KP        0.5f //0.4
+#define YAW_AUTO_ANGLE_PID_KI        0.0f
+#define YAW_AUTO_ANGLE_PID_KD        0.0f
+#define YAW_AUTO_ANGLE_PID_MAX_OUT   360.0f
+#define YAW_AUTO_ANGLE_PID_MAX_IOUT  0.0f
+
+
+
+
+
 
 //电机码盘值最大以及中值
 #define HALF_ECD_RANGE  4096
@@ -109,7 +100,7 @@ typedef enum
 {
     GIMBAL_MOTOR_GYRO=0,    //电机陀螺仪角度控制
     GIMBAL_MOTOR_ENCONDE, //电机编码值角度控制
-		GIMBAL_MOTOR_AIMBOT,
+		GIMBAL_MOTOR_AUTO,
 		
 } gimbal_motor_mode_e;
 
@@ -119,34 +110,39 @@ typedef enum
   GIMBAL_ZERO_FORCE = 0, 
   GIMBAL_INIT,           
   GIMBAL_CALI,           
-  GIMBAL_ABSOLUTE_ANGLE, 
-  GIMBAL_RELATIVE_ANGLE, 
+  GIMBAL_GYRO_ANGLE, 
+  GIMBAL_ENCODE_ANGLE, 
   GIMBAL_MOTIONLESS,    
-	GIMBAL_AIMBOT_ANGLE,
+	GIMBAL_AUTO_ANGLE,
 } gimbal_behaviour_e;
 
 
 typedef struct
 {
     const motor_measure_t *gimbal_motor_measure;
-    pid_type_def gimbal_motor_absolute_angle_pid; //陀螺仪角度
-    pid_type_def gimbal_motor_relative_angle_pid; //ecd转的角度制
+    pid_type_def gimbal_motor_gyro_angle_pid; //陀螺仪角度
+		pid_type_def gimbal_motor_gyro_speed_pid;
 	
-    pid_type_def gimbal_motor_gyro_pid; 					//角速度
+    pid_type_def gimbal_motor_encode_angle_pid; //ecd转的角度制
+		pid_type_def gimbal_motor_encode_speed_pid; 
+	
+    pid_type_def gimbal_motor_auto_angle_pid; //自瞄
+		pid_type_def gimbal_motor_auto_speed_pid; 
 	
     gimbal_motor_mode_e gimbal_motor_mode;						//电机控制状态
     gimbal_motor_mode_e last_gimbal_motor_mode;				//上次电机控制状态
     uint16_t offset_ecd;													
     fp32 max_relative_angle; //rad
     fp32 min_relative_angle; //rad
+	
     fp32 relative_angle;     //rad
     fp32 relative_angle_set; //rad
+	
     fp32 absolute_angle;     //rad
     fp32 absolute_angle_set; //rad
+		
     fp32 motor_gyro;         //rad/s
     fp32 motor_gyro_set;
-    fp32 motor_speed;
-    fp32 raw_cmd_current;
     fp32 current_set;
     int16_t given_current;
 
@@ -163,7 +159,6 @@ typedef struct
    //gimbal_step_cali_t gimbal_cali;
 		gimbal_behaviour_e  gimbal_behaviour;																	//云台状态控制
 		gimbal_behaviour_e  last_gimbal_behaviour;														//云台状态控制
-		fp32 final_yaw;																												//经过处理过后的yaw轴数据
 } gimbal_control_t;
 
 
@@ -174,23 +169,14 @@ typedef struct
 
 extern gimbal_control_t gimbal_control;
 
-#define CHASSIS_CONTROL_TIME 0.01f   //x和y本次信任参数
-#define CHASSIS_CONTROL_TIME_Z 0.005f  //z本次信任参数
 
-//信任上一次参数占比
-#define CHASSIS_ACCEL_X_NUM 0.99f
-#define CHASSIS_ACCEL_Y_NUM 0.99f
-#define CHASSIS_ACCEL_Z_NUM 0.995f
+//#define CHASSIS_ACCEL_Z_NUM 0.995f
 #define R       MOTOR_DISTANCE_TO_CENTER
 #define PI       3.1415926f
 
 //任务开始空闲一段时间
 #define CHASSIS_TASK_INIT_TIME 357
 
-//还没用到
-#define MOTOR_SPEED_TO_CHASSIS_SPEED_VX 0.25f
-#define MOTOR_SPEED_TO_CHASSIS_SPEED_VY 0.25f
-#define MOTOR_SPEED_TO_CHASSIS_SPEED_WZ 0.25f
 
 
 //小陀螺半径 m 
@@ -206,19 +192,10 @@ extern gimbal_control_t gimbal_control;
 #define WHEEL_CIRCUMFERENCE				0.235619445f          //WHEEL_HALF_SIZE*2*3.1415926f  	
 
 
-//前进最大速度  1.84175866175m/s   --8911
-//									0						0
-
-//减速比19，rpm: 圈/min
-//遥控器前进摇杆（max 660）转化成车体前进速度（m/s）的比例	
-#define CHASSIS_VX_RC_SEN            19.0f/60.0f*WHEEL_CIRCUMFERENCE
-//遥控器左右摇杆（max 660）转化成车体左右速度（m/s）的比例
-#define CHASSIS_VY_RC_SEN 					 19.0f/60.0f*WHEEL_CIRCUMFERENCE
-//不跟随云台的时候 遥控器的yaw遥杆（max 660）转化成车体旋转速度的比例
-#define CHASSIS_WZ_RC_SEN 					 19.0f/60.0f*WHEEL_CIRCUMFERENCE / SMALL_TOP_CIRCUMFERENCE/2.0f/PI			
 
 
-#define YAW_RC_SEN    -0.0005f
+
+#define YAW_RC_SEN    -0.001f
 #define PITCH_RC_SEN  -0.0005f //0.005
 
 #define YAW_MOUSE_SEN   0.00005f

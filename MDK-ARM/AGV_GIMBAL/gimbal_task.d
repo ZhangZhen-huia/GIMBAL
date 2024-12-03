@@ -70,3 +70,4 @@
 .\agv_gimbal\gimbal_task.o: ..\application\gimbal_behaviour.h
 .\agv_gimbal\gimbal_task.o: ..\application\detect_task.h
 .\agv_gimbal\gimbal_task.o: ../components/algorithm/user_lib.h
+.\agv_gimbal\gimbal_task.o: ..\application\user_task.h

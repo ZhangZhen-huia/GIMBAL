@@ -13,7 +13,12 @@
 
 
 
+typedef struct
+{
+	fp32 pitch;
+}chassis_data_t;
 
+extern chassis_data_t chassis_data;
 
-
+void get_chassis_data(chassis_data_t *chassis_data,uint8_t *buf);
 #endif

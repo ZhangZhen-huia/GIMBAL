@@ -49,8 +49,8 @@ void shoot_task(void const * argument)
       }
       else
       {
-				
-				CAN_cmd_firc(shoot_control.shoot_fric_L_motor.current_set,shoot_control.shoot_fric_R_motor.current_set);
+				CAN_cmd_firc(0,0);
+				//CAN_cmd_firc(shoot_control.shoot_fric_L_motor.current_set,shoot_control.shoot_fric_R_motor.current_set);
 				//CAN_cmd_trigger_firc(0,0,0);
 				//平步
 				//CAN_cmd_trigger_firc(shoot_control.shoot_fric_L_motor.current_set,shoot_control.shoot_fric_R_motor.current_set,shoot_control.shoot_trig_motor.current_set);

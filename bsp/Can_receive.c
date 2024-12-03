@@ -93,11 +93,19 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*hcan)//  CAN FIFO0µÄÖÐ¶
 	}
 	else if(hcan->Instance == CAN1)
 	{
-			HAL_CAN_GetRxMessage(&hcan1,CAN_RX_FIFO0,&rx_header1,rx_data1);
-		if(rx_header1.StdId == 0x209)
+		HAL_CAN_GetRxMessage(&hcan1,CAN_RX_FIFO0,&rx_header1,rx_data1);
+		switch(rx_header1.StdId)
 		{
+			case CAN_YAW_MOTOR_ID:
 				get_motor_measure(&yaw_motor,rx_data1);
+				break;
+//			case CHASSIS_ID:
+//				get_chassis_data(&chassis_data,rx_data1);
+//				break;
+				
 		}
+		
+
 	}
 	
 }
