@@ -87,11 +87,11 @@ static void can_cmd_to_chassis(CAN_HandleTypeDef*hcan,int16_t can_id,uint8_t *bu
 
 
 
-void get_chassis_data(chassis_data_t *chassis_data,uint8_t *buf)
-{
-	chassis_data->pitch = (buf[0]/40.0f-3.1415926f)*57.2957795f;
+//void get_chassis_data(chassis_data_t *chassis_data,uint8_t *buf)
+//{
+//	chassis_data->pitch = (buf[0]/40.0f-3.1415926f)*57.2957795f;
 
-//chassis_data->pitch = buf[0]-3.1415926f;	
-}
+////chassis_data->pitch = buf[0]-3.1415926f;	
+//}
 
 

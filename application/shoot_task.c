@@ -14,7 +14,7 @@ shoot_control_t shoot_control;
 //static int64_t  trig_ecd_sum=0;
 
 //在当前比例下摩擦轮最大能到达转速29-->9300rpm差不多
-int16_t fric1=10,fric2=-10;
+int16_t fric1=25,fric2=-25;
 
 static void shoot_init(shoot_control_t *shoot_init);
 static void shoot_motor_control(shoot_motor_t *shoot_motor);
@@ -49,8 +49,8 @@ void shoot_task(void const * argument)
       }
       else
       {
-				CAN_cmd_firc(0,0);
-				//CAN_cmd_firc(shoot_control.shoot_fric_L_motor.current_set,shoot_control.shoot_fric_R_motor.current_set);
+//				 CAN_cmd_firc(0,0);
+				CAN_cmd_firc(shoot_control.shoot_fric_L_motor.current_set,shoot_control.shoot_fric_R_motor.current_set);
 				//CAN_cmd_trigger_firc(0,0,0);
 				//平步
 				//CAN_cmd_trigger_firc(shoot_control.shoot_fric_L_motor.current_set,shoot_control.shoot_fric_R_motor.current_set,shoot_control.shoot_trig_motor.current_set);

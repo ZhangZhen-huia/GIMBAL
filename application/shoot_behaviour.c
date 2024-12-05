@@ -10,9 +10,10 @@ static void shoot_trig_motor_behaviour_set(shoot_control_t *shoot_behaviour);
 
 static void shoot_trig_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 {
-	if(switch_is_mid(shoot_behaviour->shoot_rc_ctrl->rc.s[0]))
+	if(switch_is_mid(shoot_behaviour->shoot_rc_ctrl->rc.s[0]))//ÓÒÖÐ
 	{
-		if(switch_is_up(shoot_behaviour->shoot_rc_ctrl->rc.s[TIRG_MODE_CHANNEL]) || switch_is_mid(shoot_behaviour->shoot_rc_ctrl->rc.s[TIRG_MODE_CHANNEL]))
+		//×óÖÐ£¬ÏÂ
+		if(switch_is_mid(shoot_behaviour->shoot_rc_ctrl->rc.s[TIRG_MODE_CHANNEL]) || switch_is_down(shoot_behaviour->shoot_rc_ctrl->rc.s[TIRG_MODE_CHANNEL]))
 		{
 			shoot_behaviour->trig_fire_mode = Serial_fire;
 		}
@@ -29,10 +30,10 @@ static void shoot_trig_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 //			shoot_behaviour->trig_fire_mode = Cease_fire;
 //		}
 	}
-//	else
-//	{
-//		shoot_behaviour->trig_fire_mode = Cease_fire;
-//	}
+	else
+	{
+		shoot_behaviour->trig_fire_mode = Cease_fire;
+	}
 	if (toe_is_error(DBUS_TOE))
 	{
 		shoot_behaviour->trig_fire_mode = Cease_fire;

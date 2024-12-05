@@ -11,10 +11,10 @@
 #include "vofa_task.h"
 #include "shoot_behaviour.h"
 
-
-//rpm转换到线速度的比率，还未给
+//定义摩擦轮转速（rpm）转化为摩擦轮线速（m/s）
+//rpm/60*60*3.1415926*10^-3//摩擦轮受损，直径可能会变小
 #define FRIC_RPM_TO_SPEED_SEN   0.0031416
-#define TRIG_RPM_TO_SPEED_SEN   0.0031416
+
 
 //任务初始化时间
 #define SHOOT_TASK_INIT_TIME    500
