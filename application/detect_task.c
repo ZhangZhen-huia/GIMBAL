@@ -211,7 +211,7 @@ static void detect_init(uint32_t time)
 						{30, 40, 15},   //SBUS
             {10, 10, 11},   //yaw
 						{10, 10, 10},   //pitch
-            {10, 10, 10},    //trig
+//            {10, 10, 10},    //trig
             {10, 10, 10},    //fric_l
             {10, 10, 10},     //fric_r
 						

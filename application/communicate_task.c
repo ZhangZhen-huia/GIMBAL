@@ -1,4 +1,4 @@
-#include "user_task.h"
+#include "communicate_task.h"
 #include "INS_task.h"
 #include "can.h"
 #include "Can_receive.h"
@@ -7,16 +7,20 @@
 #include "detect_task.h"
 #include "user_lib.h"
 #include "shoot_task.h"
+#include "aimbots_task.h"
+#include "usbd_cdc_if.h"
+
 
 static void can_cmd_to_chassis(CAN_HandleTypeDef*hcan,int16_t can_id,uint8_t *buf,uint8_t num);
 static void Gimbal_data_transfer(void);
+static void Get_Radar_Data(Radar_data_t *Radar_data);
 
 
 chassis_data_t chassis_data;
+Radar_data_t Radar_data;
 
 
-
-void user_task(void const * argument)
+void communicate_task(void const * argument)
 {
 	
 	while(1)
@@ -32,10 +36,9 @@ void user_task(void const * argument)
 
 
 
-
 static void Gimbal_data_transfer(void)
 {
-
+	static uint8_t gimbal_mode = 0x00;
 	uint8_t buf[8];
 	
 	uint8_t vx_set = (rc_ctrl.rc.ch[CHASSIS_X_CHANNEL]+660)/20.0f;//0-66
@@ -44,13 +47,19 @@ static void Gimbal_data_transfer(void)
 	uint8_t rc_err = (uint8_t)toe_is_error(DBUS_TOE);
 	uint8_t rc_sl = rc_ctrl.rc.s[RC_sl_channel];
 	uint8_t rc_sr = rc_ctrl.rc.s[RC_sr_channel];
-
-	uint8_t gimbal_mode = 0;
+	
+	if(shoot_control.trig_mode == Start_fire)
+		gimbal_mode |= 0x01; 
+	else
+		gimbal_mode &= 0xFE; 
+	
 	if(gimbal_control.gimbal_behaviour == GIMBAL_INIT)
-		gimbal_mode |= 1<<0;
-	if(gimbal_control.gimbal_behaviour == GIMBAL_ZERO_FORCE)
-		gimbal_mode |= 1<<1;
+		gimbal_mode |= 0x02;
+	else
+		gimbal_mode &= 0xFD;	
+	
 
+	
 
 	buf[0] = vx_set;
 	buf[1] = vy_set;
@@ -58,8 +67,8 @@ static void Gimbal_data_transfer(void)
 	buf[3] = rc_err;
 	buf[4] = rc_sl;
 	buf[5] = rc_sr;
-	//buf[6] = yaw_data;
-	buf[7] = gimbal_mode;
+	buf[6] = gimbal_mode;
+//	buf[7] = gimbal_mode;
 
 	
 	can_cmd_to_chassis(&hcan1,GIMBAL_ID,buf,8);
@@ -82,6 +91,17 @@ static void can_cmd_to_chassis(CAN_HandleTypeDef*hcan,int16_t can_id,uint8_t *bu
 
 
 	HAL_CAN_AddTxMessage(hcan,&gimbal_tx_message,chassis_can_send_data, &send_mail_box);
+
+}
+
+
+static void Get_Radar_Data(Radar_data_t *Radar_data)
+{
+	memcpy(&Radar_data->heading,&usb_recive_buffer[0],3);
+	memcpy(&Radar_data->vx,&usb_recive_buffer[3],4);
+	memcpy(&Radar_data->vy,&usb_recive_buffer[7],4);
+	memcpy(&Radar_data->wz,&usb_recive_buffer[11],4);
+	memcpy(&Radar_data->tailing,&usb_recive_buffer[15],3);
 
 }
 

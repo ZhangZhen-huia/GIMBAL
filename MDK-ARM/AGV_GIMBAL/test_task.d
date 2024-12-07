@@ -43,7 +43,7 @@
 .\agv_gimbal\test_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
 .\agv_gimbal\test_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h
 .\agv_gimbal\test_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h
-.\agv_gimbal\test_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/portmacro.h
+.\agv_gimbal\test_task.o: ..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\portmacro.h
 .\agv_gimbal\test_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h
 .\agv_gimbal\test_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 .\agv_gimbal\test_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
@@ -67,3 +67,4 @@
 .\agv_gimbal\test_task.o: ..\application\vofa_task.h
 .\agv_gimbal\test_task.o: ../Inc/usart.h
 .\agv_gimbal\test_task.o: ..\application\shoot_behaviour.h
+.\agv_gimbal\test_task.o: ..\application\aimbots_task.h

@@ -1,106 +1,223 @@
 #include "shoot_behaviour.h"
 #include "shoot_task.h"
 #include "tim.h"
-
-//extern osTimerId ShootTimerHandle;
-
-
-static void shoot_trig_motor_behaviour_set(shoot_control_t *shoot_behaviour);
+#include "aimbots_task.h"
+#include "gimbal_task.h"
 
 
-static void shoot_trig_motor_behaviour_set(shoot_control_t *shoot_behaviour)
+
+static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 {
-	if(switch_is_mid(shoot_behaviour->shoot_rc_ctrl->rc.s[0]))//右中
+	static uint8_t firc_step = 0;
+	static uint16_t shoot_flag = 0;
+	static uint8_t shoot_force = 0;
+	if(shoot_behaviour == NULL)
 	{
-		//左中，下
-		if(switch_is_mid(shoot_behaviour->shoot_rc_ctrl->rc.s[TIRG_MODE_CHANNEL]) || switch_is_down(shoot_behaviour->shoot_rc_ctrl->rc.s[TIRG_MODE_CHANNEL]))
-		{
-			shoot_behaviour->trig_fire_mode = Serial_fire;
-		}
-		else
-		{
-			shoot_behaviour->trig_fire_mode = Cease_fire;
-		}
-//		else if(switch_is_down(shoot_behaviour->shoot_rc_ctrl->rc.s[TIRG_MODE_CHANNEL]))
-//		{
-//			shoot_behaviour->trig_fire_mode = Single_fire;
-//		}
-//		else if(switch_is_mid(shoot_behaviour->shoot_rc_ctrl->rc.s[TIRG_MODE_CHANNEL]))
-//		{
-//			shoot_behaviour->trig_fire_mode = Cease_fire;
-//		}
+		return;
+	}
+	
+	//遥控器掉线就关闭发射结构
+	if (toe_is_error(DBUS_TOE))
+	{
+		//关闭发射结构总开关
+		shoot_behaviour->shoot_agency_state = SHOOT_OFF;
+		shoot_behaviour->fric_mode = STOP;
+		shoot_behaviour->trig_mode = Cease_fire;
+
+	}
+	if(shoot_behaviour->shoot_rc_ctrl->rc.ch[0] == -660 && shoot_behaviour->shoot_rc_ctrl->rc.ch[1] == 660)
+	{
+		shoot_force = 1;
 	}
 	else
 	{
-		shoot_behaviour->trig_fire_mode = Cease_fire;
+		shoot_force = 0;
 	}
-	if (toe_is_error(DBUS_TOE))
+	
+	if( shoot_behaviour->shoot_agency_state == SHOOT_ON && shoot_behaviour->fric_mode == START && shoot_force)
 	{
-		shoot_behaviour->trig_fire_mode = Cease_fire;
+		shoot_behaviour->trig_mode = Start_fire;
+	}
+	else
+	{
+		shoot_behaviour->trig_mode = Cease_fire;
+	}
+	
+	
+	if(shoot_behaviour->shoot_agency_state == SHOOT_OFF)
+	{
+		shoot_behaviour->fric_mode = STOP;
+		shoot_behaviour->trig_mode = Cease_fire;
+
+	}
+	
+	//不是自瞄模式
+	if(gimbal_control.gimbal_behaviour != GIMBAL_AUTO_ANGLE)
+	{		
+		//发射机构开关
+		if(shoot_behaviour->shoot_agency_state == SHOOT_ON && shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >= 5000)
+		{
+			shoot_flag++;
+			if(shoot_flag >= 400)
+			{
+				shoot_behaviour->shoot_agency_state = SHOOT_OFF;
+				shoot_flag=0;
+			}
+		}
+		else if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] ==660 && switch_is_mid(shoot_behaviour->shoot_rc_ctrl->rc.s[SHOOT_MODE_CHANNEL]))//右中
+		{
+			shoot_behaviour->shoot_agency_state = SHOOT_ON;//发射结构开
+			shoot_flag = 0;
+		}
+		else
+		{
+			shoot_flag=0;
+		}
+	
+	
+		//摩擦轮开启判断
+		if(shoot_behaviour->shoot_agency_state == SHOOT_ON)	
+		{	
+			if(switch_is_up(shoot_behaviour->shoot_rc_ctrl->rc.s[SHOOT_MODE_CHANNEL]))	
+			{	
+				shoot_behaviour->fric_mode = STOP;	
+			}	
+			else if(switch_is_mid(shoot_behaviour->shoot_rc_ctrl->rc.s[SHOOT_MODE_CHANNEL]))	
+			{	
+						switch(firc_step)	
+						{	
+							case 0:if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >= 5000)	
+											firc_step = 1;	
+											break;	
+							case 1:if(switch_is_mid(shoot_behaviour->shoot_rc_ctrl->rc.s[SHOOT_MODE_CHANNEL]))//右中	
+											{	
+												shoot_behaviour->fric_mode = START;	
+												firc_step = 0;	
+											}	
+											else 	
+											{	
+												firc_step = 0;	
+												shoot_behaviour->fric_mode = STOP;	
+											}	
+											break;								
+						}			
+			
+			}	
+		}
+		else
+		{
+			shoot_behaviour->fric_mode = STOP;	
+		}
+				//拨弹盘
+			if(shoot_behaviour->shoot_agency_state == SHOOT_ON && shoot_behaviour->fric_mode == START)
+			{
+				if(shoot_behaviour->shoot_agency_state == SHOOT_OFF || shoot_behaviour->fric_mode == STOP)
+						shoot_behaviour->trig_mode = Cease_fire;
+				
+				else if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] == 660 )
+				{
+					shoot_behaviour->trig_mode = Start_fire;
+				}
+				
+				else 
+				{
+					shoot_behaviour->trig_mode = Cease_fire;
+				}
+			}
+			else
+			{
+				shoot_behaviour->trig_mode = Cease_fire;
+			}
+	}	
+	
+	
+	
+	//自瞄模式
+	else if(gimbal_control.gimbal_behaviour == GIMBAL_AUTO_ANGLE && shoot_force==0)
+	{
+		if(toe_is_error(DBUS_TOE))
+		{
+			shoot_behaviour->shoot_agency_state = SHOOT_OFF;
+			shoot_behaviour->fric_mode = STOP;
+			shoot_behaviour->trig_mode = Cease_fire;
+		}
+
+	//发射机构开关
+		if(shoot_behaviour->shoot_agency_state == SHOOT_ON && shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >= 5000)
+		{
+			shoot_flag++;
+			if(shoot_flag >= 400)
+			{
+				shoot_behaviour->shoot_agency_state = SHOOT_OFF;
+				shoot_flag=0;
+			}
+		}
+		else if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] ==660 && switch_is_down(shoot_behaviour->shoot_rc_ctrl->rc.s[SHOOT_MODE_CHANNEL]))//右中
+		{
+			shoot_behaviour->shoot_agency_state = SHOOT_ON;//发射结构开
+			shoot_flag = 0;
+		}
+		else
+		{
+			shoot_flag=0;
+		}
+		
+			//摩擦轮开启判断
+			if(shoot_behaviour->shoot_agency_state == SHOOT_ON)
+			{
+
+				if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >= 5000)
+						shoot_behaviour->fric_mode = START;
+			
+				else if(shoot_behaviour->shoot_rc_ctrl->rc.ch[0] == 660 && shoot_behaviour->shoot_rc_ctrl->rc.ch[1] == -660 && shoot_behaviour->shoot_rc_ctrl->rc.ch[4] ==660)
+				{
+					shoot_behaviour->fric_mode = STOP;
+				}
+	
+			}
+			else
+			{
+				shoot_behaviour->fric_mode = STOP;
+			}
+//			
+//			if(shoot_force)
+//			{
+//					//拨弹盘开启判断
+//				if(shoot_behaviour->fric_mode == START &&  shoot_behaviour->shoot_rc_ctrl->rc.ch[4] == 660)
+//				{
+//					shoot_behaviour->trig_mode = Start_fire;
+//				}
+//				else
+//				{
+//					shoot_behaviour->trig_mode = Cease_fire;
+//				}
+//			}
+							
+//			else
+//			{
+					//拨弹盘开启判断
+				if(shoot_behaviour->fric_mode == START &&  shoot_behaviour->auto_fireFlag[0] == fire)
+				{
+					shoot_behaviour->trig_mode = Start_fire;
+				}
+				else
+				{
+					shoot_behaviour->trig_mode = Cease_fire;
+				}			
+//			}
+				
+
+		
 	}
 
-	shoot_behaviour->last_trig_fire_mode = shoot_behaviour->trig_fire_mode;
+
+	shoot_behaviour->trig_mode_last = shoot_behaviour->trig_mode;
+	shoot_behaviour->fric_mode_last = shoot_behaviour->fric_mode;
+	shoot_behaviour->shoot_agency_state_last = shoot_behaviour->shoot_agency_state;
 }
 
-void shoot_trig_motor_mode_set(shoot_control_t *shoot_mode)
+void shoot_motor_mode_set(shoot_control_t *shoot_mode)
 {
-	shoot_trig_motor_behaviour_set(shoot_mode);
+	shoot_motor_behaviour_set(shoot_mode);
 }
-//static void shoot_trig_motor_behaviour_set(shoot_control_t *shoot_behaviour)
-//{
-//	static uint8_t first=1;
-//	if(switch_is_up(shoot_behaviour->shoot_rc_ctrl->rc.s[TIRG_MODE_CHANNEL]))
-//	{
-//		if(first)
-//		{
-//			osTimerStart(ShootTimerHandle,500);
-//			first=0;
-//		}
-//		if(shoot_behaviour->last_trig_fire_mode == Cease_fire)
-//		shoot_control.trig_fire_mode = Single_fire;
-
-//	}
-//	else if(switch_is_down(shoot_behaviour->shoot_rc_ctrl->rc.s[TIRG_MODE_CHANNEL]))
-//	{
-//		first=1;
-//		shoot_behaviour->trig_fire_mode = Cease_fire;
-//	}
-//	else
-//	{
-//		first=1;
-//		shoot_behaviour->trig_fire_mode = Cease_fire;
-//	}
-//	shoot_behaviour->last_trig_fire_mode = shoot_behaviour->trig_fire_mode;
-//}
-
-
-
-////2500单点,385连发
-////宏定义用来给定时器arr寄存器赋值
-////__HAL_TIM_SET_AUTORELOAD(&htim5,2500);
-////__HAL_TIM_SET_AUTORELOAD(&htim5,385);
-//void shoot_trig_motor_mode_set(shoot_control_t *shoot_mode)
-//{
-//	shoot_trig_motor_behaviour_set(shoot_mode);
-//	
-//	if(shoot_mode->trig_fire_mode ==Serial_fire)
-//	{
-//		HAL_TIM_Base_Stop_IT(&htim5);
-//		__HAL_TIM_SET_AUTORELOAD(&htim5,Serial_ARR);
-//		HAL_TIM_Base_Start_IT(&htim5);
-
-//	}
-//	else if(shoot_mode->trig_fire_mode ==Single_fire)
-//	{
-//		HAL_TIM_Base_Stop_IT(&htim5);
-//		__HAL_TIM_SET_AUTORELOAD(&htim5,Single_ARR);
-//		HAL_TIM_Base_Start_IT(&htim5);
-
-//	}
-//	else if(shoot_mode->trig_fire_mode == Cease_fire)
-//	{
-//			HAL_TIM_Base_Stop_IT(&htim5);
-//	}
-//}
-
 

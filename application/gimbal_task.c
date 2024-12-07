@@ -10,7 +10,7 @@
 #include "gimbal_behaviour.h"
 #include "detect_task.h"
 #include "user_lib.h"
-#include "user_task.h"
+#include "communicate_task.h"
 
 //电机编码值规整 0—8191
 #define ecd_format(ecd)         \

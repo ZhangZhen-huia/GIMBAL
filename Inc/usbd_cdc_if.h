@@ -49,7 +49,6 @@
   * @{
   */
 /* USER CODE BEGIN EXPORTED_DEFINES */
-
 /* USER CODE END EXPORTED_DEFINES */
 
 /**
@@ -75,7 +74,7 @@
   */
 
 /* USER CODE BEGIN EXPORTED_MACRO */
-
+extern uint8_t usb_recive_buffer[100];
 /* USER CODE END EXPORTED_MACRO */
 
 /**

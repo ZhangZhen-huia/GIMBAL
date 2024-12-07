@@ -60,8 +60,7 @@ osThreadId DETECT_TASKHandle;
 osThreadId SHOOT_TASKHandle;
 osThreadId VOFA_TASKHandle;
 osThreadId AIMBOTS_TASKHandle;
-osThreadId USER_TASKHandle;
-osTimerId ShootTimerHandle;
+osThreadId COMMUNICATE_TASHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -75,8 +74,7 @@ void detect_task(void const * argument);
 void shoot_task(void const * argument);
 void vofa_task(void const * argument);
 void aimbots_task(void const * argument);
-void user_task(void const * argument);
-void ShootTimer_Callback(void const * argument);
+void communicate_task(void const * argument);
 
 extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -136,11 +134,6 @@ void MX_FREERTOS_Init(void) {
   /* add semaphores, ... */
   /* USER CODE END RTOS_SEMAPHORES */
 
-  /* Create the timer(s) */
-  /* definition and creation of ShootTimer */
-  osTimerDef(ShootTimer, ShootTimer_Callback);
-  ShootTimerHandle = osTimerCreate(osTimer(ShootTimer), osTimerOnce, NULL);
-
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
@@ -178,9 +171,9 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(AIMBOTS_TASK, aimbots_task, osPriorityNormal, 0, 128);
   AIMBOTS_TASKHandle = osThreadCreate(osThread(AIMBOTS_TASK), NULL);
 
-  /* definition and creation of USER_TASK */
-  osThreadDef(USER_TASK, user_task, osPriorityAboveNormal, 0, 256);
-  USER_TASKHandle = osThreadCreate(osThread(USER_TASK), NULL);
+  /* definition and creation of COMMUNICATE_TAS */
+  osThreadDef(COMMUNICATE_TAS, communicate_task, osPriorityAboveNormal, 0, 256);
+  COMMUNICATE_TASHandle = osThreadCreate(osThread(COMMUNICATE_TAS), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -317,37 +310,22 @@ __weak void aimbots_task(void const * argument)
   /* USER CODE END aimbots_task */
 }
 
-/* USER CODE BEGIN Header_user_task */
+/* USER CODE BEGIN Header_communicate_task */
 /**
-* @brief Function implementing the USER_TASK thread.
+* @brief Function implementing the COMMUNICATE_TAS thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_user_task */
-__weak void user_task(void const * argument)
+/* USER CODE END Header_communicate_task */
+__weak void communicate_task(void const * argument)
 {
-  /* USER CODE BEGIN user_task */
+  /* USER CODE BEGIN communicate_task */
   /* Infinite loop */
   for(;;)
   {
     osDelay(1);
   }
-  /* USER CODE END user_task */
-}
-
-/* ShootTimer_Callback function */
-void ShootTimer_Callback(void const * argument)
-{
-  /* USER CODE BEGIN ShootTimer_Callback */
-
-//	if(switch_is_up(shoot_control.shoot_rc_ctrl->rc.s[TIRG_MODE_CHANNEL]))
-//	{
-//		//xEventGroupSetBits(my_shootEventGroupHandle,ShootEvent_1);
-//		shoot_control.trig_fire_mode = Serial_fire;
-//	}
-
-
-  /* USER CODE END ShootTimer_Callback */
+  /* USER CODE END communicate_task */
 }
 
 /* Private application code --------------------------------------------------*/

@@ -7,7 +7,7 @@
 .\agv_gimbal\heap_4.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
 .\agv_gimbal\heap_4.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h
 .\agv_gimbal\heap_4.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h
-.\agv_gimbal\heap_4.o: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/portmacro.h
+.\agv_gimbal\heap_4.o: ..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\portmacro.h
 .\agv_gimbal\heap_4.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h
 .\agv_gimbal\heap_4.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
 .\agv_gimbal\heap_4.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h

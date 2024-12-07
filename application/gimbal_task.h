@@ -40,7 +40,7 @@
 #define PITCH_ENCODE_ANGLE_PID_MAX_IOUT 0.5f
 
 //×ÔÃé
-#define PITCH_AUTO_SPEED_PID_KP        15000.0f
+#define PITCH_AUTO_SPEED_PID_KP        10000.0f//15000.0f
 #define PITCH_AUTO_SPEED_PID_KI        0.0f
 #define PITCH_AUTO_SPEED_PID_KD        0.0f
 #define PITCH_AUTO_SPEED_PID_MAX_OUT   30000.0f
@@ -72,7 +72,7 @@
 
 
 //×ÔÃé
-#define YAW_AUTO_SPEED_PID_KP        15000.0f //35000
+#define YAW_AUTO_SPEED_PID_KP        10000.0f//15000.0f //35000
 #define YAW_AUTO_SPEED_PID_KI        0.0f
 #define YAW_AUTO_SPEED_PID_KD        0.0f
 #define YAW_AUTO_SPEED_PID_MAX_OUT   30000.0f

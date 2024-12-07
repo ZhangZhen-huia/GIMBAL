@@ -1,7 +1,7 @@
 #include "stm32f4xx_hal.h"
 #include "main.h"
 #include "Can_receive.h"
-#include "user_task.h"
+#include "communicate_task.h"
 #include "detect_task.h"
 
 
@@ -61,11 +61,6 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*hcan)//  CAN FIFO0µƒ÷–∂
 		HAL_CAN_GetRxMessage(&hcan2,CAN_RX_FIFO0,&rx_header2,rx_data2);
 		switch(rx_header2.StdId)
 		{
-			case CAN_YAW_MOTOR_ID:
-				get_motor_measure(&yaw_motor,rx_data2);
-				detect_hook(YAW_TOE);
-				break;
-			
 			case CAN_PIT_MOTOR_ID:
 				get_motor_measure(&pitch_motor,rx_data2);
 				detect_hook(PITCH_TOE);
@@ -80,11 +75,6 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*hcan)//  CAN FIFO0µƒ÷–∂
 				get_motor_measure(&friction_motor[Fric_R],rx_data2);
 				detect_hook(FRIC_R_TOE);	
 				break;
-//			
-//			case CAN_TRIGGER_MOTOR_ID:
-//				get_motor_measure(&trigger_motor,rx_data2);
-//				detect_hook(TRIG_TOE);
-//				break;
 
 
 
@@ -98,6 +88,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*hcan)//  CAN FIFO0µƒ÷–∂
 		{
 			case CAN_YAW_MOTOR_ID:
 				get_motor_measure(&yaw_motor,rx_data1);
+				detect_hook(YAW_TOE);	
 				break;
 //			case CHASSIS_ID:
 //				get_chassis_data(&chassis_data,rx_data1);
@@ -113,7 +104,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*hcan)//  CAN FIFO0µƒ÷–∂
 
 
 
-//∑¢ÀÕ‘∆Ã® pitch ∫Õ yaw
+//∑¢ÀÕ‘∆Ã® pitch
 void CAN_cmd_gimbal_pitch(int16_t pitch)
 {
   uint32_t send_mail_box;
@@ -127,19 +118,14 @@ void CAN_cmd_gimbal_pitch(int16_t pitch)
   gimbal_tx_message.DLC = 0x02;
   gimbal_can_send_data[0] = (pitch >> 8);
   gimbal_can_send_data[1] = pitch;
-//  gimbal_can_send_data[2] = (pitch >> 8);
-//  gimbal_can_send_data[3] = pitch;
+
 
   HAL_CAN_AddTxMessage(&hcan2, &gimbal_tx_message, gimbal_can_send_data, &send_mail_box);
 	
-//	  gimbal_tx_message.StdId = 0x2ff;
-//		  gimbal_can_send_data[0] = (yaw >> 8);
-//  gimbal_can_send_data[1] = yaw;
-//  HAL_CAN_AddTxMessage(&hcan1, &gimbal_tx_message, gimbal_can_send_data, &send_mail_box);
 
 }
 
-//∑¢ÀÕ‘∆Ã® pitch ∫Õ yaw
+//∑¢ÀÕ‘∆Ã® yaw
 void CAN_cmd_gimbal_yaw(int16_t yaw)
 {
   uint32_t send_mail_box;
@@ -170,9 +156,7 @@ void CAN_cmd_firc(int16_t L_fric_current,int16_t R_fric_current)
   trigger_shoot_tx_message.IDE = CAN_ID_STD;
   trigger_shoot_tx_message.RTR = CAN_RTR_DATA;
   trigger_shoot_tx_message.DLC = 0x04;
-	
-//  trigger_shoot_can_send_data[0] = (trigger_current >> 8);
-//  trigger_shoot_can_send_data[1] = trigger_current;
+
 	trigger_shoot_can_send_data[0] = (L_fric_current >> 8);
   trigger_shoot_can_send_data[1] = L_fric_current;
   trigger_shoot_can_send_data[2] = (R_fric_current >> 8);
@@ -195,11 +179,6 @@ const motor_measure_t *get_gimbal_pitch_motor_measure_point(void)
     return &pitch_motor;
 }
 
-////trigger
-//const motor_measure_t *get_gimbal_trigger_motor_measure_point(void)
-//{
-//    return &trigger_motor;
-//}
 
 
 //friction1”“

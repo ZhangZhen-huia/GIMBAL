@@ -126,8 +126,8 @@ static void gimbal_auto_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *
         return;
     }
 
-    *yaw = aim_yaw_set;//gimbal_control_set->gimbal_mini_data->auto_yaw_set;
-    *pitch =aim_pitch_set;//gimbal_control_set->gimbal_mini_data->auto_pitch_set;
+    *yaw = auto_data.auto_yaw_set;//aim_yaw_set;//gimbal_control_set->gimbal_mini_data->auto_yaw_set;
+    *pitch =auto_data.auto_pitch_set;//aim_pitch_set;//gimbal_control_set->gimbal_mini_data->auto_pitch_set;
 
 
 }

@@ -3,7 +3,7 @@
 #include "shoot_task.h"
 #include "usbd_cdc_if.h"
 
-extern uint8_t usb_recive_buffer[100];
+
 
 
 mini_data_t auto_data;
@@ -25,13 +25,13 @@ void aimbots_task(void const * argument)
 
 	while(1)
 	{
-		buffet_speed = shoot_control.shoot_fric_L_motor.motor_speed;
+		buffet_speed = 15;//shoot_control.shoot_fric_L_motor.motor_speed;
 		Send_to_minpc[0]='I';
 		Send_to_minpc[1]='R';
 		memcpy(&Send_to_minpc[2],a,1);
 		memcpy(&Send_to_minpc[3],&a[1],1);
 		memcpy(&Send_to_minpc[4],&buffet_speed,4);
-		memcpy(&Send_to_minpc[8],get_INS_angle(1),4);
+		memcpy(&Send_to_minpc[8],get_INS_pitch_to_minpc(),4);
 		memcpy(&Send_to_minpc[12],get_INS_angle(0),4);
 		Send_to_minpc[16]='O';
 		Send_to_minpc[17]='N';
@@ -44,14 +44,16 @@ void aimbots_task(void const * argument)
 }
 
 
-
+uint8_t kkkkk=0;
 static void dispose_usb_data(mini_data_t *auto_data)
 {
 	memcpy(&auto_data->heading,&usb_recive_buffer[0],2);
 	memcpy(&auto_data->auto_pitch_set,&usb_recive_buffer[2],4);
 	memcpy(&auto_data->auto_yaw_set,&usb_recive_buffer[6],4);
-	memcpy(&auto_data->heading,&usb_recive_buffer[10],2);
-	//fire_flag = usb_recive_buffer[8];	
+	//auto_data->auto_fireFlag = kkkkk;
+	memcpy(&auto_data->auto_fireFlag,&usb_recive_buffer[10],1);
+	memcpy(&auto_data->heading,&usb_recive_buffer[11],2);
+	
 
 	
 }
@@ -60,4 +62,9 @@ static void dispose_usb_data(mini_data_t *auto_data)
 const mini_data_t* get_mini_data_point(void)
 {
 	return &auto_data;
+}
+
+const uint8_t *get_autofire_flag_point(void)
+{
+		return &auto_data.auto_fireFlag;
 }

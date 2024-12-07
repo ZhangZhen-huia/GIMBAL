@@ -41,6 +41,7 @@ const bmi088_real_data_t* get_INS_data_point(void);
 extern bmi088_real_data_t bmi088_real_data;
 
 extern fp32 bmi088_radians[3];
+fp32 * get_INS_pitch_to_minpc(void);
 
 
 #endif

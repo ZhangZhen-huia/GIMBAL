@@ -25,7 +25,7 @@ void get_angle(fp32 q[4], fp32 *yaw, fp32 *pitch, fp32 *roll);
 void imu_offset_accquier(fp32 cali_offset[3]);
 void imu_offset_remove(fp32 gyro[3],fp32 cali_offset[3]);
 void imu_turn(void);
-
+fp32 imu_to_pc[1];
 
 void INS_task(void const * argument)
 {
@@ -71,9 +71,9 @@ void INS_task(void const * argument)
 		{
 			bmi088_real_data.INS_angle[i]*=57.2957795f;
 		}		
-
+		imu_to_pc[0] = bmi088_real_data.INS_angle[1];
 		bmi088_real_data.INS_angle[1] *= -1.0f;
-
+		
 	//	CAN_cmd_INS(bmi088_real_data.INS_angle[0], -bmi088_real_data.INS_angle[1], bmi088_real_data.gyro[2], bmi088_real_data.gyro[1]);
 		//计算周期为2ms（与四元数解算中的解算频率有关）
 		osDelay(1);
@@ -168,6 +168,11 @@ void imu_offset_remove(fp32 gyro[3],fp32 cali_offset[3])
 	return &bmi088_real_data.INS_angle[(offset & 0x03)];
 }
 
+fp32 * get_INS_pitch_to_minpc(void)
+{
+	return &imu_to_pc[0];
+
+}
 const  bmi088_real_data_t* get_INS_data_point(void)
 {
 	return &bmi088_real_data;
