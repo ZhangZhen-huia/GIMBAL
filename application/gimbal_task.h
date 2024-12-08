@@ -101,7 +101,7 @@ typedef enum
     GIMBAL_MOTOR_GYRO=0,    //电机陀螺仪角度控制
     GIMBAL_MOTOR_ENCONDE, //电机编码值角度控制
 		GIMBAL_MOTOR_AUTO,
-		
+		GIMBAL_MOTOR_RADAR,
 } gimbal_motor_mode_e;
 
 
@@ -114,6 +114,7 @@ typedef enum
   GIMBAL_ENCODE_ANGLE, 
   GIMBAL_MOTIONLESS,    
 	GIMBAL_AUTO_ANGLE,
+	GIMBAL_FOLLOW_RADAR,
 } gimbal_behaviour_e;
 
 

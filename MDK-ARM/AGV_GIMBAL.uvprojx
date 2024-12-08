@@ -856,14 +856,14 @@
               <FilePath>..\application\aimbots_task.c</FilePath>
             </File>
             <File>
-              <FileName>shoot_task.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\application\shoot_task.c</FilePath>
-            </File>
-            <File>
               <FileName>vofa_task.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\application\vofa_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>shoot_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\application\shoot_task.c</FilePath>
             </File>
             <File>
               <FileName>shoot_behaviour.c</FileName>

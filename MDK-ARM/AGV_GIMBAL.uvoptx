@@ -163,67 +163,32 @@
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>shoot_flag,0x0A</ItemText>
+          <ItemText>auto_data</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>shoot_agency_state,0x0A</ItemText>
+          <ItemText>Send_to_minpc</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
           <WinNumber>1</WinNumber>
-          <ItemText>auto_data</ItemText>
+          <ItemText>usb_recive_buffer,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>4</count>
           <WinNumber>1</WinNumber>
-          <ItemText>auto_data</ItemText>
+          <ItemText>bmi088_real_data</ItemText>
         </Ww>
         <Ww>
           <count>5</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Send_to_minpc</ItemText>
+          <ItemText>shoot_control.shoot_fric_L_motor.shoot_speed_pid</ItemText>
         </Ww>
         <Ww>
           <count>6</count>
           <WinNumber>1</WinNumber>
-          <ItemText>usb_recive_buffer,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>7</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>auto_data,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>8</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>bmi088_real_data</ItemText>
-        </Ww>
-        <Ww>
-          <count>9</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>\\gimbal_task\../Src/usbd_cdc_if.c\usb_recive_buffer[0]</ItemText>
-        </Ww>
-        <Ww>
-          <count>10</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>shoot_force</ItemText>
-        </Ww>
-        <Ww>
-          <count>11</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>shoot_force</ItemText>
-        </Ww>
-        <Ww>
-          <count>12</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>fric1,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>13</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>kkkkk,0x0A</ItemText>
+          <ItemText>gimbal_mode</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
@@ -231,6 +196,16 @@
           <count>0</count>
           <WinNumber>2</WinNumber>
           <ItemText>fric2,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>1</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>fric1,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>2</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>shoot_control.shoot_fric_R_motor.shoot_speed_pid</ItemText>
         </Ww>
       </WatchWindow2>
       <Tracepoint>
@@ -678,8 +653,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\application\shoot_task.c</PathWithFileName>
-      <FilenameWithoutPath>shoot_task.c</FilenameWithoutPath>
+      <PathWithFileName>..\application\vofa_task.c</PathWithFileName>
+      <FilenameWithoutPath>vofa_task.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -690,8 +665,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\application\vofa_task.c</PathWithFileName>
-      <FilenameWithoutPath>vofa_task.c</FilenameWithoutPath>
+      <PathWithFileName>..\application\shoot_task.c</PathWithFileName>
+      <FilenameWithoutPath>shoot_task.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

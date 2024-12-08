@@ -26,6 +26,9 @@ void communicate_task(void const * argument)
 	while(1)
 	{
 		Gimbal_data_transfer();
+		#ifdef RADAR
+		Get_Radar_Data(&Radar_data);
+		#endif
 		osDelay(2);
 	}
 }
@@ -40,10 +43,31 @@ static void Gimbal_data_transfer(void)
 {
 	static uint8_t gimbal_mode = 0x00;
 	uint8_t buf[8];
+	uint8_t vx_set;
+	uint8_t vy_set;
+	uint8_t wz_set;
 	
-	uint8_t vx_set = (rc_ctrl.rc.ch[CHASSIS_X_CHANNEL]+660)/20.0f;//0-66
-	uint8_t vy_set = (rc_ctrl.rc.ch[CHASSIS_Y_CHANNEL]+660)/20.0f;//0-66
-	uint8_t wz_set = (rc_ctrl.rc.ch[CHASSIS_W_CHANNEL]+660)/20.0f;//0-66
+	
+	if(gimbal_control.gimbal_behaviour == GIMBAL_FOLLOW_RADAR)
+	{
+		#ifdef RADAR
+		vx_set = Radar_data.vx > 0 ? Radar_data.vx*100.0f:Radar_data.vx*(-100.0f);
+
+		vy_set = Radar_data.vy > 0 ? Radar_data.vy*100.0f:Radar_data.vy*(-100.0f);
+		wz_set = Radar_data.wz > 0 ? Radar_data.wz*100.0f:Radar_data.wz*(-100.0f);
+		
+		#else
+		vx_set = 0;
+		vy_set = 0;
+		wz_set = 0;
+		#endif
+	}
+	else
+	{
+		vx_set = (rc_ctrl.rc.ch[CHASSIS_X_CHANNEL]+660)/20.0f;//0-66
+		vy_set = (rc_ctrl.rc.ch[CHASSIS_Y_CHANNEL]+660)/20.0f;//0-66
+		wz_set = (rc_ctrl.rc.ch[CHASSIS_W_CHANNEL]+660)/20.0f;//0-66
+	}
 	uint8_t rc_err = (uint8_t)toe_is_error(DBUS_TOE);
 	uint8_t rc_sl = rc_ctrl.rc.s[RC_sl_channel];
 	uint8_t rc_sr = rc_ctrl.rc.s[RC_sr_channel];
@@ -58,7 +82,10 @@ static void Gimbal_data_transfer(void)
 	else
 		gimbal_mode &= 0xFD;	
 	
-
+	if(gimbal_control.gimbal_behaviour == GIMBAL_FOLLOW_RADAR)
+		gimbal_mode |= 0x04;
+	else
+		gimbal_mode &= 0xFB;	
 	
 
 	buf[0] = vx_set;
@@ -98,10 +125,14 @@ static void can_cmd_to_chassis(CAN_HandleTypeDef*hcan,int16_t can_id,uint8_t *bu
 static void Get_Radar_Data(Radar_data_t *Radar_data)
 {
 	memcpy(&Radar_data->heading,&usb_recive_buffer[0],3);
-	memcpy(&Radar_data->vx,&usb_recive_buffer[3],4);
-	memcpy(&Radar_data->vy,&usb_recive_buffer[7],4);
-	memcpy(&Radar_data->wz,&usb_recive_buffer[11],4);
 	memcpy(&Radar_data->tailing,&usb_recive_buffer[15],3);
+	if (memcmp(Radar_data->heading, "IST", 3) == 0 && memcmp(Radar_data->tailing, "AAA", 3) == 0)
+	{
+		memcpy(&Radar_data->vx,&usb_recive_buffer[3],4);
+		memcpy(&Radar_data->vy,&usb_recive_buffer[7],4);
+		memcpy(&Radar_data->wz,&usb_recive_buffer[11],4);
+	}
+	
 
 }
 

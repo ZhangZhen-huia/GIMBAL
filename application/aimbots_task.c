@@ -44,17 +44,17 @@ void aimbots_task(void const * argument)
 }
 
 
-uint8_t kkkkk=0;
 static void dispose_usb_data(mini_data_t *auto_data)
 {
 	memcpy(&auto_data->heading,&usb_recive_buffer[0],2);
-	memcpy(&auto_data->auto_pitch_set,&usb_recive_buffer[2],4);
-	memcpy(&auto_data->auto_yaw_set,&usb_recive_buffer[6],4);
-	//auto_data->auto_fireFlag = kkkkk;
-	memcpy(&auto_data->auto_fireFlag,&usb_recive_buffer[10],1);
-	memcpy(&auto_data->heading,&usb_recive_buffer[11],2);
+	memcpy(&auto_data->tailing,&usb_recive_buffer[11],2);
 	
-
+	if (memcmp(auto_data->heading, "IR", 2) == 0 && memcmp(auto_data->tailing, "ON", 2) == 0)
+	{
+		memcpy(&auto_data->auto_pitch_set,&usb_recive_buffer[2],4);
+		memcpy(&auto_data->auto_yaw_set,&usb_recive_buffer[6],4);
+		memcpy(&auto_data->auto_fireFlag,&usb_recive_buffer[10],1);
+	}
 	
 }
 
@@ -68,3 +68,6 @@ const uint8_t *get_autofire_flag_point(void)
 {
 		return &auto_data.auto_fireFlag;
 }
+
+
+

@@ -67,7 +67,7 @@ static void shoot_init(shoot_control_t *shoot_init)
 {
 
 	static const fp32 Shoot_fric_L_speed_pid[3] = {FRIC_L_SPEED_PID_KP,FRIC_L_SPEED_PID_KI,FRIC_L_SPEED_PID_KD};
-	static const fp32 Shoot_fric_R_speed_pid[3] = {FRIC_L_SPEED_PID_KP,FRIC_L_SPEED_PID_KI,FRIC_L_SPEED_PID_KD};
+	static const fp32 Shoot_fric_R_speed_pid[3] = {FRIC_R_SPEED_PID_KP,FRIC_R_SPEED_PID_KI,FRIC_R_SPEED_PID_KD};
 	
 	//电机数据指针获取
 	shoot_init->shoot_fric_L_motor.shoot_motor_measure = get_gimbal_friction_motor_measure_point(Fric_L);

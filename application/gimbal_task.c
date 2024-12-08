@@ -255,6 +255,11 @@ static void gimbal_set_control(gimbal_control_t *set_control)
 				//自瞄模式下，陀螺仪角度控制
 				gimbal_auto_angle_limit(&set_control->gimbal_yaw_motor,add_yaw_angle);
 		}
+		else if(set_control->gimbal_yaw_motor.gimbal_motor_mode == GIMBAL_MOTOR_RADAR)
+		{
+				//雷达控制下,编码值角度控制
+				gimbal_encode_angle_limit(&set_control->gimbal_yaw_motor,add_yaw_angle);
+		}
 		
 		
    if (set_control->gimbal_pitch_motor.gimbal_motor_mode == GIMBAL_MOTOR_GYRO)
@@ -271,6 +276,11 @@ static void gimbal_set_control(gimbal_control_t *set_control)
 		{
 				//自瞄模式下，陀螺仪角度控制
 				gimbal_auto_angle_limit(&set_control->gimbal_pitch_motor,add_pitch_angle);
+		}
+		else if(set_control->gimbal_pitch_motor.gimbal_motor_mode == GIMBAL_MOTOR_RADAR)
+		{
+				//雷达控制下,编码值角度控制
+				gimbal_encode_angle_limit(&set_control->gimbal_pitch_motor,add_yaw_angle);
 		}
 
 }
@@ -421,6 +431,11 @@ static void gimbal_control_loop(gimbal_control_t *control_loop)
     {
        gimbal_motor_auto_angle_control(&control_loop->gimbal_yaw_motor);
     }
+    else if (control_loop->gimbal_yaw_motor.gimbal_motor_mode == GIMBAL_MOTOR_RADAR)
+    {
+       gimbal_motor_encode_angle_control(&control_loop->gimbal_yaw_motor);
+    }		
+		
 		
     if (control_loop->gimbal_pitch_motor.gimbal_motor_mode == GIMBAL_MOTOR_GYRO)
     {
@@ -434,6 +449,10 @@ static void gimbal_control_loop(gimbal_control_t *control_loop)
     {
         gimbal_motor_auto_angle_control(&control_loop->gimbal_pitch_motor);
     }
+    else if (control_loop->gimbal_pitch_motor.gimbal_motor_mode == GIMBAL_MOTOR_RADAR)
+    {
+        gimbal_motor_encode_angle_control(&control_loop->gimbal_pitch_motor);
+    }		
 }
 
 

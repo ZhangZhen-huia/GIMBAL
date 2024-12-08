@@ -4,6 +4,7 @@
 static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set);
 void gimbal_behaviour_mode_set(gimbal_control_t *gimbal_mode_set);
 static void gimbal_encode_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
+static void gimbal_follow_radar_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
 
 
 /**
@@ -132,6 +133,26 @@ static void gimbal_auto_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *
 
 }
 
+
+
+/**
+  * @brief          雷达控制，半自动模式，电机是相对角度控制，
+  * @param[in]      yaw: yaw轴角度控制，为角度的增量 单位 rad
+  * @param[in]      pitch: pitch轴角度控制，为角度的增量 单位 rad
+  * @param[in]      gimbal_control_set: 云台数据指针
+  * @retval         none
+  */
+static void gimbal_follow_radar_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set)
+{
+	    if (yaw == NULL || pitch == NULL || gimbal_control_set == NULL)
+    {
+        return;
+    }
+	  *yaw = 0;
+    *pitch = 0;
+
+}
+
 /**
   * @brief          云台行为控制，根据不同行为采用不同控制函数
   * @param[out]     add_yaw:设置的yaw角度增加值，单位 rad
@@ -160,8 +181,13 @@ void gimbal_behaviour_control_set(fp32 *add_yaw, fp32 *add_pitch, gimbal_control
     {
         gimbal_auto_angle_control(add_yaw, add_pitch, gimbal_control_set);
     }
-
-
+		else if(gimbal_control_set->gimbal_behaviour == GIMBAL_FOLLOW_RADAR)
+		{
+				gimbal_follow_radar_angle_control(add_yaw, add_pitch, gimbal_control_set);
+		}
+	
+			
+			
 }
 
 
@@ -216,7 +242,11 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
         return;
     }
 
-    if (switch_is_mid(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
+		if(gimbal_mode_set->gimbal_rc_ctrl->rc.ch[0] == -660 && gimbal_mode_set->gimbal_rc_ctrl->rc.ch[1] == 660 && gimbal_mode_set->gimbal_rc_ctrl->rc.ch[2] == 660 && gimbal_mode_set->gimbal_rc_ctrl->rc.ch[3] == 660)
+		{
+			gimbal_mode_set->gimbal_behaviour = GIMBAL_FOLLOW_RADAR;
+		}
+    else if (switch_is_mid(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
     {
         gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
     }
