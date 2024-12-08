@@ -25,6 +25,8 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 		shoot_behaviour->trig_mode = Cease_fire;
 
 	}
+	
+	//强制开火信号
 	if(shoot_behaviour->shoot_rc_ctrl->rc.ch[0] == -660 && shoot_behaviour->shoot_rc_ctrl->rc.ch[1] == 660)
 	{
 		shoot_force = 1;
@@ -33,6 +35,7 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 	{
 		shoot_force = 0;
 	}
+	
 	
 	if( shoot_behaviour->shoot_agency_state == SHOOT_ON && shoot_behaviour->fric_mode == START && shoot_force)
 	{
@@ -48,7 +51,9 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 	{
 		shoot_behaviour->fric_mode = STOP;
 		shoot_behaviour->trig_mode = Cease_fire;
-
+		shoot_flag = 0;
+		firc_step = 0;
+		
 	}
 	
 	//不是自瞄模式
@@ -179,22 +184,6 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 			{
 				shoot_behaviour->fric_mode = STOP;
 			}
-//			
-//			if(shoot_force)
-//			{
-//					//拨弹盘开启判断
-//				if(shoot_behaviour->fric_mode == START &&  shoot_behaviour->shoot_rc_ctrl->rc.ch[4] == 660)
-//				{
-//					shoot_behaviour->trig_mode = Start_fire;
-//				}
-//				else
-//				{
-//					shoot_behaviour->trig_mode = Cease_fire;
-//				}
-//			}
-							
-//			else
-//			{
 					//拨弹盘开启判断
 				if(shoot_behaviour->fric_mode == START &&  shoot_behaviour->auto_fireFlag[0] == fire)
 				{
@@ -204,7 +193,6 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 				{
 					shoot_behaviour->trig_mode = Cease_fire;
 				}			
-//			}
 				
 
 		
