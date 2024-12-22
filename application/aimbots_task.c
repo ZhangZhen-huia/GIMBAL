@@ -25,40 +25,61 @@ void aimbots_task(void const * argument)
 
 	while(1)
 	{
-		buffet_speed = 15;//shoot_control.shoot_fric_L_motor.motor_speed;
-		Send_to_minpc[0]='I';
-		Send_to_minpc[1]='R';
-		memcpy(&Send_to_minpc[2],a,1);
-		memcpy(&Send_to_minpc[3],&a[1],1);
-		memcpy(&Send_to_minpc[4],&buffet_speed,4);
-		memcpy(&Send_to_minpc[8],get_INS_pitch_to_minpc(),4);
-		memcpy(&Send_to_minpc[12],get_INS_angle(0),4);
-		Send_to_minpc[16]='O';
-		Send_to_minpc[17]='N';
-		CDC_Transmit_FS(Send_to_minpc,18);
+//		buffet_speed = 15;//shoot_control.shoot_fric_L_motor.motor_speed;
+//		Send_to_minpc[0]='I';
+//		Send_to_minpc[1]='R';
+//		memcpy(&Send_to_minpc[2],a,1);
+//		memcpy(&Send_to_minpc[3],&a[1],1);
+//		memcpy(&Send_to_minpc[4],&buffet_speed,4);
+//		memcpy(&Send_to_minpc[8],get_INS_pitch_to_minpc(),4);
+//		memcpy(&Send_to_minpc[12],get_INS_angle(0),4);
+//		Send_to_minpc[16]='O';
+//		Send_to_minpc[17]='N';
+//		CDC_Transmit_FS(Send_to_minpc,18);
 
+//		Send_to_minpc[0]=0xFF;
+//		Send_to_minpc[1]=0;
+//		memcpy(&Send_to_minpc[2],get_INS_angle(2),4);
+//		memcpy(&Send_to_minpc[6],get_INS_pitch_to_minpc(),4);
+//		memcpy(&Send_to_minpc[10],get_INS_angle(0),4);
+//		memcpy(&Send_to_minpc[14],a,1);
+//		Send_to_minpc[15]=0x0D;
+//		CDC_Transmit_FS(Send_to_minpc,16);
 
-		dispose_usb_data(&auto_data);
+		//dispose_usb_data(&auto_data);
 		osDelay(10);
 	}
 }
 
 
+//static void dispose_usb_data(mini_data_t *auto_data)
+//{
+//	memcpy(&auto_data->heading,&usb_recive_buffer[0],2);
+//	memcpy(&auto_data->tailing,&usb_recive_buffer[11],2);
+//	
+//	if (memcmp(auto_data->heading, "IR", 2) == 0 && memcmp(auto_data->tailing, "ON", 2) == 0)
+//	{
+//		memcpy(&auto_data->auto_pitch_set,&usb_recive_buffer[2],4);
+//		memcpy(&auto_data->auto_yaw_set,&usb_recive_buffer[6],4);
+//		memcpy(&auto_data->auto_fireFlag,&usb_recive_buffer[10],1);
+//	}
+//	
+//}
+
 static void dispose_usb_data(mini_data_t *auto_data)
 {
-	memcpy(&auto_data->heading,&usb_recive_buffer[0],2);
-	memcpy(&auto_data->tailing,&usb_recive_buffer[11],2);
+	memcpy(&auto_data->heading,&usb_recive_buffer[0],1);
+	memcpy(&auto_data->tailing,&usb_recive_buffer[15],1);
 	
-	if (memcmp(auto_data->heading, "IR", 2) == 0 && memcmp(auto_data->tailing, "ON", 2) == 0)
+	if (auto_data->heading == 0xFF && auto_data->tailing == 0x0D)
 	{
+		memcpy(&auto_data->auto_fireFlag,&usb_recive_buffer[1],1);
 		memcpy(&auto_data->auto_pitch_set,&usb_recive_buffer[2],4);
 		memcpy(&auto_data->auto_yaw_set,&usb_recive_buffer[6],4);
-		memcpy(&auto_data->auto_fireFlag,&usb_recive_buffer[10],1);
 	}
 	
+	
 }
-
-
 const mini_data_t* get_mini_data_point(void)
 {
 	return &auto_data;

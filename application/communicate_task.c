@@ -25,10 +25,11 @@ void communicate_task(void const * argument)
 	
 	while(1)
 	{
-		Gimbal_data_transfer();
 		#ifdef RADAR
 		Get_Radar_Data(&Radar_data);
 		#endif
+		Gimbal_data_transfer();
+
 		osDelay(2);
 	}
 }
@@ -51,10 +52,10 @@ static void Gimbal_data_transfer(void)
 	if(gimbal_control.gimbal_behaviour == GIMBAL_FOLLOW_RADAR)
 	{
 		#ifdef RADAR
-		vx_set = Radar_data.vx > 0 ? Radar_data.vx*100.0f:Radar_data.vx*(-100.0f);
+		vx_set = (Radar_data.vx + 5.0f)*42;
 
-		vy_set = Radar_data.vy > 0 ? Radar_data.vy*100.0f:Radar_data.vy*(-100.0f);
-		wz_set = Radar_data.wz > 0 ? Radar_data.wz*100.0f:Radar_data.wz*(-100.0f);
+		vy_set = (Radar_data.vy+ 5.0f)*42; 
+		wz_set = (Radar_data.wz+ 5.0f)*42; 
 		
 		#else
 		vx_set = 0;
@@ -80,12 +81,23 @@ static void Gimbal_data_transfer(void)
 	if(gimbal_control.gimbal_behaviour == GIMBAL_INIT)
 		gimbal_mode |= 0x02;
 	else
-		gimbal_mode &= 0xFD;	
+		gimbal_mode &= 0xFD;
 	
+	#ifdef RADAR
 	if(gimbal_control.gimbal_behaviour == GIMBAL_FOLLOW_RADAR)
-		gimbal_mode |= 0x04;
+	gimbal_mode |= 0x04;
 	else
-		gimbal_mode &= 0xFB;	
+	gimbal_mode &= 0xFB;
+	#endif
+//	if(gimbal_control.gimbal_behaviour == GIMBAL_BUILD_MAP)
+//		gimbal_mode |= 0x04;
+//	else
+//		gimbal_mode &= 0xFB;
+//	
+//	if(gimbal_control.gimbal_behaviour == GIMBAL_FOLLOW_RADAR)
+//		gimbal_mode |= 0x08;
+//	else
+//		gimbal_mode &= 0xF7;	
 	
 
 	buf[0] = vx_set;
@@ -132,7 +144,9 @@ static void Get_Radar_Data(Radar_data_t *Radar_data)
 		memcpy(&Radar_data->vy,&usb_recive_buffer[7],4);
 		memcpy(&Radar_data->wz,&usb_recive_buffer[11],4);
 	}
-	
+	Radar_data->vx = loop_fp32_constrain(Radar_data->vx,-1.0f,1.0f);
+	Radar_data->vy = loop_fp32_constrain(Radar_data->vy,-1.0f,1.0f);
+	Radar_data->wz = loop_fp32_constrain(Radar_data->wz,-1.0f,1.0f);
 
 }
 

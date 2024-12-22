@@ -11,10 +11,19 @@ typedef enum
 
 
 
+//typedef struct
+//{
+//	uint8_t heading[2];
+//	uint8_t tailing[2];
+//	uint8_t auto_fireFlag;
+//	fp32 auto_pitch_set;
+//	fp32 auto_yaw_set;
+//}mini_data_t;
+
 typedef struct
 {
-	uint8_t heading[2];
-	uint8_t tailing[2];
+	uint8_t heading;
+	uint8_t tailing;
 	uint8_t auto_fireFlag;
 	fp32 auto_pitch_set;
 	fp32 auto_yaw_set;

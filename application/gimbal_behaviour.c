@@ -136,22 +136,48 @@ static void gimbal_auto_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *
 
 
 /**
-  * @brief          雷达控制，半自动模式，电机是相对角度控制，
-  * @param[in]      yaw: yaw轴角度控制，为角度的增量 单位 rad
-  * @param[in]      pitch: pitch轴角度控制，为角度的增量 单位 rad
+  * @brief          雷达控制，半自动模式
+  * @param[in]      yaw: yaw轴角度控制，陀螺仪控制为角度的增量 单位 rad
+  * @param[in]      pitch: pitch轴角度控制，编码值控制，为角度的增量 单位 rad
   * @param[in]      gimbal_control_set: 云台数据指针
   * @retval         none
   */
 static void gimbal_follow_radar_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set)
 {
+
+	static int8_t turn_flag = 1;
 	    if (yaw == NULL || pitch == NULL || gimbal_control_set == NULL)
     {
         return;
     }
-	  *yaw = 0;
-    *pitch = 0;
+
+
+		*yaw = 0.3;
+		
+		if(turn_flag == 1)
+		{
+			*pitch = 0.1;
+			if(gimbal_control_set->gimbal_pitch_motor.relative_angle_set == gimbal_control_set->gimbal_pitch_motor.max_relative_angle)
+				turn_flag = -1;
+		}
+		
+		else if(turn_flag == -1)
+		{
+			*pitch = -0.1;
+			if(gimbal_control_set->gimbal_pitch_motor.relative_angle_set == gimbal_control_set->gimbal_pitch_motor.min_relative_angle)
+				turn_flag = 1;
+
+		}
+
 
 }
+
+
+
+
+
+
+
 
 /**
   * @brief          云台行为控制，根据不同行为采用不同控制函数
@@ -227,7 +253,11 @@ void gimbal_behaviour_mode_set(gimbal_control_t *gimbal_mode_set)
         gimbal_mode_set->gimbal_pitch_motor.gimbal_motor_mode = GIMBAL_MOTOR_AUTO;
 
 		}
-
+		else if(gimbal_mode_set->gimbal_behaviour == GIMBAL_FOLLOW_RADAR)
+		{
+			  gimbal_mode_set->gimbal_yaw_motor.gimbal_motor_mode = GIMBAL_MOTOR_RADAR;
+        gimbal_mode_set->gimbal_pitch_motor.gimbal_motor_mode = GIMBAL_MOTOR_RADAR;
+		}
 }
 
 /**
@@ -237,29 +267,35 @@ void gimbal_behaviour_mode_set(gimbal_control_t *gimbal_mode_set)
   */
 static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
 {
+		
     if (gimbal_mode_set == NULL)
     {
         return;
     }
 
-		if(gimbal_mode_set->gimbal_rc_ctrl->rc.ch[0] == -660 && gimbal_mode_set->gimbal_rc_ctrl->rc.ch[1] == 660 && gimbal_mode_set->gimbal_rc_ctrl->rc.ch[2] == 660 && gimbal_mode_set->gimbal_rc_ctrl->rc.ch[3] == 660)
-		{
-			gimbal_mode_set->gimbal_behaviour = GIMBAL_FOLLOW_RADAR;
-		}
-    else if (switch_is_mid(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
+	
+		
+    if (switch_is_mid(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
     {
         gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
     }
-    else if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
+		
+#ifdef RADAR
+		 else if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
     {
-        gimbal_mode_set->gimbal_behaviour = GIMBAL_GYRO_ANGLE;
+        gimbal_mode_set->gimbal_behaviour = GIMBAL_FOLLOW_RADAR;
     }
-		else if (switch_is_down(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
-		{
-				gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
-		}
 
-
+#else 
+			else if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
+			{
+					gimbal_mode_set->gimbal_behaviour = GIMBAL_GYRO_ANGLE;
+			}
+#endif
+			else if (switch_is_down(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
+			{
+					gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
+			}
 }
 
 

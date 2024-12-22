@@ -158,56 +158,49 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>shoot_control,0x0A</ItemText>
+          <ItemText>gimbal_mode</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>auto_data</ItemText>
+          <ItemText>add_time,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Send_to_minpc</ItemText>
+          <ItemText>turn_flag,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
           <WinNumber>1</WinNumber>
-          <ItemText>usb_recive_buffer,0x0A</ItemText>
+          <ItemText>time,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>4</count>
           <WinNumber>1</WinNumber>
-          <ItemText>bmi088_real_data</ItemText>
+          <ItemText>gimbal_control,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>5</count>
           <WinNumber>1</WinNumber>
-          <ItemText>shoot_control.shoot_fric_L_motor.shoot_speed_pid</ItemText>
+          <ItemText>fric1,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>6</count>
           <WinNumber>1</WinNumber>
-          <ItemText>gimbal_mode</ItemText>
-        </Ww>
-      </WatchWindow1>
-      <WatchWindow2>
-        <Ww>
-          <count>0</count>
-          <WinNumber>2</WinNumber>
           <ItemText>fric2,0x0A</ItemText>
         </Ww>
         <Ww>
-          <count>1</count>
-          <WinNumber>2</WinNumber>
-          <ItemText>fric1,0x0A</ItemText>
+          <count>7</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Send_to_minpc,0x10</ItemText>
         </Ww>
         <Ww>
-          <count>2</count>
-          <WinNumber>2</WinNumber>
-          <ItemText>shoot_control.shoot_fric_R_motor.shoot_speed_pid</ItemText>
+          <count>8</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Radar_data,0x0A</ItemText>
         </Ww>
-      </WatchWindow2>
+      </WatchWindow1>
       <Tracepoint>
         <THDelay>0</THDelay>
       </Tracepoint>

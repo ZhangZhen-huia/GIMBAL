@@ -16,7 +16,7 @@
 void gimbal_behaviour_control_set(fp32 *add_yaw, fp32 *add_pitch, gimbal_control_t *gimbal_control_set);
 void gimbal_behaviour_mode_set(gimbal_control_t *gimbal_mode_set);
 
-
+extern uint8_t build_state;
 
 
 

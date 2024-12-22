@@ -258,7 +258,7 @@ static void gimbal_set_control(gimbal_control_t *set_control)
 		else if(set_control->gimbal_yaw_motor.gimbal_motor_mode == GIMBAL_MOTOR_RADAR)
 		{
 				//雷达控制下,编码值角度控制
-				gimbal_encode_angle_limit(&set_control->gimbal_yaw_motor,add_yaw_angle);
+				gimbal_gyro_angle_limit(&set_control->gimbal_yaw_motor,add_yaw_angle);
 		}
 		
 		
@@ -280,7 +280,7 @@ static void gimbal_set_control(gimbal_control_t *set_control)
 		else if(set_control->gimbal_pitch_motor.gimbal_motor_mode == GIMBAL_MOTOR_RADAR)
 		{
 				//雷达控制下,编码值角度控制
-				gimbal_encode_angle_limit(&set_control->gimbal_pitch_motor,add_yaw_angle);
+				gimbal_encode_angle_limit(&set_control->gimbal_pitch_motor,add_pitch_angle);
 		}
 
 }
@@ -364,15 +364,15 @@ static void gimbal_auto_angle_limit(gimbal_motor_t *gimbal_motor,fp32 aim_angle)
 		
     if (gimbal_motor->relative_angle >= gimbal_motor->max_relative_angle)
     {
-			aim_angle = gimbal_motor->absolute_angle-1;
+			aim_angle = gimbal_motor->absolute_angle;
 		}
 		
     else if (gimbal_motor->relative_angle<= gimbal_motor->min_relative_angle)
     {
-			aim_angle = gimbal_motor->absolute_angle+1;
+			aim_angle = gimbal_motor->absolute_angle;
     }
 		
-    gimbal_motor->absolute_angle_set = angle_to_180(aim_angle);
+    gimbal_motor->relative_angle_set = angle_to_180(aim_angle);
 	}
 	
 	
@@ -433,7 +433,7 @@ static void gimbal_control_loop(gimbal_control_t *control_loop)
     }
     else if (control_loop->gimbal_yaw_motor.gimbal_motor_mode == GIMBAL_MOTOR_RADAR)
     {
-       gimbal_motor_encode_angle_control(&control_loop->gimbal_yaw_motor);
+       gimbal_motor_gyro_angle_control(&control_loop->gimbal_yaw_motor);
     }		
 		
 		
@@ -494,7 +494,7 @@ static void gimbal_motor_encode_angle_control(gimbal_motor_t *gimbal_motor)
 }
 
 /**
-  * @brief          云台控制模式:GIMBAL_MOTOR_ENCONDE，使用编码相对角进行控制
+  * @brief          云台控制模式:GIMBAL_MOTOR_AUTO，使用编码相对角进行控制
   * @param[out]     gimbal_motor:yaw电机或者pitch电机
   * @retval         none
   */
@@ -504,12 +504,22 @@ static void gimbal_motor_auto_angle_control(gimbal_motor_t *gimbal_motor)
     {
         return;
     }
-
-    //角度环，速度环串级pid调试
-    gimbal_motor->motor_gyro_set = PID_calc(&gimbal_motor->gimbal_motor_auto_angle_pid, gimbal_motor->absolute_angle, gimbal_motor->absolute_angle_set);
-    gimbal_motor->current_set = PID_calc(&gimbal_motor->gimbal_motor_auto_speed_pid, gimbal_motor->motor_gyro, gimbal_motor->motor_gyro_set);
-    //控制值赋值
-    gimbal_motor->given_current = (int16_t)(gimbal_motor->current_set);
+		if(gimbal_motor == &gimbal_control.gimbal_pitch_motor)
+		{
+			//角度环，速度环串级pid调试
+			gimbal_motor->motor_gyro_set = PID_calc(&gimbal_motor->gimbal_motor_auto_angle_pid, gimbal_motor->relative_angle, gimbal_motor->relative_angle_set);
+			gimbal_motor->current_set = PID_calc(&gimbal_motor->gimbal_motor_auto_speed_pid, gimbal_motor->motor_gyro, gimbal_motor->motor_gyro_set);
+			//控制值赋值
+			gimbal_motor->given_current = (int16_t)(gimbal_motor->current_set);
+		}
+		else if(gimbal_motor == &gimbal_control.gimbal_yaw_motor)
+		{
+			//角度环，速度环串级pid调试
+			gimbal_motor->motor_gyro_set = PID_calc(&gimbal_motor->gimbal_motor_auto_angle_pid, gimbal_motor->absolute_angle, gimbal_motor->absolute_angle_set);
+			gimbal_motor->current_set = PID_calc(&gimbal_motor->gimbal_motor_auto_speed_pid, gimbal_motor->motor_gyro, gimbal_motor->motor_gyro_set);
+			//控制值赋值
+			gimbal_motor->given_current = (int16_t)(gimbal_motor->current_set);
+		}
 }
 
 /**

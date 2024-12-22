@@ -14,7 +14,7 @@
 ///*--------------------------------------Pitch--------------------------------------*/
 
 //ÍÓÂÝÒÇ
-#define PITCH_GYRO_SPEED_PID_KP        15000.0f
+#define PITCH_GYRO_SPEED_PID_KP        8500.0f
 #define PITCH_GYRO_SPEED_PID_KI        0.0f
 #define PITCH_GYRO_SPEED_PID_KD        0.0f
 #define PITCH_GYRO_SPEED_PID_MAX_OUT   30000.0f
@@ -27,48 +27,48 @@
 #define PITCH_GYRO_ANGLE_PID_MAX_IOUT 0.5f
 
 //±àÂëÆ÷
-#define PITCH_ENCODE_SPEED_PID_KP        10000.0f
-#define PITCH_ENCODE_SPEED_PID_KI        0.0f
+#define PITCH_ENCODE_SPEED_PID_KP        8000//10000.0f
+#define PITCH_ENCODE_SPEED_PID_KI        1.0f
 #define PITCH_ENCODE_SPEED_PID_KD        0.0f
 #define PITCH_ENCODE_SPEED_PID_MAX_OUT   30000.0f
-#define PITCH_ENCODE_SPEED_PID_MAX_IOUT  0.0f
+#define PITCH_ENCODE_SPEED_PID_MAX_IOUT  1000.0f
 
-#define PITCH_ENCODE_ANGLE_PID_KP -0.7f
-#define PITCH_ENCODE_ANGLE_PID_KI -0.05f
+#define PITCH_ENCODE_ANGLE_PID_KP -0.75f
+#define PITCH_ENCODE_ANGLE_PID_KI -0.1f
 #define PITCH_ENCODE_ANGLE_PID_KD 0.0f
 #define PITCH_ENCODE_ANGLE_PID_MAX_OUT 40.0f
-#define PITCH_ENCODE_ANGLE_PID_MAX_IOUT 0.5f
+#define PITCH_ENCODE_ANGLE_PID_MAX_IOUT 0.3f
 
 //×ÔÃé
-#define PITCH_AUTO_SPEED_PID_KP        10000.0f//15000.0f
-#define PITCH_AUTO_SPEED_PID_KI        0.0f
+#define PITCH_AUTO_SPEED_PID_KP        8000.0f//15000.0f
+#define PITCH_AUTO_SPEED_PID_KI        1.0f
 #define PITCH_AUTO_SPEED_PID_KD        0.0f
 #define PITCH_AUTO_SPEED_PID_MAX_OUT   30000.0f
-#define PITCH_AUTO_SPEED_PID_MAX_IOUT  0.0f
+#define PITCH_AUTO_SPEED_PID_MAX_IOUT  1000.0f
 
 
 #define PITCH_AUTO_ANGLE_PID_KP -0.7f
 #define PITCH_AUTO_ANGLE_PID_KI -0.05f
 #define PITCH_AUTO_ANGLE_PID_KD 0.0f
 #define PITCH_AUTO_ANGLE_PID_MAX_OUT 40.0f
-#define PITCH_AUTO_ANGLE_PID_MAX_IOUT 0.5f
+#define PITCH_AUTO_ANGLE_PID_MAX_IOUT 0.3f
 
 
 
 /*--------------------------------------Yaw--------------------------------------*/
 
 //ÍÓÂÝÒÇ
-#define YAW_GYRO_SPEED_PID_KP        15000.0f //35000
+#define YAW_GYRO_SPEED_PID_KP        10000.0f//20000.0f //35000
 #define YAW_GYRO_SPEED_PID_KI        0.0f
 #define YAW_GYRO_SPEED_PID_KD        0.0f
 #define YAW_GYRO_SPEED_PID_MAX_OUT   30000.0f
 #define YAW_GYRO_SPEED_PID_MAX_IOUT  0.0f
 
-#define YAW_GYRO_ANGLE_PID_KP        0.8f //0.4
-#define YAW_GYRO_ANGLE_PID_KI        0.0f
+#define YAW_GYRO_ANGLE_PID_KP        0.3f//1.0f //0.4
+#define YAW_GYRO_ANGLE_PID_KI        1.0f
 #define YAW_GYRO_ANGLE_PID_KD        0.0f
 #define YAW_GYRO_ANGLE_PID_MAX_OUT   360.0f
-#define YAW_GYRO_ANGLE_PID_MAX_IOUT  0.0f
+#define YAW_GYRO_ANGLE_PID_MAX_IOUT  0//0.001f
 
 
 //×ÔÃé
