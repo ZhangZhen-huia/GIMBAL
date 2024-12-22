@@ -33,7 +33,7 @@
 #define PITCH_ENCODE_SPEED_PID_MAX_OUT   30000.0f
 #define PITCH_ENCODE_SPEED_PID_MAX_IOUT  1000.0f
 
-#define PITCH_ENCODE_ANGLE_PID_KP -0.75f
+#define PITCH_ENCODE_ANGLE_PID_KP -0.72f
 #define PITCH_ENCODE_ANGLE_PID_KI -0.1f
 #define PITCH_ENCODE_ANGLE_PID_KD 0.0f
 #define PITCH_ENCODE_ANGLE_PID_MAX_OUT 40.0f
@@ -56,6 +56,15 @@
 
 
 /*--------------------------------------Yaw--------------------------------------*/
+
+
+//导航
+#define YAW_RADAR_SPEED_PID_KP        6000.0f//20000.0f //35000
+#define YAW_RADAR_SPEED_PID_KI        100.0f
+#define YAW_RADAR_SPEED_PID_KD        0.0f
+#define YAW_RADAR_SPEED_PID_MAX_OUT   30000.0f
+#define YAW_RADAR_SPEED_PID_MAX_IOUT  700.0f
+
 
 //陀螺仪
 #define YAW_GYRO_SPEED_PID_KP        10000.0f//20000.0f //35000
@@ -129,6 +138,8 @@ typedef struct
 	
     pid_type_def gimbal_motor_auto_angle_pid; //自瞄
 		pid_type_def gimbal_motor_auto_speed_pid; 
+	
+		pid_type_def gimbal_motor_radar_speed_pid;//云台导航速度环
 	
     gimbal_motor_mode_e gimbal_motor_mode;						//电机控制状态
     gimbal_motor_mode_e last_gimbal_motor_mode;				//上次电机控制状态

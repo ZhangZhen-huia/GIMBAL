@@ -73,7 +73,7 @@ void Error_Handler(void);
 #define Event_2 (1<<2)
 
 
-#define RADAR
+//#define RADAR
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

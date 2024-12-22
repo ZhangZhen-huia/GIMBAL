@@ -152,7 +152,7 @@ static void gimbal_follow_radar_angle_control(fp32 *yaw, fp32 *pitch, gimbal_con
     }
 
 
-		*yaw = 0.3;
+		//*yaw = 0.3;
 		
 		if(turn_flag == 1)
 		{

@@ -20,12 +20,6 @@ typedef struct
 	fp32 wz;
 }Radar_data_t;
 
-typedef struct
-{
-	fp32 pitch;
-}chassis_data_t;
 
-extern chassis_data_t chassis_data;
-
-void get_chassis_data(chassis_data_t *chassis_data,uint8_t *buf);
+extern Radar_data_t Radar_data;
 #endif

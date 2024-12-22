@@ -16,7 +16,7 @@ static void Gimbal_data_transfer(void);
 static void Get_Radar_Data(Radar_data_t *Radar_data);
 
 
-chassis_data_t chassis_data;
+
 Radar_data_t Radar_data;
 
 
@@ -52,10 +52,10 @@ static void Gimbal_data_transfer(void)
 	if(gimbal_control.gimbal_behaviour == GIMBAL_FOLLOW_RADAR)
 	{
 		#ifdef RADAR
-		vx_set = (Radar_data.vx + 5.0f)*42;
+		vx_set = (Radar_data.vx + 2.0f)*50;
 
-		vy_set = (Radar_data.vy+ 5.0f)*42; 
-		wz_set = (Radar_data.wz+ 5.0f)*42; 
+		vy_set = (Radar_data.vy+ 2.0f)*50; 
+		wz_set = (Radar_data.wz+ 2.0f)*50; 
 		
 		#else
 		vx_set = 0;
@@ -144,19 +144,13 @@ static void Get_Radar_Data(Radar_data_t *Radar_data)
 		memcpy(&Radar_data->vy,&usb_recive_buffer[7],4);
 		memcpy(&Radar_data->wz,&usb_recive_buffer[11],4);
 	}
-	Radar_data->vx = loop_fp32_constrain(Radar_data->vx,-1.0f,1.0f);
-	Radar_data->vy = loop_fp32_constrain(Radar_data->vy,-1.0f,1.0f);
-	Radar_data->wz = loop_fp32_constrain(Radar_data->wz,-1.0f,1.0f);
+	Radar_data->vx = loop_fp32_constrain(Radar_data->vx,-2.0f,2.0f);
+	Radar_data->vy = loop_fp32_constrain(Radar_data->vy,-2.0f,2.0f);
+	Radar_data->wz = loop_fp32_constrain(Radar_data->wz,-2.0f,2.0f);
 
 }
 
 
 
-//void get_chassis_data(chassis_data_t *chassis_data,uint8_t *buf)
-//{
-//	chassis_data->pitch = (buf[0]/40.0f-3.1415926f)*57.2957795f;
-
-////chassis_data->pitch = buf[0]-3.1415926f;	
-//}
 
 
