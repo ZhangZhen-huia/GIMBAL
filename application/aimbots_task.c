@@ -37,16 +37,16 @@ void aimbots_task(void const * argument)
 //		Send_to_minpc[17]='N';
 //		CDC_Transmit_FS(Send_to_minpc,18);
 
-		Send_to_minpc[0]=0xFF;
-		Send_to_minpc[1]=0;
-		memcpy(&Send_to_minpc[2],get_INS_angle(2),4);
-		memcpy(&Send_to_minpc[6],get_INS_pitch_to_minpc(),4);
-		memcpy(&Send_to_minpc[10],get_INS_angle(0),4);
-		memcpy(&Send_to_minpc[14],a,1);
-		Send_to_minpc[15]=0x0D;
-		CDC_Transmit_FS(Send_to_minpc,16);
+//		Send_to_minpc[0]=0xFF;
+//		Send_to_minpc[1]=0;
+//		memcpy(&Send_to_minpc[2],get_INS_angle(2),4);
+//		memcpy(&Send_to_minpc[6],get_INS_pitch_to_minpc(),4);
+//		memcpy(&Send_to_minpc[10],get_INS_angle(0),4);
+//		memcpy(&Send_to_minpc[14],a,1);
+//		Send_to_minpc[15]=0x0D;
+//		CDC_Transmit_FS(Send_to_minpc,16);
 
-		dispose_usb_data(&auto_data);
+//		dispose_usb_data(&auto_data);
 		osDelay(10);
 	}
 }

@@ -259,7 +259,7 @@ static void gimbal_set_control(gimbal_control_t *set_control)
 		else if(set_control->gimbal_yaw_motor.gimbal_motor_mode == GIMBAL_MOTOR_RADAR)
 		{
 				//雷达控制下,速度控制
-				gimbal_radar_speed_limit(&set_control->gimbal_yaw_motor,Radar_data.wz);
+				gimbal_gyro_angle_limit(&set_control->gimbal_yaw_motor,add_yaw_angle);//Radar_data.wz);
 		}
 		
 		
@@ -498,7 +498,7 @@ static void gimbal_motor_encode_angle_control(gimbal_motor_t *gimbal_motor)
 
     //角度环，速度环串级pid调试
     gimbal_motor->motor_gyro_set = PID_calc(&gimbal_motor->gimbal_motor_encode_angle_pid, gimbal_motor->relative_angle, gimbal_motor->relative_angle_set);
-    gimbal_motor->current_set = PID_calc(&gimbal_motor->gimbal_motor_encode_speed_pid, gimbal_motor->motor_gyro, gimbal_motor->motor_gyro_set);
+    gimbal_motor->current_set = PID_calc(&gimbal_motor->gimbal_motor_encode_speed_pid, /*gimbal_motor->motor_gyro*/gimbal_motor->gimbal_motor_measure->omeg, gimbal_motor->motor_gyro_set);
     //控制值赋值
     gimbal_motor->given_current = (int16_t)(gimbal_motor->current_set);
 }
