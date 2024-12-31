@@ -14,7 +14,6 @@
 	(ptr)->rpm = (uint16_t)((data)[2] << 8 | (data)[3]);         			 \
 	(ptr)->given_current = (uint16_t)((data)[4] << 8 | (data)[5]);     \
 	(ptr)->temperate = (data)[6];                                      \
-	(ptr)->omeg = ((ptr)->last_ecd - (ptr)->ecd)/10.0f;										\
 }
 
 

@@ -1,0 +1,63 @@
+gimbal\usbd_desc.o: ../USB_DEVICE/App/usbd_desc.c
+gimbal\usbd_desc.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h
+gimbal\usbd_desc.o: ../Core/Inc/usbd_conf.h
+gimbal\usbd_desc.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\stdio.h
+gimbal\usbd_desc.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\stdlib.h
+gimbal\usbd_desc.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\string.h
+gimbal\usbd_desc.o: ../Core/Inc/main.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
+gimbal\usbd_desc.o: ../Core/Inc/stm32f4xx_hal_conf.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h
+gimbal\usbd_desc.o: ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h
+gimbal\usbd_desc.o: ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h
+gimbal\usbd_desc.o: ../Drivers/CMSIS/Include/core_cm4.h
+gimbal\usbd_desc.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\stdint.h
+gimbal\usbd_desc.o: ../Drivers/CMSIS/Include/cmsis_version.h
+gimbal\usbd_desc.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
+gimbal\usbd_desc.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
+gimbal\usbd_desc.o: ../Drivers/CMSIS/Include/mpu_armv7.h
+gimbal\usbd_desc.o: ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
+gimbal\usbd_desc.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\stddef.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc_ex.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_exti.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio_ex.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma_ex.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_cortex.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_can.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ex.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h
+gimbal\usbd_desc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h
+gimbal\usbd_desc.o: ../Core/Inc/struct_typedef.h
+gimbal\usbd_desc.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
+gimbal\usbd_desc.o: ../Core/Inc/FreeRTOSConfig.h
+gimbal\usbd_desc.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
+gimbal\usbd_desc.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h
+gimbal\usbd_desc.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h
+gimbal\usbd_desc.o: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/portmacro.h
+gimbal\usbd_desc.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h
+gimbal\usbd_desc.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
+gimbal\usbd_desc.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
+gimbal\usbd_desc.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
+gimbal\usbd_desc.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h
+gimbal\usbd_desc.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h
+gimbal\usbd_desc.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h
+gimbal\usbd_desc.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
+gimbal\usbd_desc.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h
+gimbal\usbd_desc.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h
+gimbal\usbd_desc.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h
+gimbal\usbd_desc.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h
+gimbal\usbd_desc.o: ../USB_DEVICE/App/usbd_desc.h

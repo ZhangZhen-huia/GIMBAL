@@ -12,16 +12,10 @@ typedef struct
     int16_t given_current; //当前电流值 -16384-16384
     uint8_t temperate; //Temp/度
     int16_t last_ecd; //上一次的机械角度
-		float omeg;
+
 }motor_measure_t;
 
-#ifndef RPM_TO_RADPS
 
-#define PI	3.1415926f
-#define RPM_TO_RADPS (2.0f * PI / 60.0f) // rpm换算到rad/s
-
-
-#endif
 #define Fric_L 0
 #define Fric_R 1
 typedef enum

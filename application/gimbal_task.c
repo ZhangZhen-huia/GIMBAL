@@ -89,7 +89,7 @@ void gimbal_task(void const *pvParameters)
   */
 static void gimbal_init(gimbal_control_t *init)
 {
-	uint16_t Pitch_offset_ecd = 4067;
+	uint16_t Pitch_offset_ecd = 4072;
 	fp32 pitch_max_relative_angle=3440;
 	fp32 pitch_min_relative_angle=4330;
 	uint16_t Yaw_offset_ecd = 3473;
@@ -163,7 +163,7 @@ static void gimbal_init(gimbal_control_t *init)
 }
 
 
-
+fp32 omeg;
 /**
   * @brief          底盘测量数据更新，包括电机速度，欧拉角度，机器人速度
   * @param[out]     gimbal_feedback_update:"gimbal_control"变量指针.
@@ -171,7 +171,7 @@ static void gimbal_init(gimbal_control_t *init)
   */
 static void gimbal_feedback_update(gimbal_control_t *feedback_update)
 {
-
+		static fp32 ecd,last_ecd,last_omg;
     if (feedback_update == NULL)
     {
         return;
@@ -187,7 +187,20 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update)
     feedback_update->gimbal_yaw_motor.relative_angle = -motor_ecd_to_angle_change(feedback_update->gimbal_yaw_motor.gimbal_motor_measure->ecd,feedback_update->gimbal_yaw_motor.offset_ecd);
 		feedback_update->gimbal_yaw_motor.motor_gyro  = feedback_update->gimbal_bmi088_data->gyro[INS_GYRO_Z_ADDRESS_OFFSET];
 				
+		
+		last_ecd = ecd;
+		last_omg = omeg;
+		ecd = feedback_update->gimbal_pitch_motor.gimbal_motor_measure->ecd;
 
+		
+		omeg = (ecd - last_ecd)/10.0f;
+    omeg = ((omeg)>409.6f)? omeg - 819.1f :omeg;
+		omeg = ((omeg)<-409.6f)? omeg + 819.1f :omeg;
+		
+		omeg = last_omg*0.5f + 0.5f*omeg ;
+		
+		
+		
 
                                                        
 }
@@ -498,7 +511,7 @@ static void gimbal_motor_encode_angle_control(gimbal_motor_t *gimbal_motor)
 
     //角度环，速度环串级pid调试
     gimbal_motor->motor_gyro_set = PID_calc(&gimbal_motor->gimbal_motor_encode_angle_pid, gimbal_motor->relative_angle, gimbal_motor->relative_angle_set);
-    gimbal_motor->current_set = PID_calc(&gimbal_motor->gimbal_motor_encode_speed_pid, /*gimbal_motor->motor_gyro*/gimbal_motor->gimbal_motor_measure->omeg, gimbal_motor->motor_gyro_set);
+    gimbal_motor->current_set = PID_calc(&gimbal_motor->gimbal_motor_encode_speed_pid, /*omeg*/gimbal_motor->motor_gyro,gimbal_motor->motor_gyro_set);
     //控制值赋值
     gimbal_motor->given_current = (int16_t)(gimbal_motor->current_set);
 }
