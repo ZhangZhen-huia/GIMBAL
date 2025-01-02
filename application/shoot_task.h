@@ -22,50 +22,29 @@
 
 
 //左摩擦轮速度pid
-#define FRIC_L_SPEED_PID_KP         9000.0f
-#define FRIC_L_SPEED_PID_KI         500.0f
-#define FRIC_L_SPEED_PID_KD         0.0f
+#define FRIC_L_SPEED_PID_KP         6000.0f
+#define FRIC_L_SPEED_PID_KI         300.0f
+#define FRIC_L_SPEED_PID_KD         750.0f
 #define FRIC_L_SPEED_PID_MAX_OUT   16384.0f
-#define FRIC_L_SPEED_PID_MAX_IOUT  10000.0f
+#define FRIC_L_SPEED_PID_MAX_IOUT  2000.0f
 
-#define FRIC_L_SPEED_KF_STATIC      10000.0f
+#define FRIC_L_SPEED_KF_STATIC      50.0f
 #define FRIC_L_SPEED_KF_DYNAMIC     0.0f
 
 
 //右摩擦轮速度pid
-#define FRIC_R_SPEED_PID_KP         9000.0f
+#define FRIC_R_SPEED_PID_KP         7500.0f
 #define FRIC_R_SPEED_PID_KI         500.0f
-#define FRIC_R_SPEED_PID_KD         0.0f
+#define FRIC_R_SPEED_PID_KD         750.0f
 #define FRIC_R_SPEED_PID_MAX_OUT   16384.0f
-#define FRIC_R_SPEED_PID_MAX_IOUT  10000.0f
+#define FRIC_R_SPEED_PID_MAX_IOUT  2000.0f
 
-#define FRIC_R_SPEED_KF_STATIC      -10000.0f
+#define FRIC_R_SPEED_KF_STATIC      50.0f
 #define FRIC_R_SPEED_KF_DYNAMIC     0.0f
 
-#define MAX_SPEED   29
-#define MID_SPEED		20
+#define MAX_SPEED   22
 
 
-////左摩擦轮速度pid
-//#define FRIC_L_SPEED_PID_KP         11000.0f
-//#define FRIC_L_SPEED_PID_KI         50.0f
-//#define FRIC_L_SPEED_PID_KD         0.0f
-//#define FRIC_L_SPEED_PID_MAX_OUT   16384.0f
-//#define FRIC_L_SPEED_PID_MAX_IOUT  10000.0f
-
-//#define FRIC_L_SPEED_KF_STATIC      10000.0f
-//#define FRIC_L_SPEED_KF_DYNAMIC     0.0f
-
-
-////右摩擦轮速度pid
-//#define FRIC_R_SPEED_PID_KP         10000.0f
-//#define FRIC_R_SPEED_PID_KI         200.0f
-//#define FRIC_R_SPEED_PID_KD         0.0f
-//#define FRIC_R_SPEED_PID_MAX_OUT   16384.0f
-//#define FRIC_R_SPEED_PID_MAX_IOUT  10000.0f
-
-//#define FRIC_R_SPEED_KF_STATIC      -10000.0f
-//#define FRIC_R_SPEED_KF_DYNAMIC     0.0f
 
 //shoot相关电机信息数据包
 typedef struct

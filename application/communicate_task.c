@@ -47,7 +47,9 @@ static void Gimbal_data_transfer(void)
 	uint8_t vx_set;
 	uint8_t vy_set;
 	uint8_t wz_set;
-	
+	float key_x;
+	float key_y;
+
 	
 	if(gimbal_control.gimbal_behaviour == GIMBAL_FOLLOW_RADAR)
 	{
@@ -65,9 +67,33 @@ static void Gimbal_data_transfer(void)
 	}
 	else
 	{
-		vx_set = (rc_ctrl.rc.ch[CHASSIS_X_CHANNEL]+660)/20.0f;//0-66
-		vy_set = (rc_ctrl.rc.ch[CHASSIS_Y_CHANNEL]+660)/20.0f;//0-66
-		wz_set = (rc_ctrl.rc.ch[CHASSIS_W_CHANNEL]+660)/20.0f;//0-66
+
+			if(rc_ctrl.key.v & KEY_PRESSED_OFFSET_W)
+			{
+				key_y += 0.5f;						
+			}
+			else if(rc_ctrl.key.v& KEY_PRESSED_OFFSET_S)
+			{
+				key_y -=0.5f;
+			}
+			
+			if(rc_ctrl.key.v & KEY_PRESSED_OFFSET_A)
+			{
+				key_x += 0.5f;						
+			}
+			else if(rc_ctrl.key.v & KEY_PRESSED_OFFSET_D)
+			{
+				key_x -=0.5f;
+			}
+			
+			key_x = (fp32_constrain(key_x,-3.5f,3.5f)+3.5f)/10;
+			key_y = (fp32_constrain(key_y,-3.5f,3.5f)+3.5f)/10;
+			
+			
+			
+			vx_set = (rc_ctrl.rc.ch[CHASSIS_X_CHANNEL]+660)/20.0f+key_x;//(0-66)+(0-70)
+			vy_set = (rc_ctrl.rc.ch[CHASSIS_Y_CHANNEL]+660)/20.0f+key_y;//(0-66)+(0-70)
+			wz_set = (rc_ctrl.rc.ch[CHASSIS_W_CHANNEL]+660)/20.0f;//0-66
 	}
 	uint8_t rc_err = (uint8_t)toe_is_error(DBUS_TOE);
 	uint8_t rc_sl = rc_ctrl.rc.s[RC_sl_channel];

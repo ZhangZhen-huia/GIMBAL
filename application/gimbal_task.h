@@ -210,11 +210,9 @@ extern gimbal_control_t gimbal_control;
 #define YAW_RC_SEN    -0.001f
 #define PITCH_RC_SEN  -0.0005f //0.005
 
-#define YAW_MOUSE_SEN   0.00005f
+#define YAW_MOUSE_SEN   0.01f
 #define PITCH_MOUSE_SEN 0.0005f
 
-#define YAW_ENCODE_SEN    0.01f
-#define PITCH_ENCODE_SEN  0.01f
 
 #define GIMBAL_CONTROL_TIME 1
 

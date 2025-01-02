@@ -1,14 +1,14 @@
 #include "shoot_task.h"
 #include "tim.h"
 #include "math.h"
-
+#include "vofa_task.h"
 
 
 shoot_control_t shoot_control;
 
 
 //在当前比例下摩擦轮最大能到达转速29-->9300rpm差不多
-int16_t fric1=25,fric2=-25;
+int16_t fric1=MAX_SPEED,fric2=-MAX_SPEED;
 
 static void shoot_init(shoot_control_t *shoot_init);
 static void shoot_motor_control(shoot_motor_t *shoot_motor);
@@ -106,6 +106,7 @@ static void shoot_feedback_update(shoot_control_t *feedback_update)
 	feedback_update->shoot_fric_R_motor.motor_speed = feedback_update->shoot_fric_R_motor.shoot_motor_measure->rpm*FRIC_RPM_TO_SPEED_SEN;
 		
 
+
 		
 #ifdef SHOOT_DEBUG
 	Shoot_Debug_get_data();
@@ -182,9 +183,10 @@ static void shoot_motor_control(shoot_motor_t *shoot_motor)
 	if((shoot_motor == &shoot_control.shoot_fric_L_motor) || (shoot_motor == &shoot_control.shoot_fric_R_motor))
 	{
     
-		shoot_motor->current_set = K_FF_Cal_shoot(&shoot_motor->shoot_speed_pid,shoot_motor->motor_speed,shoot_motor->motor_speed_set,29,0);
-	
+		shoot_motor->current_set = K_FF_Cal(&shoot_motor->shoot_speed_pid,shoot_motor->motor_speed,shoot_motor->motor_speed_set);
+		
 	}
+
 }
 
 
