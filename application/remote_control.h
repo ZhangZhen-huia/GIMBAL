@@ -112,8 +112,8 @@ typedef __packed struct
         __packed struct
         {
                 uint16_t v;
+								uint16_t last_v;
         } key;
-
 } RC_ctrl_t;
 
 /* ----------------------- Internal Data ----------------------------------- */

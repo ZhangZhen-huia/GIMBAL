@@ -6,7 +6,11 @@
 #include "math.h"
 #include "bsp_spi.h"
 #include "stm32f4xx_hal_spi.h"
-
+#include "tim.h"
+#include "bsp_buzzer.h"
+uint8_t Bee_flag=1;
+uint16_t psc = 1;
+uint16_t pwm = 5000;
 
 bmi088_real_data_t bmi088_real_data;
 
@@ -52,6 +56,7 @@ void INS_task(void const * argument)
 	
 	while(1)
 	{
+		
 		//获取陀螺仪、加速度计、温度数据
 		BMI088_read(bmi088_real_data.gyro, bmi088_real_data.accel, &bmi088_real_data.temp);
 		
@@ -76,6 +81,14 @@ void INS_task(void const * argument)
 		
 	//	CAN_cmd_INS(bmi088_real_data.INS_angle[0], -bmi088_real_data.INS_angle[1], bmi088_real_data.gyro[2], bmi088_real_data.gyro[1]);
 		//计算周期为2ms（与四元数解算中的解算频率有关）
+			if(Bee_flag==1)
+			{	
+					Bee_flag=0;
+					buzzer_on(psc, pwm);
+					osDelay(500);
+					buzzer_off();
+
+			}
 		osDelay(1);
 	}
 }

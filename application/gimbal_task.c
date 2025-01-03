@@ -37,8 +37,6 @@ static void gimbal_motor_encode_angle_control(gimbal_motor_t *gimbal_motor);
 float angle_to_180(float inf_yaw);//加减倍数，使角度到-180至180的范围
 static void gimbal_auto_angle_limit(gimbal_motor_t *gimbal_motor,fp32 aim_angle);
 static void gimbal_motor_auto_angle_control(gimbal_motor_t *gimbal_motor);
-static void gimbal_motor_Radar_speed_control(gimbal_motor_t *gimbal_motor);
-static void gimbal_radar_speed_limit(gimbal_motor_t *gimbal_motor, fp32 speed);
 /*云台任务总结构体*/
 gimbal_control_t gimbal_control;	
 fp32 yaw_relative_init;
@@ -111,7 +109,7 @@ static void gimbal_init(gimbal_control_t *init)
 	static const fp32 Pitch_auto_speed_pid[3] = {PITCH_AUTO_SPEED_PID_KP, PITCH_AUTO_SPEED_PID_KI, PITCH_AUTO_SPEED_PID_KD};
 	static const fp32 Pitch_auto_angle_pid[3] = {PITCH_AUTO_ANGLE_PID_KP, PITCH_AUTO_ANGLE_PID_KI, PITCH_AUTO_ANGLE_PID_KD};
 	
-	static const fp32 Yaw_radar_speed_pid[3] = {YAW_RADAR_SPEED_PID_KP, YAW_RADAR_SPEED_PID_KI, YAW_RADAR_SPEED_PID_KD};
+//	static const fp32 Yaw_radar_speed_pid[3] = {YAW_RADAR_SPEED_PID_KP, YAW_RADAR_SPEED_PID_KI, YAW_RADAR_SPEED_PID_KD};
 
 	//电机数据指针获取
 	init->gimbal_yaw_motor.gimbal_motor_measure = get_gimbal_yaw_motor_measure_point();
@@ -141,7 +139,7 @@ static void gimbal_init(gimbal_control_t *init)
 	PID_init(&init->gimbal_yaw_motor.gimbal_motor_auto_angle_pid,PID_POSITION,DATA_GYRO,Yaw_auto_angle_pid,YAW_AUTO_ANGLE_PID_MAX_OUT,YAW_AUTO_ANGLE_PID_MAX_IOUT);
 	PID_init(&init->gimbal_yaw_motor.gimbal_motor_auto_speed_pid,PID_POSITION,DATA_NORMAL,Yaw_auto_speed_pid,YAW_AUTO_SPEED_PID_MAX_OUT,YAW_AUTO_SPEED_PID_MAX_IOUT);
 
-	PID_init(&init->gimbal_yaw_motor.gimbal_motor_radar_speed_pid,PID_POSITION,DATA_NORMAL,Yaw_radar_speed_pid,YAW_RADAR_SPEED_PID_MAX_OUT,YAW_RADAR_SPEED_PID_MAX_IOUT);
+//	PID_init(&init->gimbal_yaw_motor.gimbal_motor_radar_speed_pid,PID_POSITION,DATA_NORMAL,Yaw_radar_speed_pid,YAW_RADAR_SPEED_PID_MAX_OUT,YAW_RADAR_SPEED_PID_MAX_IOUT);
 	init->gimbal_behaviour = GIMBAL_ZERO_FORCE;
 	//pitch
 	ecd_format(Pitch_offset_ecd);
@@ -269,11 +267,7 @@ static void gimbal_set_control(gimbal_control_t *set_control)
 				//自瞄模式下，陀螺仪角度控制
 				gimbal_auto_angle_limit(&set_control->gimbal_yaw_motor,add_yaw_angle);
 		}
-		else if(set_control->gimbal_yaw_motor.gimbal_motor_mode == GIMBAL_MOTOR_RADAR)
-		{
-				//雷达控制下,速度控制
-				gimbal_gyro_angle_limit(&set_control->gimbal_yaw_motor,add_yaw_angle);//Radar_data.wz);
-		}
+
 		
 		
    if (set_control->gimbal_pitch_motor.gimbal_motor_mode == GIMBAL_MOTOR_GYRO)
@@ -291,22 +285,11 @@ static void gimbal_set_control(gimbal_control_t *set_control)
 				//自瞄模式下，陀螺仪角度控制
 				gimbal_auto_angle_limit(&set_control->gimbal_pitch_motor,add_pitch_angle);
 		}
-		else if(set_control->gimbal_pitch_motor.gimbal_motor_mode == GIMBAL_MOTOR_RADAR)
-		{
-				//雷达控制下,编码值角度控制
-				gimbal_encode_angle_limit(&set_control->gimbal_pitch_motor,add_pitch_angle);
-		}
+
 
 }
 
-static void gimbal_radar_speed_limit(gimbal_motor_t *gimbal_motor, fp32 speed)
-{
-	if(gimbal_motor == &gimbal_control.gimbal_yaw_motor)
-	{
-//		speed = speed>0.70f? 0.70f:speed;
-		gimbal_motor->motor_gyro_set = speed*-10.0f;
-	}
-}
+
 
 /**
   * @brief          云台控制模式:GIMBAL_MOTOR_GYRO，使用陀螺仪计算的欧拉角进行控制
@@ -454,10 +437,7 @@ static void gimbal_control_loop(gimbal_control_t *control_loop)
     {
        gimbal_motor_auto_angle_control(&control_loop->gimbal_yaw_motor);
     }
-    else if (control_loop->gimbal_yaw_motor.gimbal_motor_mode == GIMBAL_MOTOR_RADAR)
-    {
-       gimbal_motor_Radar_speed_control(&control_loop->gimbal_yaw_motor);
-    }		
+	
 		
 		
     if (control_loop->gimbal_pitch_motor.gimbal_motor_mode == GIMBAL_MOTOR_GYRO)
@@ -472,10 +452,7 @@ static void gimbal_control_loop(gimbal_control_t *control_loop)
     {
         gimbal_motor_auto_angle_control(&control_loop->gimbal_pitch_motor);
     }
-    else if (control_loop->gimbal_pitch_motor.gimbal_motor_mode == GIMBAL_MOTOR_RADAR)
-    {
-        gimbal_motor_encode_angle_control(&control_loop->gimbal_pitch_motor);
-    }		
+	
 }
 
 
@@ -546,15 +523,7 @@ static void gimbal_motor_auto_angle_control(gimbal_motor_t *gimbal_motor)
 }
 
 
-static void gimbal_motor_Radar_speed_control(gimbal_motor_t *gimbal_motor)
-{
-		if(gimbal_motor == &gimbal_control.gimbal_yaw_motor)
-		{
-			gimbal_motor->current_set = PID_calc(&gimbal_motor->gimbal_motor_radar_speed_pid, gimbal_motor->motor_gyro, gimbal_motor->motor_gyro_set);
-			//控制值赋值
-			gimbal_motor->given_current = (int16_t)(gimbal_motor->current_set);
-		}
-}
+
 
 /**
   * @brief          设置云台控制模式，主要在'gimbal_behaviour_mode_set'函数中改变

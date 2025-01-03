@@ -58,12 +58,12 @@
 /*--------------------------------------Yaw--------------------------------------*/
 
 
-//导航
-#define YAW_RADAR_SPEED_PID_KP        6000.0f//20000.0f //35000
-#define YAW_RADAR_SPEED_PID_KI        100.0f
-#define YAW_RADAR_SPEED_PID_KD        0.0f
-#define YAW_RADAR_SPEED_PID_MAX_OUT   30000.0f
-#define YAW_RADAR_SPEED_PID_MAX_IOUT  700.0f
+////导航
+//#define YAW_RADAR_SPEED_PID_KP        6000.0f//20000.0f //35000
+//#define YAW_RADAR_SPEED_PID_KI        100.0f
+//#define YAW_RADAR_SPEED_PID_KD        0.0f
+//#define YAW_RADAR_SPEED_PID_MAX_OUT   30000.0f
+//#define YAW_RADAR_SPEED_PID_MAX_IOUT  700.0f
 
 
 //陀螺仪
@@ -110,7 +110,7 @@ typedef enum
     GIMBAL_MOTOR_GYRO=0,    //电机陀螺仪角度控制
     GIMBAL_MOTOR_ENCONDE, //电机编码值角度控制
 		GIMBAL_MOTOR_AUTO,
-		GIMBAL_MOTOR_RADAR,
+
 } gimbal_motor_mode_e;
 
 
@@ -123,7 +123,7 @@ typedef enum
   GIMBAL_ENCODE_ANGLE, 
   GIMBAL_MOTIONLESS,    
 	GIMBAL_AUTO_ANGLE,
-	GIMBAL_FOLLOW_RADAR,
+
 } gimbal_behaviour_e;
 
 
@@ -138,8 +138,8 @@ typedef struct
 	
     pid_type_def gimbal_motor_auto_angle_pid; //自瞄
 		pid_type_def gimbal_motor_auto_speed_pid; 
-	
-		pid_type_def gimbal_motor_radar_speed_pid;//云台导航速度环
+//	
+//		pid_type_def gimbal_motor_radar_speed_pid;//云台导航速度环
 	
     gimbal_motor_mode_e gimbal_motor_mode;						//电机控制状态
     gimbal_motor_mode_e last_gimbal_motor_mode;				//上次电机控制状态
@@ -210,8 +210,8 @@ extern gimbal_control_t gimbal_control;
 #define YAW_RC_SEN    -0.001f
 #define PITCH_RC_SEN  -0.0005f //0.005
 
-#define YAW_MOUSE_SEN   0.01f
-#define PITCH_MOUSE_SEN 0.0005f
+#define YAW_MOUSE_SEN   0.005f
+#define PITCH_MOUSE_SEN 0.005f
 
 
 #define GIMBAL_CONTROL_TIME 1

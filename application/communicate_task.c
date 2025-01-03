@@ -13,11 +13,10 @@
 
 static void can_cmd_to_chassis(CAN_HandleTypeDef*hcan,int16_t can_id,uint8_t *buf,uint8_t num);
 static void Gimbal_data_transfer(void);
-static void Get_Radar_Data(Radar_data_t *Radar_data);
 
 
 
-Radar_data_t Radar_data;
+
 
 
 void communicate_task(void const * argument)
@@ -25,9 +24,7 @@ void communicate_task(void const * argument)
 	
 	while(1)
 	{
-		#ifdef RADAR
-		Get_Radar_Data(&Radar_data);
-		#endif
+
 		Gimbal_data_transfer();
 
 		osDelay(2);
@@ -46,58 +43,21 @@ static void Gimbal_data_transfer(void)
 	uint8_t buf[8];
 	uint8_t vx_set;
 	uint8_t vy_set;
-	uint8_t wz_set;
-	float key_x;
-	float key_y;
-
+//	uint8_t wz_set;
+	uint16_t rc_key_v;
+	uint8_t rc_err;
+	uint8_t rc_sl; 
+	uint8_t rc_sr; 
 	
-	if(gimbal_control.gimbal_behaviour == GIMBAL_FOLLOW_RADAR)
-	{
-		#ifdef RADAR
-		vx_set = (Radar_data.vx + 2.0f)*50;
-
-		vy_set = (Radar_data.vy+ 2.0f)*50; 
-		wz_set = (Radar_data.wz+ 2.0f)*50; 
-		
-		#else
-		vx_set = 0;
-		vy_set = 0;
-		wz_set = 0;
-		#endif
-	}
-	else
-	{
-
-			if(rc_ctrl.key.v & KEY_PRESSED_OFFSET_W)
-			{
-				key_y += 0.5f;						
-			}
-			else if(rc_ctrl.key.v& KEY_PRESSED_OFFSET_S)
-			{
-				key_y -=0.5f;
-			}
-			
-			if(rc_ctrl.key.v & KEY_PRESSED_OFFSET_A)
-			{
-				key_x += 0.5f;						
-			}
-			else if(rc_ctrl.key.v & KEY_PRESSED_OFFSET_D)
-			{
-				key_x -=0.5f;
-			}
-			
-			key_x = (fp32_constrain(key_x,-3.5f,3.5f)+3.5f)/10;
-			key_y = (fp32_constrain(key_y,-3.5f,3.5f)+3.5f)/10;
-			
-			
-			
-			vx_set = (rc_ctrl.rc.ch[CHASSIS_X_CHANNEL]+660)/20.0f+key_x;//(0-66)+(0-70)
-			vy_set = (rc_ctrl.rc.ch[CHASSIS_Y_CHANNEL]+660)/20.0f+key_y;//(0-66)+(0-70)
-			wz_set = (rc_ctrl.rc.ch[CHASSIS_W_CHANNEL]+660)/20.0f;//0-66
-	}
-	uint8_t rc_err = (uint8_t)toe_is_error(DBUS_TOE);
-	uint8_t rc_sl = rc_ctrl.rc.s[RC_sl_channel];
-	uint8_t rc_sr = rc_ctrl.rc.s[RC_sr_channel];
+	
+	rc_key_v = rc_ctrl.key.v;		
+	vx_set = (rc_ctrl.rc.ch[CHASSIS_X_CHANNEL]+660)/20.0f;//(0-66)
+	vy_set = (rc_ctrl.rc.ch[CHASSIS_Y_CHANNEL]+660)/20.0f;//(0-66)
+//	wz_set = (rc_ctrl.rc.ch[CHASSIS_W_CHANNEL]+660)/20.0f;//0-66
+	
+	rc_err = (uint8_t)toe_is_error(DBUS_TOE);
+	rc_sl = rc_ctrl.rc.s[RC_sl_channel];
+	rc_sr = rc_ctrl.rc.s[RC_sr_channel];
 	
 	if(shoot_control.trig_mode == Start_fire)
 		gimbal_mode |= 0x01; 
@@ -109,31 +69,17 @@ static void Gimbal_data_transfer(void)
 	else
 		gimbal_mode &= 0xFD;
 	
-	#ifdef RADAR
-	if(gimbal_control.gimbal_behaviour == GIMBAL_FOLLOW_RADAR)
-	gimbal_mode |= 0x04;
-	else
-	gimbal_mode &= 0xFB;
-	#endif
-//	if(gimbal_control.gimbal_behaviour == GIMBAL_BUILD_MAP)
-//		gimbal_mode |= 0x04;
-//	else
-//		gimbal_mode &= 0xFB;
-//	
-//	if(gimbal_control.gimbal_behaviour == GIMBAL_FOLLOW_RADAR)
-//		gimbal_mode |= 0x08;
-//	else
-//		gimbal_mode &= 0xF7;	
-	
 
 	buf[0] = vx_set;
 	buf[1] = vy_set;
-	buf[2] = wz_set;
-	buf[3] = rc_err;
-	buf[4] = rc_sl;
-	buf[5] = rc_sr;
-	buf[6] = gimbal_mode;
-//	buf[7] = gimbal_mode;
+//	buf[2] = wz_set;
+	buf[2] = rc_err;
+	buf[3] = rc_sl;
+	buf[4] = rc_sr;
+	buf[5] = gimbal_mode;
+	memcpy(&buf[6],&rc_key_v,2);
+//	buf[7] = ;
+
 
 	
 	can_cmd_to_chassis(&hcan1,GIMBAL_ID,buf,8);
@@ -159,22 +105,6 @@ static void can_cmd_to_chassis(CAN_HandleTypeDef*hcan,int16_t can_id,uint8_t *bu
 
 }
 
-
-static void Get_Radar_Data(Radar_data_t *Radar_data)
-{
-	memcpy(&Radar_data->heading,&usb_recive_buffer[0],3);
-	memcpy(&Radar_data->tailing,&usb_recive_buffer[15],3);
-	if (memcmp(Radar_data->heading, "IST", 3) == 0 && memcmp(Radar_data->tailing, "AAA", 3) == 0)
-	{
-		memcpy(&Radar_data->vx,&usb_recive_buffer[3],4);
-		memcpy(&Radar_data->vy,&usb_recive_buffer[7],4);
-		memcpy(&Radar_data->wz,&usb_recive_buffer[11],4);
-	}
-	Radar_data->vx = loop_fp32_constrain(Radar_data->vx,-2.0f,2.0f);
-	Radar_data->vy = loop_fp32_constrain(Radar_data->vy,-2.0f,2.0f);
-	Radar_data->wz = loop_fp32_constrain(Radar_data->wz,-2.0f,2.0f);
-
-}
 
 
 

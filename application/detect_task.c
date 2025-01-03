@@ -46,6 +46,7 @@ void detect_task(void const *pvParameters)
 
 		while (1)
 		{
+			
 				static uint8_t error_num_display = 0;
 				system_time = xTaskGetTickCount();
 

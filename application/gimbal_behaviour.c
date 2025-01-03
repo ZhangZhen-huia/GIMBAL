@@ -4,7 +4,7 @@
 static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set);
 void gimbal_behaviour_mode_set(gimbal_control_t *gimbal_mode_set);
 static void gimbal_encode_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
-static void gimbal_follow_radar_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
+//static void gimbal_follow_radar_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
 
 
 /**
@@ -135,42 +135,42 @@ static void gimbal_auto_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *
 
 
 
-/**
-  * @brief          雷达控制，半自动模式
-  * @param[in]      yaw: yaw轴角度控制，陀螺仪控制为角度的增量 单位 rad
-  * @param[in]      pitch: pitch轴角度控制，编码值控制，为角度的增量 单位 rad
-  * @param[in]      gimbal_control_set: 云台数据指针
-  * @retval         none
-  */
-static void gimbal_follow_radar_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set)
-{
+///**
+//  * @brief          雷达控制，半自动模式
+//  * @param[in]      yaw: yaw轴角度控制，陀螺仪控制为角度的增量 单位 rad
+//  * @param[in]      pitch: pitch轴角度控制，编码值控制，为角度的增量 单位 rad
+//  * @param[in]      gimbal_control_set: 云台数据指针
+//  * @retval         none
+//  */
+//static void gimbal_follow_radar_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set)
+//{
 
-	static int8_t turn_flag = 1;
-	    if (yaw == NULL || pitch == NULL || gimbal_control_set == NULL)
-    {
-        return;
-    }
-
-
-		//*yaw = 0.3;
-		
-		if(turn_flag == 1)
-		{
-			*pitch = 0.1;
-			if(gimbal_control_set->gimbal_pitch_motor.relative_angle_set == gimbal_control_set->gimbal_pitch_motor.max_relative_angle)
-				turn_flag = -1;
-		}
-		
-		else if(turn_flag == -1)
-		{
-			*pitch = -0.1;
-			if(gimbal_control_set->gimbal_pitch_motor.relative_angle_set == gimbal_control_set->gimbal_pitch_motor.min_relative_angle)
-				turn_flag = 1;
-
-		}
+//	static int8_t turn_flag = 1;
+//	    if (yaw == NULL || pitch == NULL || gimbal_control_set == NULL)
+//    {
+//        return;
+//    }
 
 
-}
+//		//*yaw = 0.3;
+//		
+//		if(turn_flag == 1)
+//		{
+//			*pitch = 0.1;
+//			if(gimbal_control_set->gimbal_pitch_motor.relative_angle_set == gimbal_control_set->gimbal_pitch_motor.max_relative_angle)
+//				turn_flag = -1;
+//		}
+//		
+//		else if(turn_flag == -1)
+//		{
+//			*pitch = -0.1;
+//			if(gimbal_control_set->gimbal_pitch_motor.relative_angle_set == gimbal_control_set->gimbal_pitch_motor.min_relative_angle)
+//				turn_flag = 1;
+
+//		}
+
+
+//}
 
 
 
@@ -207,10 +207,7 @@ void gimbal_behaviour_control_set(fp32 *add_yaw, fp32 *add_pitch, gimbal_control
     {
         gimbal_auto_angle_control(add_yaw, add_pitch, gimbal_control_set);
     }
-		else if(gimbal_control_set->gimbal_behaviour == GIMBAL_FOLLOW_RADAR)
-		{
-				gimbal_follow_radar_angle_control(add_yaw, add_pitch, gimbal_control_set);
-		}
+
 	
 			
 			
@@ -253,11 +250,7 @@ void gimbal_behaviour_mode_set(gimbal_control_t *gimbal_mode_set)
         gimbal_mode_set->gimbal_pitch_motor.gimbal_motor_mode = GIMBAL_MOTOR_AUTO;
 
 		}
-		else if(gimbal_mode_set->gimbal_behaviour == GIMBAL_FOLLOW_RADAR)
-		{
-			  gimbal_mode_set->gimbal_yaw_motor.gimbal_motor_mode = GIMBAL_MOTOR_RADAR;
-        gimbal_mode_set->gimbal_pitch_motor.gimbal_motor_mode = GIMBAL_MOTOR_RADAR;
-		}
+
 }
 
 /**
@@ -273,29 +266,43 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
         return;
     }
 
+		//右键按下进入自瞄
+	if(gimbal_mode_set->gimbal_rc_ctrl->mouse.press_r == 1)
+	{
+		gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
+	}
+	else
+	{
+		gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
+	}	
 	
+	
+	
+//		if((gimbal_mode_set->gimbal_rc_ctrl->key.last_v & KEY_PRESSED_OFFSET_Q ) == 0 && (gimbal_mode_set->gimbal_rc_ctrl->key.v & KEY_PRESSED_OFFSET_Q))
+//		{
+//			if( gimbal_mode_set->last_gimbal_behaviour == GIMBAL_AUTO_ANGLE)
+//			{
+//					gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
+//			}
+//			else if(gimbal_mode_set->last_gimbal_behaviour == GIMBAL_ENCODE_ANGLE)
+//			{
+//				gimbal_mode_set->last_gimbal_behaviour = GIMBAL_AUTO_ANGLE;
+//			}
+//		}
 		
-    if (switch_is_mid(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
-    {
-        gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
-    }
-		
-#ifdef RADAR
-		 else if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
-    {
-        gimbal_mode_set->gimbal_behaviour = GIMBAL_FOLLOW_RADAR;
-    }
-
-#else 
-			else if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
-			{
-					gimbal_mode_set->gimbal_behaviour = GIMBAL_GYRO_ANGLE;
-			}
-#endif
-			else if (switch_is_down(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
-			{
-					gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
-			}
+//    if (switch_is_mid(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
+//    {
+//        gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
+//    }
+//		
+//		else if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
+//		{
+//				gimbal_mode_set->gimbal_behaviour = GIMBAL_GYRO_ANGLE;
+//		}
+//		else if (switch_is_down(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
+//		{
+//				gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
+//		}
 }
 
 

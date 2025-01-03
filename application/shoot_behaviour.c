@@ -119,7 +119,7 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 				if(shoot_behaviour->shoot_agency_state == SHOOT_OFF || shoot_behaviour->fric_mode == STOP)
 						shoot_behaviour->trig_mode = Cease_fire;
 				
-				else if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] == 660 )
+				else if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] == 660 || shoot_behaviour->shoot_rc_ctrl->mouse.press_l)
 				{
 					shoot_behaviour->trig_mode = Start_fire;
 				}
