@@ -232,7 +232,7 @@ static void gimbal_mode_change_control_transit(gimbal_control_t *gimbal_mode_cha
 }
 
 
-
+fp32 pitch_set;
 /**
   * @brief          设置云台控制设定值，控制值是通过gimbal_behaviour_control_set函数设置的
   * @param[out]     gimbal_set_control:"gimbal_control"变量指针.
@@ -370,12 +370,12 @@ static void gimbal_auto_angle_limit(gimbal_motor_t *gimbal_motor,fp32 aim_angle)
 		
     if (gimbal_motor->relative_angle >= gimbal_motor->max_relative_angle)
     {
-			aim_angle = gimbal_motor->absolute_angle;
+			aim_angle = gimbal_motor->max_relative_angle;
 		}
 		
     else if (gimbal_motor->relative_angle<= gimbal_motor->min_relative_angle)
     {
-			aim_angle = gimbal_motor->absolute_angle;
+			aim_angle = gimbal_motor->min_relative_angle;
     }
 		
     gimbal_motor->relative_angle_set = angle_to_180(aim_angle);

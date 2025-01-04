@@ -13,7 +13,7 @@
 
 static void can_cmd_to_chassis(CAN_HandleTypeDef*hcan,int16_t can_id,uint8_t *buf,uint8_t num);
 static void Gimbal_data_transfer(void);
-
+chassis_data_t chassis_data;
 
 
 
@@ -104,7 +104,6 @@ static void can_cmd_to_chassis(CAN_HandleTypeDef*hcan,int16_t can_id,uint8_t *bu
 	HAL_CAN_AddTxMessage(hcan,&gimbal_tx_message,chassis_can_send_data, &send_mail_box);
 
 }
-
 
 
 

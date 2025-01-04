@@ -91,7 +91,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*hcan)//  CAN FIFO0µÄÖÐ¶
 				detect_hook(YAW_TOE);	
 				break;
 //			case CHASSIS_ID:
-//				get_chassis_data(&chassis_data,rx_data1);
+//				memcpy(&chassis_data.bullet_speed,rx_data1,1);
 //				break;
 				
 		}

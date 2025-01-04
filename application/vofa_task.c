@@ -81,5 +81,3 @@ void vofa_justfloat(UART_HandleTypeDef* huart, float* fdata, uint16_t count)
 
 
 
-
-

@@ -11,5 +11,10 @@
 #define CHASSIS_Y_CHANNEL 3
 #define CHASSIS_W_CHANNEL 0
 
+typedef struct
+{
+	fp32 bullet_speed;
+}chassis_data_t;
+
 
 #endif

@@ -266,43 +266,43 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
         return;
     }
 
-		//右键按下进入自瞄
-	if(gimbal_mode_set->gimbal_rc_ctrl->mouse.press_r == 1)
-	{
-		gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
-	}
-	else
-	{
-		gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
-	}	
+//		//右键按下进入自瞄
+//	if(gimbal_mode_set->gimbal_rc_ctrl->mouse.press_r == 1)
+//	{
+//		gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
+//	}
+//	else
+//	{
+//		gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
+//	}	
+//	
 	
 	
-	
-//		if((gimbal_mode_set->gimbal_rc_ctrl->key.last_v & KEY_PRESSED_OFFSET_Q ) == 0 && (gimbal_mode_set->gimbal_rc_ctrl->key.v & KEY_PRESSED_OFFSET_Q))
-//		{
-//			if( gimbal_mode_set->last_gimbal_behaviour == GIMBAL_AUTO_ANGLE)
-//			{
-//					gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
-//			}
-//			else if(gimbal_mode_set->last_gimbal_behaviour == GIMBAL_ENCODE_ANGLE)
-//			{
-//				gimbal_mode_set->last_gimbal_behaviour = GIMBAL_AUTO_ANGLE;
-//			}
-//		}
+		if((gimbal_mode_set->gimbal_rc_ctrl->key.last_v & KEY_PRESSED_OFFSET_Q ) == 0 && (gimbal_mode_set->gimbal_rc_ctrl->key.v & KEY_PRESSED_OFFSET_Q))
+		{
+			if( gimbal_mode_set->last_gimbal_behaviour == GIMBAL_AUTO_ANGLE)
+			{
+					gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
+			}
+			else if(gimbal_mode_set->last_gimbal_behaviour == GIMBAL_ENCODE_ANGLE)
+			{
+				gimbal_mode_set->last_gimbal_behaviour = GIMBAL_AUTO_ANGLE;
+			}
+		}
 		
-//    if (switch_is_mid(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
-//    {
-//        gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
-//    }
-//		
-//		else if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
-//		{
-//				gimbal_mode_set->gimbal_behaviour = GIMBAL_GYRO_ANGLE;
-//		}
-//		else if (switch_is_down(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
-//		{
-//				gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
-//		}
+    if (switch_is_mid(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
+    {
+        gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
+    }
+		
+		else if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
+		{
+				gimbal_mode_set->gimbal_behaviour = GIMBAL_GYRO_ANGLE;
+		}
+		else if (switch_is_down(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
+		{
+				gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
+		}
 }
 
 
