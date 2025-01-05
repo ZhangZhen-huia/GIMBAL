@@ -68,3 +68,4 @@
 .\gimbal\shoot_behaviour.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\math.h
 .\gimbal\shoot_behaviour.o: ..\application\INS_task.h
 .\gimbal\shoot_behaviour.o: ../components/devices/BMI088driver.h
+.\gimbal\shoot_behaviour.o: ..\application\key_task.h

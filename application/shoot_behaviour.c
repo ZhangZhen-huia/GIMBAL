@@ -3,7 +3,7 @@
 #include "tim.h"
 #include "aimbots_task.h"
 #include "gimbal_task.h"
-
+#include "key_task.h"
 
 
 static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
@@ -55,29 +55,40 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 		firc_step = 0;
 		
 	}
+		//发射机构开关
+	if(((shoot_behaviour->shoot_agency_state == SHOOT_ON && shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >= 5000)) || Key_Value.Z_B)
+	{
+		shoot_flag++;
+		if(shoot_flag >= 400)
+		{
+			shoot_behaviour->shoot_agency_state = SHOOT_OFF;
+			shoot_flag=0;
+		}
+	}
+	else if((shoot_behaviour->shoot_rc_ctrl->rc.ch[4] ==660 && (switch_is_mid(shoot_behaviour->shoot_rc_ctrl->rc.s[SHOOT_MODE_CHANNEL]) || switch_is_down(shoot_behaviour->shoot_rc_ctrl->rc.s[SHOOT_MODE_CHANNEL]))) || Key_Value.Z_F)//右中
+	{
+		shoot_behaviour->shoot_agency_state = SHOOT_ON;//发射结构开
+		shoot_flag = 0;
+	}
+	else
+	{
+		shoot_flag=0;
+	}
 	
 	//不是自瞄模式
 	if(gimbal_control.gimbal_behaviour != GIMBAL_AUTO_ANGLE)
 	{		
-		//发射机构开关
-		if(shoot_behaviour->shoot_agency_state == SHOOT_ON && shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >= 5000)
+		if(Key_Value.Z_F)
 		{
-			shoot_flag++;
-			if(shoot_flag >= 400)
-			{
-				shoot_behaviour->shoot_agency_state = SHOOT_OFF;
-				shoot_flag=0;
-			}
+			shoot_behaviour->shoot_agency_state = SHOOT_ON;
+			shoot_behaviour->fric_mode = START;
 		}
-		else if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] ==660 && switch_is_mid(shoot_behaviour->shoot_rc_ctrl->rc.s[SHOOT_MODE_CHANNEL]))//右中
+		else if(Key_Value.Z_B)
 		{
-			shoot_behaviour->shoot_agency_state = SHOOT_ON;//发射结构开
-			shoot_flag = 0;
+			shoot_behaviour->shoot_agency_state = SHOOT_OFF;
+			shoot_behaviour->fric_mode = STOP;
 		}
-		else
-		{
-			shoot_flag=0;
-		}
+
 	
 	
 		//摩擦轮开启判断
@@ -91,7 +102,7 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 			{	
 						switch(firc_step)	
 						{	
-							case 0:if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >= 5000)	
+							case 0:if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >= 5000 || Key_Value.Z_F)	
 											firc_step = 1;	
 											break;	
 							case 1:if(switch_is_mid(shoot_behaviour->shoot_rc_ctrl->rc.s[SHOOT_MODE_CHANNEL]))//右中	
@@ -106,7 +117,6 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 											}	
 											break;								
 						}			
-			
 			}	
 		}
 		else
@@ -147,34 +157,15 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 			shoot_behaviour->trig_mode = Cease_fire;
 		}
 
-	//发射机构开关
-		if(shoot_behaviour->shoot_agency_state == SHOOT_ON && shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >= 5000)
-		{
-			shoot_flag++;
-			if(shoot_flag >= 400)
-			{
-				shoot_behaviour->shoot_agency_state = SHOOT_OFF;
-				shoot_flag=0;
-			}
-		}
-		else if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] ==660 && switch_is_down(shoot_behaviour->shoot_rc_ctrl->rc.s[SHOOT_MODE_CHANNEL]))//右中
-		{
-			shoot_behaviour->shoot_agency_state = SHOOT_ON;//发射结构开
-			shoot_flag = 0;
-		}
-		else
-		{
-			shoot_flag=0;
-		}
 		
 			//摩擦轮开启判断
 			if(shoot_behaviour->shoot_agency_state == SHOOT_ON)
 			{
 
-				if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >= 5000)
+				if((shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >= 5000) || Key_Value.Z_F)
 						shoot_behaviour->fric_mode = START;
 			
-				else if(shoot_behaviour->shoot_rc_ctrl->rc.ch[0] == 660 && shoot_behaviour->shoot_rc_ctrl->rc.ch[1] == -660 && shoot_behaviour->shoot_rc_ctrl->rc.ch[4] ==660)
+				else if((shoot_behaviour->shoot_rc_ctrl->rc.ch[0] == 660 && shoot_behaviour->shoot_rc_ctrl->rc.ch[1] == -660 && shoot_behaviour->shoot_rc_ctrl->rc.ch[4] ==660) || Key_Value.Z_B)
 				{
 					shoot_behaviour->fric_mode = STOP;
 				}
@@ -187,13 +178,21 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 					//拨弹盘开启判断
 				if(shoot_behaviour->fric_mode == START &&  shoot_behaviour->auto_fireFlag[0] == fire)
 				{
+					
 					shoot_behaviour->trig_mode = Start_fire;
 				}
 				else
 				{
 					shoot_behaviour->trig_mode = Cease_fire;
 				}			
-				
+				if(shoot_force && shoot_behaviour->fric_mode == START)
+				{
+					shoot_behaviour->trig_mode = Start_fire;
+				}
+				else
+				{
+					shoot_behaviour->trig_mode = Cease_fire;
+				}
 
 		
 	}

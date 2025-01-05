@@ -61,6 +61,7 @@
 ".\gimbal\shoot_task.o"
 ".\gimbal\vofa_task.o"
 ".\gimbal\remote_control.o"
+".\gimbal\key_task.o"
 ".\gimbal\can_receive.o"
 ".\gimbal\bsp_buzzer.o"
 ".\gimbal\bsp_rc.o"

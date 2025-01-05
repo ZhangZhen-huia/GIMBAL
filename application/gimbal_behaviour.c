@@ -1,6 +1,6 @@
 #include "gimbal_behaviour.h"
 #include "detect_task.h"
-
+#include "key_task.h"
 static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set);
 void gimbal_behaviour_mode_set(gimbal_control_t *gimbal_mode_set);
 static void gimbal_encode_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
@@ -278,17 +278,17 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
 //	
 	
 	
-		if((gimbal_mode_set->gimbal_rc_ctrl->key.last_v & KEY_PRESSED_OFFSET_Q ) == 0 && (gimbal_mode_set->gimbal_rc_ctrl->key.v & KEY_PRESSED_OFFSET_Q))
-		{
-			if( gimbal_mode_set->last_gimbal_behaviour == GIMBAL_AUTO_ANGLE)
-			{
-					gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
-			}
-			else if(gimbal_mode_set->last_gimbal_behaviour == GIMBAL_ENCODE_ANGLE)
-			{
-				gimbal_mode_set->last_gimbal_behaviour = GIMBAL_AUTO_ANGLE;
-			}
-		}
+//		if(Key_Value.Q)
+//		{
+//			if( gimbal_mode_set->last_gimbal_behaviour == GIMBAL_AUTO_ANGLE)
+//			{
+//					gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
+//			}
+//			else if(gimbal_mode_set->last_gimbal_behaviour == GIMBAL_ENCODE_ANGLE)
+//			{
+//				gimbal_mode_set->last_gimbal_behaviour = GIMBAL_AUTO_ANGLE;
+//			}
+//		}
 		
     if (switch_is_mid(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
     {

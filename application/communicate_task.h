@@ -14,7 +14,8 @@
 typedef struct
 {
 	fp32 bullet_speed;
+	fp32 shoot_cooling_heat;
 }chassis_data_t;
 
-
+extern chassis_data_t chassis_data;
 #endif

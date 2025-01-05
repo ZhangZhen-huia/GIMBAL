@@ -16,7 +16,11 @@
 	(ptr)->temperate = (data)[6];                                      \
 }
 
-
+#define get_shootdata_measure(ptr, data)                                  			  \
+    {                                                                   					\
+        (ptr)->bullet_speed = ((data)[0]<<8 | (data)[1]);					              \
+			  (ptr)->shoot_cooling_heat = (uint16_t) ((data)[2]<<8 | (data)[3]);     		\
+    }
 
 
 //¶¨Òåyaw£¬pitch,Ä¦²ÁÂÖ£¬²¦µ¯ÅÌµç»úÊý¾Ý½á¹¹Ìå
@@ -90,9 +94,11 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*hcan)//  CAN FIFO0µÄÖÐ¶
 				get_motor_measure(&yaw_motor,rx_data1);
 				detect_hook(YAW_TOE);	
 				break;
-//			case CHASSIS_ID:
-//				memcpy(&chassis_data.bullet_speed,rx_data1,1);
-//				break;
+			case CHASSIS_ID:
+				get_shootdata_measure(&chassis_data, rx_data1);      
+			  break;
+
+
 				
 		}
 		

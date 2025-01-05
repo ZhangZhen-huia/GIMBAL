@@ -37,6 +37,8 @@ static void gimbal_motor_encode_angle_control(gimbal_motor_t *gimbal_motor);
 float angle_to_180(float inf_yaw);//加减倍数，使角度到-180至180的范围
 static void gimbal_auto_angle_limit(gimbal_motor_t *gimbal_motor,fp32 aim_angle);
 static void gimbal_motor_auto_angle_control(gimbal_motor_t *gimbal_motor);
+		
+
 /*云台任务总结构体*/
 gimbal_control_t gimbal_control;	
 fp32 yaw_relative_init;
@@ -186,16 +188,16 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update)
 		feedback_update->gimbal_yaw_motor.motor_gyro  = feedback_update->gimbal_bmi088_data->gyro[INS_GYRO_Z_ADDRESS_OFFSET];
 				
 		
-		last_ecd = ecd;
-		last_omg = omeg;
-		ecd = feedback_update->gimbal_pitch_motor.gimbal_motor_measure->ecd;
+//		last_ecd = ecd;
+//		last_omg = omeg;
+//		ecd = feedback_update->gimbal_pitch_motor.gimbal_motor_measure->ecd;
 
-		
-		omeg = (ecd - last_ecd)/10.0f;
-    omeg = ((omeg)>409.6f)? omeg - 819.1f :omeg;
-		omeg = ((omeg)<-409.6f)? omeg + 819.1f :omeg;
-		
-		omeg = last_omg*0.5f + 0.5f*omeg ;
+//		
+//		omeg = (ecd - last_ecd)/10.0f;
+//    omeg = ((omeg)>409.6f)? omeg - 819.1f :omeg;
+//		omeg = ((omeg)<-409.6f)? omeg + 819.1f :omeg;
+//		
+//		omeg = last_omg*0.5f + 0.5f*omeg ;
 		
 		
 		

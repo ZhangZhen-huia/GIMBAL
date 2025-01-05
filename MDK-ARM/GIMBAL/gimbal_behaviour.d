@@ -65,3 +65,4 @@
 .\gimbal\gimbal_behaviour.o: ../components/devices/BMI088driver.h
 .\gimbal\gimbal_behaviour.o: ..\application\aimbots_task.h
 .\gimbal\gimbal_behaviour.o: ..\application\detect_task.h
+.\gimbal\gimbal_behaviour.o: ..\application\key_task.h

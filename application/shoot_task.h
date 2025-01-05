@@ -24,7 +24,7 @@
 //左摩擦轮速度pid
 #define FRIC_L_SPEED_PID_KP         6000.0f
 #define FRIC_L_SPEED_PID_KI         300.0f
-#define FRIC_L_SPEED_PID_KD         750.0f
+#define FRIC_L_SPEED_PID_KD         500.0f
 #define FRIC_L_SPEED_PID_MAX_OUT   16384.0f
 #define FRIC_L_SPEED_PID_MAX_IOUT  2000.0f
 
@@ -33,16 +33,16 @@
 
 
 //右摩擦轮速度pid
-#define FRIC_R_SPEED_PID_KP         7500.0f
+#define FRIC_R_SPEED_PID_KP         7250.0f
 #define FRIC_R_SPEED_PID_KI         500.0f
-#define FRIC_R_SPEED_PID_KD         750.0f
+#define FRIC_R_SPEED_PID_KD         500.0f
 #define FRIC_R_SPEED_PID_MAX_OUT   16384.0f
 #define FRIC_R_SPEED_PID_MAX_IOUT  2000.0f
 
 #define FRIC_R_SPEED_KF_STATIC      50.0f
 #define FRIC_R_SPEED_KF_DYNAMIC     0.0f
 
-#define MAX_SPEED   22
+#define MAX_SPEED   22.5
 
 
 
@@ -93,7 +93,7 @@ typedef struct
 		const uint8_t * auto_fireFlag;
     shoot_motor_t shoot_fric_L_motor;
     shoot_motor_t shoot_fric_R_motor;
-	
+		pid_type_def shoot_speed_compensate_pid;
 		
 		DebugData shoot_debug1;
 	
@@ -108,7 +108,10 @@ typedef struct
 		//摩擦轮开关
 		fric_mode_e fric_mode;
 		fric_mode_e fric_mode_last;
-
+		
+		fp32 bullet_speed;
+		fp32 shoot_cooling_heat;
+		fp32 shoot_cooling_heat_last;
 }shoot_control_t;
 
 

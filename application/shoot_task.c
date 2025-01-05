@@ -2,8 +2,8 @@
 #include "tim.h"
 #include "math.h"
 #include "vofa_task.h"
-
-
+#include "Can_receive.h"
+#include "communicate_task.h"
 shoot_control_t shoot_control;
 
 
@@ -68,7 +68,7 @@ static void shoot_init(shoot_control_t *shoot_init)
 
 	static const fp32 Shoot_fric_L_speed_pid[3] = {FRIC_L_SPEED_PID_KP,FRIC_L_SPEED_PID_KI,FRIC_L_SPEED_PID_KD};
 	static const fp32 Shoot_fric_R_speed_pid[3] = {FRIC_R_SPEED_PID_KP,FRIC_R_SPEED_PID_KI,FRIC_R_SPEED_PID_KD};
-	
+	static const fp32 Shoot_Speed_compensate_pid[3] = {190,0,0};
 	//电机数据指针获取
 	shoot_init->shoot_fric_L_motor.shoot_motor_measure = get_gimbal_friction_motor_measure_point(Fric_L);
 	shoot_init->shoot_fric_R_motor.shoot_motor_measure = get_gimbal_friction_motor_measure_point(Fric_R);
@@ -79,6 +79,7 @@ static void shoot_init(shoot_control_t *shoot_init)
   //初始化firc电机速度pid
 	K_FF_init(&shoot_init->shoot_fric_L_motor.shoot_speed_pid,PID_POSITION,Shoot_fric_L_speed_pid,FRIC_L_SPEED_PID_MAX_OUT,FRIC_L_SPEED_PID_MAX_IOUT,FRIC_L_SPEED_KF_STATIC,FRIC_L_SPEED_KF_DYNAMIC);
 	K_FF_init(&shoot_init->shoot_fric_R_motor.shoot_speed_pid,PID_POSITION,Shoot_fric_R_speed_pid,FRIC_R_SPEED_PID_MAX_OUT,FRIC_R_SPEED_PID_MAX_IOUT,FRIC_R_SPEED_KF_STATIC,FRIC_R_SPEED_KF_DYNAMIC);
+	PID_init(&shoot_init->shoot_speed_compensate_pid,PID_POSITION,DATA_NORMAL,Shoot_Speed_compensate_pid,1,0);
 	
 	shoot_init->shoot_agency_state = SHOOT_OFF;
 	shoot_init->trig_mode = Cease_fire;
@@ -105,7 +106,9 @@ static void shoot_feedback_update(shoot_control_t *feedback_update)
 	feedback_update->shoot_fric_L_motor.motor_speed = feedback_update->shoot_fric_L_motor.shoot_motor_measure->rpm*FRIC_RPM_TO_SPEED_SEN;
 	feedback_update->shoot_fric_R_motor.motor_speed = feedback_update->shoot_fric_R_motor.shoot_motor_measure->rpm*FRIC_RPM_TO_SPEED_SEN;
 		
-
+	feedback_update->shoot_cooling_heat_last = feedback_update->shoot_cooling_heat;	
+	feedback_update->bullet_speed = chassis_data.bullet_speed / 65535.0f * 25.0f;
+	feedback_update->shoot_cooling_heat = chassis_data.shoot_cooling_heat;
 
 		
 #ifdef SHOOT_DEBUG
@@ -152,7 +155,7 @@ static void fric_motor_control(shoot_control_t * control_loop)
   {
       return;
   }
-	
+
 	if(control_loop->fric_mode == STOP)
 	{
 		control_loop->shoot_fric_L_motor.motor_speed_set = 0;
@@ -161,8 +164,17 @@ static void fric_motor_control(shoot_control_t * control_loop)
 	}
 	else if(control_loop->fric_mode == START)
 	{
-		control_loop->shoot_fric_L_motor.motor_speed_set = fric1;
-		control_loop->shoot_fric_R_motor.motor_speed_set = fric2;
+//		//弹速闭环
+//		if(control_loop->shoot_cooling_heat > control_loop->shoot_cooling_heat_last)
+//		{
+//			control_loop->shoot_fric_L_motor.motor_speed_set = fric1+PID_calc(&control_loop->shoot_speed_compensate_pid,control_loop->bullet_speed,23);
+//			control_loop->shoot_fric_R_motor.motor_speed_set = fric2-PID_calc(&control_loop->shoot_speed_compensate_pid,-control_loop->bullet_speed,23);
+//		}
+//		else
+//		{
+			control_loop->shoot_fric_L_motor.motor_speed_set = fric1;
+			control_loop->shoot_fric_R_motor.motor_speed_set = fric2;
+//		}
 	}
 }
 
