@@ -53,12 +53,15 @@ static void Gimbal_data_transfer(void)
 	rc_key_v = rc_ctrl.key.v;		
 	vx_set = (rc_ctrl.rc.ch[CHASSIS_X_CHANNEL]+660)/20.0f;//(0-66)
 	vy_set = (rc_ctrl.rc.ch[CHASSIS_Y_CHANNEL]+660)/20.0f;//(0-66)
+	
+	/*-- 底盘不需要遥控器来控制自转转速 --*/
 //	wz_set = (rc_ctrl.rc.ch[CHASSIS_W_CHANNEL]+660)/20.0f;//0-66
 	
 	rc_err = (uint8_t)toe_is_error(DBUS_TOE);
 	rc_sl = rc_ctrl.rc.s[RC_sl_channel];
 	rc_sr = rc_ctrl.rc.s[RC_sr_channel];
 	
+	/*-- 传输开火 --*/
 	if(shoot_control.trig_mode == Start_fire)
 		gimbal_mode |= 0x01; 
 	else

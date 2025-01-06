@@ -107,12 +107,18 @@ static void gimbal_encode_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t
 
     *yaw = yaw_channel * YAW_RC_SEN - gimbal_control_set->gimbal_rc_ctrl->mouse.x * YAW_MOUSE_SEN;
     *pitch = -(pitch_channel * PITCH_RC_SEN + gimbal_control_set->gimbal_rc_ctrl->mouse.y * PITCH_MOUSE_SEN);
-
+	
+		/*-- 一键掉头 --*/
+		if(Key_ScanValue.Key_Value.r)
+		{
+			 *yaw = 180;
+		}
 
 }
 
-fp32 aim_yaw_set;
-fp32 aim_pitch_set;
+/*-- 调试用 --*/
+//fp32 aim_yaw_set;
+//fp32 aim_pitch_set;
 /**
   * @brief          云台编码值控制，电机是相对角度控制，
   * @param[in]      yaw: yaw轴角度控制，为角度的增量 单位 rad
@@ -134,7 +140,7 @@ static void gimbal_auto_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *
 }
 
 
-
+/*-- 这一版本所有的雷达控制都取消了 --*/
 ///**
 //  * @brief          雷达控制，半自动模式
 //  * @param[in]      yaw: yaw轴角度控制，陀螺仪控制为角度的增量 单位 rad
@@ -194,7 +200,7 @@ void gimbal_behaviour_control_set(fp32 *add_yaw, fp32 *add_pitch, gimbal_control
         return;
     }
 
-
+		 /*-- 根据不同模式进行pitch和yaw增量获取 --*/
     if (gimbal_control_set->gimbal_behaviour == GIMBAL_GYRO_ANGLE )
     {
         gimbal_gyro_angle_control(add_yaw, add_pitch, gimbal_control_set);
@@ -277,8 +283,8 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
 //	}	
 //	
 	
-	
-//		if(Key_Value.Q)
+//	
+//		if(Key_ScanValue.Key_Value.Q)// && Key_ScanValue.Key_Value_Last.Q !=1)
 //		{
 //			if( gimbal_mode_set->last_gimbal_behaviour == GIMBAL_AUTO_ANGLE)
 //			{
@@ -286,7 +292,7 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
 //			}
 //			else if(gimbal_mode_set->last_gimbal_behaviour == GIMBAL_ENCODE_ANGLE)
 //			{
-//				gimbal_mode_set->last_gimbal_behaviour = GIMBAL_AUTO_ANGLE;
+//				gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
 //			}
 //		}
 		

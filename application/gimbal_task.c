@@ -142,7 +142,7 @@ static void gimbal_init(gimbal_control_t *init)
 	PID_init(&init->gimbal_yaw_motor.gimbal_motor_auto_speed_pid,PID_POSITION,DATA_NORMAL,Yaw_auto_speed_pid,YAW_AUTO_SPEED_PID_MAX_OUT,YAW_AUTO_SPEED_PID_MAX_IOUT);
 
 //	PID_init(&init->gimbal_yaw_motor.gimbal_motor_radar_speed_pid,PID_POSITION,DATA_NORMAL,Yaw_radar_speed_pid,YAW_RADAR_SPEED_PID_MAX_OUT,YAW_RADAR_SPEED_PID_MAX_IOUT);
-	init->gimbal_behaviour = GIMBAL_ZERO_FORCE;
+	init->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
 	//pitch
 	ecd_format(Pitch_offset_ecd);
 	init->gimbal_pitch_motor.offset_ecd = Pitch_offset_ecd;
@@ -163,7 +163,7 @@ static void gimbal_init(gimbal_control_t *init)
 }
 
 
-fp32 omeg;
+//fp32 omeg;
 /**
   * @brief          底盘测量数据更新，包括电机速度，欧拉角度，机器人速度
   * @param[out]     gimbal_feedback_update:"gimbal_control"变量指针.
@@ -177,7 +177,7 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update)
         return;
     }
 		
-		    //云台数据更新（更新Yaw和Pitch的绝对角度和相对角度、角速度）
+		//云台数据更新（更新Yaw和Pitch的绝对角度和相对角度、角速度）
     feedback_update->gimbal_pitch_motor.absolute_angle = -(feedback_update->gimbal_bmi088_data->INS_angle[INS_PITCH_ADDRESS_OFFSET]);//-chassis_data.pitch);
     feedback_update->gimbal_pitch_motor.relative_angle = -motor_ecd_to_angle_change(feedback_update->gimbal_pitch_motor.gimbal_motor_measure->ecd,feedback_update->gimbal_pitch_motor.offset_ecd);
 		feedback_update->gimbal_pitch_motor.motor_gyro = -feedback_update->gimbal_bmi088_data->gyro[INS_GYRO_Y_ADDRESS_OFFSET];
@@ -187,7 +187,7 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update)
     feedback_update->gimbal_yaw_motor.relative_angle = -motor_ecd_to_angle_change(feedback_update->gimbal_yaw_motor.gimbal_motor_measure->ecd,feedback_update->gimbal_yaw_motor.offset_ecd);
 		feedback_update->gimbal_yaw_motor.motor_gyro  = feedback_update->gimbal_bmi088_data->gyro[INS_GYRO_Z_ADDRESS_OFFSET];
 				
-		
+/*-- 尝试自己用ecd的差分来代替陀螺仪的角速度，但是效果不好，可能方法没有用对 --*/
 //		last_ecd = ecd;
 //		last_omg = omeg;
 //		ecd = feedback_update->gimbal_pitch_motor.gimbal_motor_measure->ecd;
@@ -250,10 +250,12 @@ static void gimbal_set_control(gimbal_control_t *set_control)
     fp32 add_yaw_angle = 0.0f;
     fp32 add_pitch_angle = 0.0f;
 
+		/*-- 根据不同模式获取pitch和yaw的增量 --*/
     gimbal_behaviour_control_set(&add_yaw_angle, &add_pitch_angle, set_control);
 
 
 
+		/*-- 根据不同模式进行yaw的限幅 --*/
     if (set_control->gimbal_yaw_motor.gimbal_motor_mode == GIMBAL_MOTOR_GYRO)
     {
         //gyro模式下，陀螺仪角度控制
@@ -271,7 +273,7 @@ static void gimbal_set_control(gimbal_control_t *set_control)
 		}
 
 		
-		
+		/*-- 根据不同模式进行pitch的限幅 --*/
    if (set_control->gimbal_pitch_motor.gimbal_motor_mode == GIMBAL_MOTOR_GYRO)
     {
         //gyro模式下，陀螺仪角度控制
@@ -426,7 +428,7 @@ static void gimbal_control_loop(gimbal_control_t *control_loop)
         return;
     }
 		
-		
+		/*-- 选择不同的PID --*/
     if (control_loop->gimbal_yaw_motor.gimbal_motor_mode == GIMBAL_MOTOR_GYRO)
     {
         gimbal_motor_gyro_angle_control(&control_loop->gimbal_yaw_motor);
@@ -441,7 +443,7 @@ static void gimbal_control_loop(gimbal_control_t *control_loop)
     }
 	
 		
-		
+		/*-- 选择不同的PID --*/
     if (control_loop->gimbal_pitch_motor.gimbal_motor_mode == GIMBAL_MOTOR_GYRO)
     {
         gimbal_motor_gyro_angle_control(&control_loop->gimbal_pitch_motor);

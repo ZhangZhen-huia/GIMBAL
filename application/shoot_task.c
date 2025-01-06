@@ -29,7 +29,7 @@ void shoot_task(void const * argument)
 		while(1)
 		{
 		  shoot_feedback_update(&shoot_control);			//发射电机数据更新
-			shoot_motor_mode_set(&shoot_control);
+			shoot_motor_mode_set(&shoot_control);				//发射机构开关选择
 			fric_motor_control(&shoot_control);					//摩擦轮控制量配置
 			shoot_control_loop(&shoot_control);					//摩擦轮和拨弹盘输出值计算
 
@@ -103,14 +103,16 @@ static void shoot_feedback_update(shoot_control_t *feedback_update)
         return;
     }
 	
+	/*-- 左右摩擦轮速度反馈 --*/
 	feedback_update->shoot_fric_L_motor.motor_speed = feedback_update->shoot_fric_L_motor.shoot_motor_measure->rpm*FRIC_RPM_TO_SPEED_SEN;
 	feedback_update->shoot_fric_R_motor.motor_speed = feedback_update->shoot_fric_R_motor.shoot_motor_measure->rpm*FRIC_RPM_TO_SPEED_SEN;
 		
+	/*-- 弹速闭环 --*/
 	feedback_update->shoot_cooling_heat_last = feedback_update->shoot_cooling_heat;	
 	feedback_update->bullet_speed = chassis_data.bullet_speed / 65535.0f * 25.0f;
 	feedback_update->shoot_cooling_heat = chassis_data.shoot_cooling_heat;
 
-		
+	/*-- 弹速Vofa调试 --*/
 #ifdef SHOOT_DEBUG
 	Shoot_Debug_get_data();
 #endif
@@ -134,7 +136,7 @@ static void shoot_control_loop(shoot_control_t *control_loop)
         return;
     }
 
-	
+	/*-- PID计算调用 --*/
   shoot_motor_control(&control_loop->shoot_fric_L_motor);
 	shoot_motor_control(&control_loop->shoot_fric_R_motor);
 
@@ -164,7 +166,7 @@ static void fric_motor_control(shoot_control_t * control_loop)
 	}
 	else if(control_loop->fric_mode == START)
 	{
-//		//弹速闭环
+//		/*-- 弹速闭环，粗调了一下，效果不好 --*/
 //		if(control_loop->shoot_cooling_heat > control_loop->shoot_cooling_heat_last)
 //		{
 //			control_loop->shoot_fric_L_motor.motor_speed_set = fric1+PID_calc(&control_loop->shoot_speed_compensate_pid,control_loop->bullet_speed,23);

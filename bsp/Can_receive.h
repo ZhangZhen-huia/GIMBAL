@@ -46,7 +46,10 @@ typedef enum
 //  CAN_Fric_L_ID = 0x201,			//1
 //  CAN_Fric_R_ID = 0x202,			//2
 //	
-	
+		/*-- 哨兵大多是是CAN2 --*/
+		
+		
+		
 	/*---云台---*/
 	CAN_YAW_MOTOR_ID = 0x209,		//5
   CAN_PIT_MOTOR_ID = 0x205,		//1

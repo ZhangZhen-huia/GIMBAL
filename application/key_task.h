@@ -32,12 +32,16 @@ typedef struct
 	uint8_t Z_B;
 }Key_Value_t;
 
+typedef struct
+{
+	Key_Value_t Key_Value;
+	Key_Value_t Key_Value_Last;
+}Key_Scan_t;
 
 
 
 
-
-extern Key_Value_t Key_Value;
+extern Key_Scan_t Key_ScanValue;
 
 
 #endif
