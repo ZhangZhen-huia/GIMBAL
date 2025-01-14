@@ -14,44 +14,46 @@
 ///*--------------------------------------Pitch--------------------------------------*/
 
 //陀螺仪
-#define PITCH_GYRO_SPEED_PID_KP        8500.0f
+#define PITCH_GYRO_SPEED_PID_KP        12000.0f
 #define PITCH_GYRO_SPEED_PID_KI        0.0f
 #define PITCH_GYRO_SPEED_PID_KD        0.0f
 #define PITCH_GYRO_SPEED_PID_MAX_OUT   30000.0f
 #define PITCH_GYRO_SPEED_PID_MAX_IOUT  0.0f
 
 #define PITCH_GYRO_ANGLE_PID_KP -0.8f
-#define PITCH_GYRO_ANGLE_PID_KI -0.01f
+#define PITCH_GYRO_ANGLE_PID_KI -0.1f
 #define PITCH_GYRO_ANGLE_PID_KD 0.0f
 #define PITCH_GYRO_ANGLE_PID_MAX_OUT  40.0f
-#define PITCH_GYRO_ANGLE_PID_MAX_IOUT 0.5f
+#define PITCH_GYRO_ANGLE_PID_MAX_IOUT 0.3f
 
 //编码器
-#define PITCH_ENCODE_SPEED_PID_KP        8000//10000.0f
-#define PITCH_ENCODE_SPEED_PID_KI        0.0f
+#define PITCH_ENCODE_SPEED_PID_KP        8500//10000.0f
+#define PITCH_ENCODE_SPEED_PID_KI        100.0f
 #define PITCH_ENCODE_SPEED_PID_KD        0.0f
 #define PITCH_ENCODE_SPEED_PID_MAX_OUT   30000.0f
-#define PITCH_ENCODE_SPEED_PID_MAX_IOUT  0.0f
+#define PITCH_ENCODE_SPEED_PID_MAX_IOUT  3000.0f
 
-#define PITCH_ENCODE_ANGLE_PID_KP -0.8f
-#define PITCH_ENCODE_ANGLE_PID_KI -0.005f
-#define PITCH_ENCODE_ANGLE_PID_KD 0.0f
-#define PITCH_ENCODE_ANGLE_PID_MAX_OUT 40.0f
-#define PITCH_ENCODE_ANGLE_PID_MAX_IOUT 0.5f
+#define PITCH_ENCODE_ANGLE_PID_KP 				-0.6f
+#define PITCH_ENCODE_ANGLE_PID_KI 				-0.05f
+#define PITCH_ENCODE_ANGLE_PID_KD 				0.0f
+#define PITCH_ENCODE_ANGLE_PID_SKP			 	0.0f
+#define PITCH_ENCODE_ANGLE_PID_MAX_OUT 		40.0f
+#define PITCH_ENCODE_ANGLE_PID_MAX_IOUT 	0.3f
 
 //自瞄
-#define PITCH_AUTO_SPEED_PID_KP        8000.0f//15000.0f
-#define PITCH_AUTO_SPEED_PID_KI        0.0f
+#define PITCH_AUTO_SPEED_PID_KP        8500//10000.0f
+#define PITCH_AUTO_SPEED_PID_KI        100.0f
 #define PITCH_AUTO_SPEED_PID_KD        0.0f
 #define PITCH_AUTO_SPEED_PID_MAX_OUT   30000.0f
-#define PITCH_AUTO_SPEED_PID_MAX_IOUT  0.0f
+#define PITCH_AUTO_SPEED_PID_MAX_IOUT  5000.0f
 
 
-#define PITCH_AUTO_ANGLE_PID_KP -0.8f
-#define PITCH_AUTO_ANGLE_PID_KI -0.005f
-#define PITCH_AUTO_ANGLE_PID_KD 0.0f
-#define PITCH_AUTO_ANGLE_PID_MAX_OUT 40.0f
-#define PITCH_AUTO_ANGLE_PID_MAX_IOUT 0.50f
+#define PITCH_AUTO_ANGLE_PID_KP 				-0.6f
+#define PITCH_AUTO_ANGLE_PID_KI 				-0.05f
+#define PITCH_AUTO_ANGLE_PID_KD 				0.0f
+#define PITCH_AUTO_ANGLE_PID_SKP				0.0f
+#define PITCH_AUTO_ANGLE_PID_MAX_OUT 		40.0f
+#define PITCH_AUTO_ANGLE_PID_MAX_IOUT 	0.3f
 
 
 
@@ -67,32 +69,31 @@
 
 
 //陀螺仪
-#define YAW_GYRO_SPEED_PID_KP        10000.0f//20000.0f //35000
+#define YAW_GYRO_SPEED_PID_KP        17000.0f//20000.0f //35000
 #define YAW_GYRO_SPEED_PID_KI        0.0f
 #define YAW_GYRO_SPEED_PID_KD        0.0f
 #define YAW_GYRO_SPEED_PID_MAX_OUT   30000.0f
 #define YAW_GYRO_SPEED_PID_MAX_IOUT  0.0f
 
 #define YAW_GYRO_ANGLE_PID_KP        0.3f//1.0f //0.4
-#define YAW_GYRO_ANGLE_PID_KI        1.0f
+#define YAW_GYRO_ANGLE_PID_KI        0.0f
 #define YAW_GYRO_ANGLE_PID_KD        0.0f
 #define YAW_GYRO_ANGLE_PID_MAX_OUT   360.0f
 #define YAW_GYRO_ANGLE_PID_MAX_IOUT  0//0.001f
 
 
 //自瞄
-#define YAW_AUTO_SPEED_PID_KP        10000.0f//15000.0f //35000
+#define YAW_AUTO_SPEED_PID_KP        17000.0f//20000.0f //35000
 #define YAW_AUTO_SPEED_PID_KI        0.0f
 #define YAW_AUTO_SPEED_PID_KD        0.0f
 #define YAW_AUTO_SPEED_PID_MAX_OUT   30000.0f
 #define YAW_AUTO_SPEED_PID_MAX_IOUT  0.0f
-
-
-#define YAW_AUTO_ANGLE_PID_KP        0.5f //0.4
+                                     
+#define YAW_AUTO_ANGLE_PID_KP        0.3f//1.0f //0.4
 #define YAW_AUTO_ANGLE_PID_KI        0.0f
 #define YAW_AUTO_ANGLE_PID_KD        0.0f
 #define YAW_AUTO_ANGLE_PID_MAX_OUT   360.0f
-#define YAW_AUTO_ANGLE_PID_MAX_IOUT  0.0f
+#define YAW_AUTO_ANGLE_PID_MAX_IOUT  0//0.001f
 
 
 
@@ -181,27 +182,8 @@ typedef struct
 
 extern gimbal_control_t gimbal_control;
 
-
-//#define CHASSIS_ACCEL_Z_NUM 0.995f
-#define R       MOTOR_DISTANCE_TO_CENTER
-#define PI       3.1415926f
-
 //任务开始空闲一段时间
 #define CHASSIS_TASK_INIT_TIME 357
-
-
-
-//小陀螺半径 m 
-#define MOTOR_DISTANCE_TO_CENTER 0.235619445f
-
-//小陀螺周长
-#define SMALL_TOP_CIRCUMFERENCE	 	MOTOR_DISTANCE_TO_CENTER*2*3.1415926f			//1.480440609656214f
-
-//轮子半径  m
-#define WHEEL_HALF_SIZE 	0.0375f
-
-//轮子周长	m
-#define WHEEL_CIRCUMFERENCE				0.235619445f          //WHEEL_HALF_SIZE*2*3.1415926f  	
 
 
 

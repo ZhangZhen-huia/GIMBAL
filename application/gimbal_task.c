@@ -91,7 +91,7 @@ static void gimbal_init(gimbal_control_t *init)
 {
 	uint16_t Pitch_offset_ecd = 4072;
 	fp32 pitch_max_relative_angle=3440;
-	fp32 pitch_min_relative_angle=4330;
+	fp32 pitch_min_relative_angle=4420;
 	uint16_t Yaw_offset_ecd = 3473;
 	
 	static const fp32 Yaw_gyro_speed_pid[3] = {YAW_GYRO_SPEED_PID_KP, YAW_GYRO_SPEED_PID_KI, YAW_GYRO_SPEED_PID_KD};
@@ -106,10 +106,10 @@ static void gimbal_init(gimbal_control_t *init)
 	static const fp32 Pitch_gyro_angle_pid[3] = {PITCH_GYRO_ANGLE_PID_KP, PITCH_GYRO_ANGLE_PID_KI, PITCH_GYRO_ANGLE_PID_KD};
 	
 	static const fp32 Pitch_encode_speed_pid[3] = {PITCH_ENCODE_SPEED_PID_KP, PITCH_ENCODE_SPEED_PID_KI, PITCH_ENCODE_SPEED_PID_KD};
-	static const fp32 Pitch_encode_angle_pid[3] = {PITCH_ENCODE_ANGLE_PID_KP, PITCH_ENCODE_ANGLE_PID_KI, PITCH_ENCODE_ANGLE_PID_KD};
+	static const fp32 Pitch_encode_angle_pid[4] = {PITCH_ENCODE_ANGLE_PID_KP, PITCH_ENCODE_ANGLE_PID_KI, PITCH_ENCODE_ANGLE_PID_KD,PITCH_ENCODE_ANGLE_PID_SKP};
 	
 	static const fp32 Pitch_auto_speed_pid[3] = {PITCH_AUTO_SPEED_PID_KP, PITCH_AUTO_SPEED_PID_KI, PITCH_AUTO_SPEED_PID_KD};
-	static const fp32 Pitch_auto_angle_pid[3] = {PITCH_AUTO_ANGLE_PID_KP, PITCH_AUTO_ANGLE_PID_KI, PITCH_AUTO_ANGLE_PID_KD};
+	static const fp32 Pitch_auto_angle_pid[4] = {PITCH_AUTO_ANGLE_PID_KP, PITCH_AUTO_ANGLE_PID_KI, PITCH_AUTO_ANGLE_PID_KD,PITCH_AUTO_ANGLE_PID_SKP};
 	
 //	static const fp32 Yaw_radar_speed_pid[3] = {YAW_RADAR_SPEED_PID_KP, YAW_RADAR_SPEED_PID_KI, YAW_RADAR_SPEED_PID_KD};
 
@@ -125,21 +125,21 @@ static void gimbal_init(gimbal_control_t *init)
 	init->gimbal_mini_data = get_mini_data_point();
 	
 	/* --- Pitch --- */
-	PID_init(&init->gimbal_pitch_motor.gimbal_motor_gyro_angle_pid,PID_POSITION,DATA_NORMAL,Pitch_gyro_angle_pid,PITCH_GYRO_ANGLE_PID_MAX_OUT,PITCH_GYRO_ANGLE_PID_MAX_IOUT);
-	PID_init(&init->gimbal_pitch_motor.gimbal_motor_gyro_speed_pid,PID_POSITION,DATA_NORMAL,Pitch_gyro_speed_pid,PITCH_GYRO_SPEED_PID_MAX_OUT,PITCH_GYRO_SPEED_PID_MAX_IOUT);
+	PID_init(&init->gimbal_pitch_motor.gimbal_motor_gyro_angle_pid,PID_POSITION,DATA_NORMAL,Pitch_gyro_angle_pid,PITCH_GYRO_ANGLE_PID_MAX_OUT,PITCH_GYRO_ANGLE_PID_MAX_IOUT,NONE);
+	PID_init(&init->gimbal_pitch_motor.gimbal_motor_gyro_speed_pid,PID_POSITION,DATA_NORMAL,Pitch_gyro_speed_pid,PITCH_GYRO_SPEED_PID_MAX_OUT,PITCH_GYRO_SPEED_PID_MAX_IOUT,NONE);
 
-	PID_init(&init->gimbal_pitch_motor.gimbal_motor_encode_angle_pid,PID_POSITION,DATA_NORMAL,Pitch_encode_angle_pid,PITCH_ENCODE_ANGLE_PID_MAX_OUT,PITCH_ENCODE_ANGLE_PID_MAX_IOUT);
-	PID_init(&init->gimbal_pitch_motor.gimbal_motor_encode_speed_pid,PID_POSITION,DATA_NORMAL,Pitch_encode_speed_pid,PITCH_ENCODE_SPEED_PID_MAX_OUT,PITCH_ENCODE_SPEED_PID_MAX_IOUT);
+	PID_init(&init->gimbal_pitch_motor.gimbal_motor_encode_angle_pid,PID_POSITION,DATA_NORMAL,Pitch_encode_angle_pid,PITCH_ENCODE_ANGLE_PID_MAX_OUT,PITCH_ENCODE_ANGLE_PID_MAX_IOUT,NONE);
+	PID_init(&init->gimbal_pitch_motor.gimbal_motor_encode_speed_pid,PID_POSITION,DATA_NORMAL,Pitch_encode_speed_pid,PITCH_ENCODE_SPEED_PID_MAX_OUT,PITCH_ENCODE_SPEED_PID_MAX_IOUT,NONE);
 
-	PID_init(&init->gimbal_pitch_motor.gimbal_motor_auto_angle_pid,PID_POSITION,DATA_NORMAL,Pitch_auto_angle_pid,PITCH_AUTO_ANGLE_PID_MAX_OUT,PITCH_AUTO_ANGLE_PID_MAX_IOUT);
-	PID_init(&init->gimbal_pitch_motor.gimbal_motor_auto_speed_pid,PID_POSITION,DATA_NORMAL,Pitch_auto_speed_pid,PITCH_AUTO_SPEED_PID_MAX_OUT,PITCH_AUTO_SPEED_PID_MAX_IOUT);
+	PID_init(&init->gimbal_pitch_motor.gimbal_motor_auto_angle_pid,PID_POSITION,DATA_NORMAL,Pitch_auto_angle_pid,PITCH_AUTO_ANGLE_PID_MAX_OUT,PITCH_AUTO_ANGLE_PID_MAX_IOUT,NONE);
+	PID_init(&init->gimbal_pitch_motor.gimbal_motor_auto_speed_pid,PID_POSITION,DATA_NORMAL,Pitch_auto_speed_pid,PITCH_AUTO_SPEED_PID_MAX_OUT,PITCH_AUTO_SPEED_PID_MAX_IOUT,NONE);
 
 	/* --- Yaw --- */
-	PID_init(&init->gimbal_yaw_motor.gimbal_motor_gyro_angle_pid,PID_POSITION,DATA_GYRO,Yaw_gyro_angle_pid,YAW_GYRO_ANGLE_PID_MAX_OUT,YAW_GYRO_ANGLE_PID_MAX_IOUT);
-	PID_init(&init->gimbal_yaw_motor.gimbal_motor_gyro_speed_pid,PID_POSITION,DATA_NORMAL,Yaw_gyro_speed_pid,YAW_GYRO_SPEED_PID_MAX_OUT,YAW_GYRO_SPEED_PID_MAX_IOUT);
+	PID_init(&init->gimbal_yaw_motor.gimbal_motor_gyro_angle_pid,PID_POSITION,DATA_GYRO,Yaw_gyro_angle_pid,YAW_GYRO_ANGLE_PID_MAX_OUT,YAW_GYRO_ANGLE_PID_MAX_IOUT,NONE);
+	PID_init(&init->gimbal_yaw_motor.gimbal_motor_gyro_speed_pid,PID_POSITION,DATA_NORMAL,Yaw_gyro_speed_pid,YAW_GYRO_SPEED_PID_MAX_OUT,YAW_GYRO_SPEED_PID_MAX_IOUT,NONE);
 
-	PID_init(&init->gimbal_yaw_motor.gimbal_motor_auto_angle_pid,PID_POSITION,DATA_GYRO,Yaw_auto_angle_pid,YAW_AUTO_ANGLE_PID_MAX_OUT,YAW_AUTO_ANGLE_PID_MAX_IOUT);
-	PID_init(&init->gimbal_yaw_motor.gimbal_motor_auto_speed_pid,PID_POSITION,DATA_NORMAL,Yaw_auto_speed_pid,YAW_AUTO_SPEED_PID_MAX_OUT,YAW_AUTO_SPEED_PID_MAX_IOUT);
+	PID_init(&init->gimbal_yaw_motor.gimbal_motor_auto_angle_pid,PID_POSITION,DATA_GYRO,Yaw_auto_angle_pid,YAW_AUTO_ANGLE_PID_MAX_OUT,YAW_AUTO_ANGLE_PID_MAX_IOUT,NONE);
+	PID_init(&init->gimbal_yaw_motor.gimbal_motor_auto_speed_pid,PID_POSITION,DATA_NORMAL,Yaw_auto_speed_pid,YAW_AUTO_SPEED_PID_MAX_OUT,YAW_AUTO_SPEED_PID_MAX_IOUT,NONE);
 
 //	PID_init(&init->gimbal_yaw_motor.gimbal_motor_radar_speed_pid,PID_POSITION,DATA_NORMAL,Yaw_radar_speed_pid,YAW_RADAR_SPEED_PID_MAX_OUT,YAW_RADAR_SPEED_PID_MAX_IOUT);
 	init->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
@@ -171,7 +171,7 @@ static void gimbal_init(gimbal_control_t *init)
   */
 static void gimbal_feedback_update(gimbal_control_t *feedback_update)
 {
-		static fp32 ecd,last_ecd,last_omg;
+//		static fp32 ecd,last_ecd,last_omg;
     if (feedback_update == NULL)
     {
         return;

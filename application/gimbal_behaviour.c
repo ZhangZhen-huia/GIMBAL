@@ -1,4 +1,5 @@
 #include "gimbal_behaviour.h"
+#include "referee.h"
 #include "detect_task.h"
 #include "key_task.h"
 static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set);
@@ -46,10 +47,9 @@ static void gimbal_gyro_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *
     rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[YAW_CHANNEL], yaw_channel, RC_DEADBAND);
     rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[PITCH_CHANNEL], pitch_channel, RC_DEADBAND);
 
+
     *yaw = yaw_channel * YAW_RC_SEN - gimbal_control_set->gimbal_rc_ctrl->mouse.x * YAW_MOUSE_SEN;
     *pitch = -(pitch_channel * PITCH_RC_SEN + gimbal_control_set->gimbal_rc_ctrl->mouse.y * PITCH_MOUSE_SEN);
-
-
 //    {
 //        static uint16_t last_turn_keyboard = 0;
 //        static uint8_t gimbal_turn_flag = 0;
@@ -105,8 +105,9 @@ static void gimbal_encode_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t
     rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[YAW_CHANNEL], yaw_channel, RC_DEADBAND);
     rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[PITCH_CHANNEL], pitch_channel, RC_DEADBAND);
 
-    *yaw = yaw_channel * YAW_RC_SEN - gimbal_control_set->gimbal_rc_ctrl->mouse.x * YAW_MOUSE_SEN;
-    *pitch = -(pitch_channel * PITCH_RC_SEN + gimbal_control_set->gimbal_rc_ctrl->mouse.y * PITCH_MOUSE_SEN);
+
+    *yaw = yaw_channel * YAW_RC_SEN - Mouse_Data.mouse_x * YAW_MOUSE_SEN;
+    *pitch = -(pitch_channel * PITCH_RC_SEN + Mouse_Data.mouse_y * PITCH_MOUSE_SEN);
 	
 		/*-- 一键掉头 --*/
 		if(Key_ScanValue.Key_Value.r)
@@ -272,8 +273,8 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
         return;
     }
 
-//		//右键按下进入自瞄
-//	if(gimbal_mode_set->gimbal_rc_ctrl->mouse.press_r == 1)
+////		//右键按下进入自瞄
+//	if(Mouse_Data.mouse_r == 1)
 //	{
 //		gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
 //	}
@@ -303,7 +304,18 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
 		
 		else if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
 		{
-				gimbal_mode_set->gimbal_behaviour = GIMBAL_GYRO_ANGLE;
+				//gimbal_mode_set->gimbal_behaviour = GIMBAL_GYRO_ANGLE;
+			
+				//		//右键按下进入自瞄
+					if(Mouse_Data.mouse_r == 1)
+					{
+						gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
+					}
+					else
+					{
+						gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
+					}	
+	
 		}
 		else if (switch_is_down(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
 		{

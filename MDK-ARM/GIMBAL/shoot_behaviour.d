@@ -52,6 +52,8 @@
 .\gimbal\shoot_behaviour.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h
 .\gimbal\shoot_behaviour.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h
 .\gimbal\shoot_behaviour.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
+.\gimbal\shoot_behaviour.o: ..\application\referee.h
+.\gimbal\shoot_behaviour.o: ../components/algorithm/user_lib.h
 .\gimbal\shoot_behaviour.o: ..\application\shoot_task.h
 .\gimbal\shoot_behaviour.o: ../components/controller/pid.h
 .\gimbal\shoot_behaviour.o: ../bsp/Can_receive.h

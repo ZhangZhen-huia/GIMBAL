@@ -5,7 +5,11 @@
 #include "main.h"
 
 
-
+typedef enum
+{
+	Rc,
+	ImageTransfer
+}ControlMode_e;
 
 
 typedef struct
@@ -38,9 +42,16 @@ typedef struct
 	Key_Value_t Key_Value_Last;
 }Key_Scan_t;
 
+typedef struct
+{
+	int16_t mouse_x;
+	int16_t mouse_y;
+	int16_t mouse_z;
+	uint8_t mouse_l;
+	uint8_t mouse_r;
+}Mouse_Data_t;
 
-
-
+extern Mouse_Data_t Mouse_Data;
 extern Key_Scan_t Key_ScanValue;
 
 

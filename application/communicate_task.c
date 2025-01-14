@@ -9,7 +9,7 @@
 #include "shoot_task.h"
 #include "aimbots_task.h"
 #include "usbd_cdc_if.h"
-
+#include "referee.h"
 
 static void can_cmd_to_chassis(CAN_HandleTypeDef*hcan,int16_t can_id,uint8_t *buf,uint8_t num);
 static void Gimbal_data_transfer(void);
@@ -49,8 +49,12 @@ static void Gimbal_data_transfer(void)
 	uint8_t rc_sl; 
 	uint8_t rc_sr; 
 	
-	
+	#ifndef IMAGE_TRANSFER
 	rc_key_v = rc_ctrl.key.v;		
+	#else
+	rc_key_v = Referee_System.Image_trans_remote.keyboard_value;
+	#endif
+	
 	vx_set = (rc_ctrl.rc.ch[CHASSIS_X_CHANNEL]+660)/20.0f;//(0-66)
 	vy_set = (rc_ctrl.rc.ch[CHASSIS_Y_CHANNEL]+660)/20.0f;//(0-66)
 	

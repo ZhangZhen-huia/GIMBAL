@@ -43,7 +43,7 @@ void INS_task(void const * argument)
 	//读三轴角速度和加速度，温度
 	BMI088_read(bmi088_real_data.gyro, bmi088_real_data.accel, &bmi088_real_data.temp);
 	
-	PID_init(&imu_temp_pid, PID_POSITION, DATA_NORMAL,imu_temp_PID, TEMPERATURE_PID_MAX_OUT, TEMPERATURE_PID_MAX_IOUT);
+	PID_init(&imu_temp_pid, PID_POSITION, DATA_NORMAL,imu_temp_PID, TEMPERATURE_PID_MAX_OUT, TEMPERATURE_PID_MAX_IOUT,NONE);
 	
 	//四元数初始化
 	AHRS_init(INS_quat);

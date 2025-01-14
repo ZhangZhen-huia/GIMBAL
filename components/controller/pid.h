@@ -31,6 +31,22 @@ enum DATA_MODE
     DATA_NORMAL,
 };
 
+
+typedef enum pid_Function_e
+{
+    NONE = 0X00,                        															//0000 0000 0000 0000
+    Integral_Limit = 0x01,              															//0000 0000 0000 0001
+    Derivative_On_Measurement = 0x02,   															//0000 0000 0000 0010
+    Trapezoid_Intergral = 0x04,         															//0000 0000 0000 0100
+    Proportional_On_Measurement = 0x08, 															//0000 0000 0000 1000
+    OutputFilter = 0x10,                															//0000 0000 0001 0000
+    ChangingIntegralRate = 0x20,        															//0000 0000 0010 0000
+    DerivativeFilter = 0x40,            															//0000 0000 0100 0000
+    ErrorHandle = 0x80,                 															//0000 0000 1000 0000
+		ProportionalComponent_SecondOrder = 0x100													//0000 0001 0000 0000 
+} PID_Function_e;
+
+
 typedef struct __attribute__((packed))
 {
     uint8_t mode;
@@ -39,10 +55,11 @@ typedef struct __attribute__((packed))
     float Kp;
     float Ki;
     float Kd;
-
+		float S_Kp;
     float max_out;  //最大输出
     float max_iout; //最大积分输出
-
+		float SP_out;
+		
     float set;
     float fdb;
 
@@ -52,13 +69,13 @@ typedef struct __attribute__((packed))
     float Dout;
     float Dbuf[3];  //微分项 0最新 1上一次 2上上次
     float error[3]; //误差项 0最新 1上一次 2上上次
-	fp32 error_all;
-	float K_ff_static;
-
-	float K_ff_dynamic;
-	float last_aim;
-	float feedforward_static_out;
-	float feedforward_dynamic_out;
+		fp32 error_all;
+		float K_ff_static;
+		uint16_t function;
+		float K_ff_dynamic;
+		float last_aim;
+		float feedforward_static_out;
+		float feedforward_dynamic_out;
 } pid_type_def;
 
 
@@ -116,7 +133,7 @@ typedef struct
   * @param[in]      max_iout: pid最大积分输出
   * @retval         none
   */
-void PID_init(pid_type_def *pid, uint8_t mode,uint8_t data_mode, const float PID[3], float max_out, float max_iout);
+void PID_init(pid_type_def *pid, uint8_t mode,uint8_t data_mode, const float *PID, float max_out, float max_iout,uint16_t function);
 
 /**
   * @brief          pid计算
@@ -133,6 +150,7 @@ extern float PID_calc(pid_type_def *pid, float ref, float set);
   * @retval         none
   */
 extern void PID_clear(pid_type_def *pid);
+float K_FF_Cal_shoot(pid_type_def *pid, float ref, float set,float fabs_max,float fabs_min);
 
 fp32 PID_Calc_Ecd(pid_type_def *pid, fp32 ref, fp32 set,uint16_t ecd_range);
 static fp32 ecd_zero(uint16_t ecd, uint16_t offset_ecd, uint16_t ecd_range);

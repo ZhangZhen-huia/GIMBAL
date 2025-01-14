@@ -69,3 +69,5 @@
 .\gimbal\main.o: ../application/remote_control.h
 .\gimbal\main.o: ../bsp/boards/bsp_rc.h
 .\gimbal\main.o: ../bsp/boards/bsp_buzzer.h
+.\gimbal\main.o: ../application/referee.h
+.\gimbal\main.o: ../components/algorithm/user_lib.h

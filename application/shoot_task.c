@@ -8,7 +8,7 @@ shoot_control_t shoot_control;
 
 
 //在当前比例下摩擦轮最大能到达转速29-->9300rpm差不多
-int16_t fric1=MAX_SPEED,fric2=-MAX_SPEED;
+fp32 fric1=-MAX_SPEED,fric2=MAX_SPEED;
 
 static void shoot_init(shoot_control_t *shoot_init);
 static void shoot_motor_control(shoot_motor_t *shoot_motor);
@@ -79,7 +79,7 @@ static void shoot_init(shoot_control_t *shoot_init)
   //初始化firc电机速度pid
 	K_FF_init(&shoot_init->shoot_fric_L_motor.shoot_speed_pid,PID_POSITION,Shoot_fric_L_speed_pid,FRIC_L_SPEED_PID_MAX_OUT,FRIC_L_SPEED_PID_MAX_IOUT,FRIC_L_SPEED_KF_STATIC,FRIC_L_SPEED_KF_DYNAMIC);
 	K_FF_init(&shoot_init->shoot_fric_R_motor.shoot_speed_pid,PID_POSITION,Shoot_fric_R_speed_pid,FRIC_R_SPEED_PID_MAX_OUT,FRIC_R_SPEED_PID_MAX_IOUT,FRIC_R_SPEED_KF_STATIC,FRIC_R_SPEED_KF_DYNAMIC);
-	PID_init(&shoot_init->shoot_speed_compensate_pid,PID_POSITION,DATA_NORMAL,Shoot_Speed_compensate_pid,1,0);
+	PID_init(&shoot_init->shoot_speed_compensate_pid,PID_POSITION,DATA_NORMAL,Shoot_Speed_compensate_pid,1,0,NONE);
 	
 	shoot_init->shoot_agency_state = SHOOT_OFF;
 	shoot_init->trig_mode = Cease_fire;

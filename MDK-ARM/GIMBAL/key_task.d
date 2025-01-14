@@ -54,3 +54,6 @@
 .\gimbal\key_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
 .\gimbal\key_task.o: ..\application\remote_control.h
 .\gimbal\key_task.o: ../bsp/boards/bsp_rc.h
+.\gimbal\key_task.o: ..\application\referee.h
+.\gimbal\key_task.o: ../components/algorithm/user_lib.h
+.\gimbal\key_task.o: ..\application\detect_task.h

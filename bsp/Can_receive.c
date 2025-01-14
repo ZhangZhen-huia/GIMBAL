@@ -96,7 +96,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*hcan)//  CAN FIFO0µÄÖÐ¶
 				break;
 //			case CHASSIS_ID:
 //				get_shootdata_measure(&chassis_data, rx_data1);      
-			  break;
+//			  break;
 
 
 				

@@ -62,6 +62,8 @@
 ".\gimbal\vofa_task.o"
 ".\gimbal\remote_control.o"
 ".\gimbal\key_task.o"
+".\gimbal\referee.o"
+".\gimbal\bsp_usart.o"
 ".\gimbal\can_receive.o"
 ".\gimbal\bsp_buzzer.o"
 ".\gimbal\bsp_rc.o"
@@ -73,6 +75,7 @@
 "..\components\algorithm\arm_cortexM4lf_math.lib"
 ".\gimbal\mahonyahrs.o"
 ".\gimbal\user_lib.o"
+".\gimbal\crc8_crc16.o"
 --strict --scatter ".\GIMBAL\GIMBAL.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

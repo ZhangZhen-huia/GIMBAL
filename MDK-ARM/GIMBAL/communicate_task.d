@@ -80,3 +80,4 @@
 .\gimbal\communicate_task.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h
 .\gimbal\communicate_task.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h
 .\gimbal\communicate_task.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h
+.\gimbal\communicate_task.o: ..\application\referee.h

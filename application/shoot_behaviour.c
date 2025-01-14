@@ -1,4 +1,5 @@
 #include "shoot_behaviour.h"
+#include "referee.h"
 #include "shoot_task.h"
 #include "tim.h"
 #include "aimbots_task.h"
@@ -8,7 +9,6 @@
 
 static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 {
-	static uint8_t firc_step = 0;
 	static uint16_t shoot_flag = 0;
 	static uint8_t shoot_force = 0;
 	
@@ -28,7 +28,7 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 	}
 	
 	//强制开火信号
-	if(shoot_behaviour->shoot_rc_ctrl->mouse.press_l == 1)//shoot_behaviour->shoot_rc_ctrl->rc.ch[0] == -660 && shoot_behaviour->shoot_rc_ctrl->rc.ch[1] == 660)
+	if(Mouse_Data.mouse_l)//shoot_behaviour->shoot_rc_ctrl->rc.ch[0] == -660 && shoot_behaviour->shoot_rc_ctrl->rc.ch[1] == 660)
 	{
 		shoot_force = 1;
 	}
@@ -53,7 +53,6 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 		shoot_behaviour->fric_mode = STOP;
 		shoot_behaviour->trig_mode = Cease_fire;
 		shoot_flag = 0;
-		firc_step = 0;
 		
 	}
 	
@@ -89,31 +88,10 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 	//摩擦轮开启判断
 		if(shoot_behaviour->shoot_agency_state == SHOOT_ON)	
 		{	
-			if(switch_is_up(shoot_behaviour->shoot_rc_ctrl->rc.s[SHOOT_MODE_CHANNEL]))	
-			{	
-				shoot_behaviour->fric_mode = STOP;	
-			}	
-			else if(!switch_is_up(shoot_behaviour->shoot_rc_ctrl->rc.s[SHOOT_MODE_CHANNEL]))	
-			{	
-						switch(firc_step)	
-						{	
-							case 0:if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >= 5000 || (Key_ScanValue.Key_Value.G && !Key_ScanValue.Key_Value_Last.G))	
-											firc_step = 1;	
-											break;	
-							case 1:if(!switch_is_up(shoot_behaviour->shoot_rc_ctrl->rc.s[SHOOT_MODE_CHANNEL]))//右中/下
-											{	
-												shoot_behaviour->fric_mode = START;	
-												firc_step = 0;	
-											}	
-											else 	
-											{	
-												firc_step = 0;	
-												shoot_behaviour->fric_mode = STOP;	
-											}	
-											break;								
-						}			
-			}	
-		}
+			if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >= 5000 || (Key_ScanValue.Key_Value.G && !Key_ScanValue.Key_Value_Last.G))	
+					shoot_behaviour->fric_mode = START;	
+		}	
+		
 		else
 		{
 			shoot_behaviour->fric_mode = STOP;	
@@ -130,7 +108,7 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 				if(shoot_behaviour->shoot_agency_state == SHOOT_OFF || shoot_behaviour->fric_mode == STOP)
 						shoot_behaviour->trig_mode = Cease_fire;
 				
-				else if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] == 660 || shoot_behaviour->shoot_rc_ctrl->mouse.press_l)
+				else if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] == 660 || Mouse_Data.mouse_l)
 				{
 					shoot_behaviour->trig_mode = Start_fire;
 				}
@@ -167,14 +145,6 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 				{
 					shoot_behaviour->trig_mode = Cease_fire;
 				}			
-//				if(shoot_force && shoot_behaviour->fric_mode == START)
-//				{
-//					shoot_behaviour->trig_mode = Start_fire;
-//				}
-//				else
-//				{
-//					shoot_behaviour->trig_mode = Cease_fire;
-//				}
 
 		
 	}
