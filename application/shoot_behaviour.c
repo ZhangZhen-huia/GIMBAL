@@ -18,7 +18,7 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 	}
 	
 	//遥控器掉线就关闭发射结构
-	if (toe_is_error(DBUS_TOE))
+	if (POWER_OFF)
 	{
 		//关闭发射结构总开关
 		shoot_behaviour->shoot_agency_state = SHOOT_OFF;
@@ -28,7 +28,7 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 	}
 	
 	//强制开火信号
-	if(Mouse_Data.mouse_l)//shoot_behaviour->shoot_rc_ctrl->rc.ch[0] == -660 && shoot_behaviour->shoot_rc_ctrl->rc.ch[1] == 660)
+	if(shoot_behaviour->fric_mode == START && Mouse_Data.mouse_l)//shoot_behaviour->shoot_rc_ctrl->rc.ch[0] == -660 && shoot_behaviour->shoot_rc_ctrl->rc.ch[1] == 660)
 	{
 		shoot_force = 1;
 	}
@@ -128,7 +128,7 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 	//自瞄模式
 	else if(gimbal_control.gimbal_behaviour == GIMBAL_AUTO_ANGLE)
 	{
-		if(toe_is_error(DBUS_TOE))
+		if(POWER_OFF)
 		{
 			shoot_behaviour->shoot_agency_state = SHOOT_OFF;
 			shoot_behaviour->fric_mode = STOP;

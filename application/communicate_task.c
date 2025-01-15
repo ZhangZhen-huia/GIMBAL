@@ -10,7 +10,7 @@
 #include "aimbots_task.h"
 #include "usbd_cdc_if.h"
 #include "referee.h"
-
+#include "key_task.h"
 static void can_cmd_to_chassis(CAN_HandleTypeDef*hcan,int16_t can_id,uint8_t *buf,uint8_t num);
 static void Gimbal_data_transfer(void);
 chassis_data_t chassis_data;
@@ -49,11 +49,10 @@ static void Gimbal_data_transfer(void)
 	uint8_t rc_sl; 
 	uint8_t rc_sr; 
 	
-	#ifndef IMAGE_TRANSFER
+	if(ControlMode == Rc)
 	rc_key_v = rc_ctrl.key.v;		
-	#else
+	else
 	rc_key_v = Referee_System.Image_trans_remote.keyboard_value;
-	#endif
 	
 	vx_set = (rc_ctrl.rc.ch[CHASSIS_X_CHANNEL]+660)/20.0f;//(0-66)
 	vy_set = (rc_ctrl.rc.ch[CHASSIS_Y_CHANNEL]+660)/20.0f;//(0-66)
@@ -61,7 +60,27 @@ static void Gimbal_data_transfer(void)
 	/*-- 底盘不需要遥控器来控制自转转速 --*/
 //	wz_set = (rc_ctrl.rc.ch[CHASSIS_W_CHANNEL]+660)/20.0f;//0-66
 	
-	rc_err = (uint8_t)toe_is_error(DBUS_TOE);
+	if(ControlMode == Rc)
+		rc_err |= 0x01;
+	else
+		rc_err &= 0xFE;
+	
+	if(ControlMode == ImageTransfer)
+		rc_err |= 0x02;
+	else
+		rc_err &= 0xFD;
+	
+	if(toe_is_error(DBUS_TOE))
+		rc_err |= 0x04;
+	else
+		rc_err &= 0xFB;
+	
+	if(toe_is_error(REFEREE_TOE))
+		rc_err |= 0x08;
+	else
+		rc_err &= 0xF7;
+	
+	//rc_err = (uint8_t)(ControlMode == Rc && toe_is_error(DBUS_TOE)) || (ControlMode == ImageTransfer && toe_is_error(REFEREE_TOE));//(uint8_t)toe_is_error(DBUS_TOE);
 	rc_sl = rc_ctrl.rc.s[RC_sl_channel];
 	rc_sr = rc_ctrl.rc.s[RC_sr_channel];
 	
@@ -76,7 +95,11 @@ static void Gimbal_data_transfer(void)
 	else
 		gimbal_mode &= 0xFD;
 	
-
+	if(shoot_control.fric_mode == START)
+		gimbal_mode |= 0x04;
+	else
+		gimbal_mode &= 0xFB;	
+	
 	buf[0] = vx_set;
 	buf[1] = vy_set;
 //	buf[2] = wz_set;

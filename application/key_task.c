@@ -156,7 +156,7 @@ void Key_Scan(Key_Scan_t * Key,ControlMode_e mode)
 	Key->Key_Value.Z_F = Key->Key_Value.Z & Key->Key_Value.F;
 	Key->Key_Value.Z_B = Key->Key_Value.Z & Key->Key_Value.B;
 	
-
+	
 }
 
 

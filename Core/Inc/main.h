@@ -67,7 +67,8 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 //#define RADAR
-#define IMAGE_TRANSFER
+
+#define POWER_OFF	(ControlMode == Rc && toe_is_error(DBUS_TOE)) || (ControlMode == ImageTransfer && toe_is_error(REFEREE_TOE))
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

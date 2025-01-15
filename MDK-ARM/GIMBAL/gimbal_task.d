@@ -71,3 +71,4 @@
 .\gimbal\gimbal_task.o: ..\application\detect_task.h
 .\gimbal\gimbal_task.o: ../components/algorithm/user_lib.h
 .\gimbal\gimbal_task.o: ..\application\communicate_task.h
+.\gimbal\gimbal_task.o: ..\application\key_task.h

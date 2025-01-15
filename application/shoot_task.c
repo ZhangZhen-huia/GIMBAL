@@ -4,6 +4,7 @@
 #include "vofa_task.h"
 #include "Can_receive.h"
 #include "communicate_task.h"
+#include "key_task.h"
 shoot_control_t shoot_control;
 
 
@@ -33,8 +34,8 @@ void shoot_task(void const * argument)
 			fric_motor_control(&shoot_control);					//摩擦轮控制量配置
 			shoot_control_loop(&shoot_control);					//摩擦轮和拨弹盘输出值计算
 
-			if (toe_is_error(DBUS_TOE))
-      {
+			if(POWER_OFF)//((ControlMode == Rc && toe_is_error(DBUS_TOE)) || (ControlMode == ImageTransfer && toe_is_error(REFEREE_TOE)))
+			{
 				CAN_cmd_firc(0,0);
 
       }

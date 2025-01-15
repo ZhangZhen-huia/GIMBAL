@@ -11,6 +11,8 @@
 #include "detect_task.h"
 #include "user_lib.h"
 #include "communicate_task.h"
+#include "key_task.h"
+
 
 //电机编码值规整 0—8191
 #define ecd_format(ecd)         \
@@ -65,17 +67,16 @@ void gimbal_task(void const *pvParameters)
 
 
 
-
-            if (toe_is_error(DBUS_TOE))
-            {
-                CAN_cmd_gimbal_yaw(0);
-								CAN_cmd_gimbal_pitch(0);
-            }
-            else
-            {
-							CAN_cmd_gimbal_yaw(gimbal_control.gimbal_yaw_motor.current_set);
-              CAN_cmd_gimbal_pitch(gimbal_control.gimbal_pitch_motor.current_set);
-            }
+			if(POWER_OFF)//((ControlMode == Rc && toe_is_error(DBUS_TOE)) || (ControlMode == ImageTransfer && toe_is_error(REFEREE_TOE)))
+			{
+				CAN_cmd_gimbal_yaw(0);
+				CAN_cmd_gimbal_pitch(0);
+			}
+      else
+      {
+				CAN_cmd_gimbal_yaw(gimbal_control.gimbal_yaw_motor.current_set);
+        CAN_cmd_gimbal_pitch(gimbal_control.gimbal_pitch_motor.current_set);
+      }
         
 		osDelay(2);
     }
@@ -90,7 +91,7 @@ void gimbal_task(void const *pvParameters)
 static void gimbal_init(gimbal_control_t *init)
 {
 	uint16_t Pitch_offset_ecd = 4072;
-	fp32 pitch_max_relative_angle=3440;
+	fp32 pitch_max_relative_angle=3500;
 	fp32 pitch_min_relative_angle=4420;
 	uint16_t Yaw_offset_ecd = 3473;
 	

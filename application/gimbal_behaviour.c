@@ -302,7 +302,19 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
         gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
     }
 		
-		else if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
+		if(toe_is_error(DBUS_TOE) && !toe_is_error(REFEREE_TOE))
+		{
+					//		//右键按下进入自瞄
+					if(Mouse_Data.mouse_r == 1)
+					{
+						gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
+					}
+					else
+					{
+						gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
+					}	
+		}
+		else if ( !toe_is_error(DBUS_TOE) && switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
 		{
 				//gimbal_mode_set->gimbal_behaviour = GIMBAL_GYRO_ANGLE;
 			

@@ -53,6 +53,6 @@ typedef struct
 
 extern Mouse_Data_t Mouse_Data;
 extern Key_Scan_t Key_ScanValue;
-
+extern ControlMode_e ControlMode;
 
 #endif
