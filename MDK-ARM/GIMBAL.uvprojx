@@ -1203,16 +1203,16 @@
               <FileType>1</FileType>
               <FilePath>..\application\referee.c</FilePath>
             </File>
-            <File>
-              <FileName>bsp_usart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bsp\boards\bsp_usart.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>BSP</GroupName>
           <Files>
+            <File>
+              <FileName>bsp_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bsp\boards\bsp_usart.c</FilePath>
+            </File>
             <File>
               <FileName>Can_receive.c</FileName>
               <FileType>1</FileType>
