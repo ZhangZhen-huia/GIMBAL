@@ -69,18 +69,18 @@ static void shoot_init(shoot_control_t *shoot_init)
 
 	static const fp32 Shoot_fric_L_speed_pid[3] = {FRIC_L_SPEED_PID_KP,FRIC_L_SPEED_PID_KI,FRIC_L_SPEED_PID_KD};
 	static const fp32 Shoot_fric_R_speed_pid[3] = {FRIC_R_SPEED_PID_KP,FRIC_R_SPEED_PID_KI,FRIC_R_SPEED_PID_KD};
-	static const fp32 Shoot_Speed_compensate_pid[3] = {190,0,0};
+//	static const fp32 Shoot_Speed_compensate_pid[3] = {190,0,0};
 	//电机数据指针获取
 	shoot_init->shoot_fric_L_motor.shoot_motor_measure = get_gimbal_friction_motor_measure_point(Fric_L);
 	shoot_init->shoot_fric_R_motor.shoot_motor_measure = get_gimbal_friction_motor_measure_point(Fric_R);
 	
 	//遥控器数据指针获取
 	shoot_init->shoot_rc_ctrl = get_remote_control_point();
-	shoot_init->auto_fireFlag = get_autofire_flag_point();
+
   //初始化firc电机速度pid
 	K_FF_init(&shoot_init->shoot_fric_L_motor.shoot_speed_pid,PID_POSITION,Shoot_fric_L_speed_pid,FRIC_L_SPEED_PID_MAX_OUT,FRIC_L_SPEED_PID_MAX_IOUT,FRIC_L_SPEED_KF_STATIC,FRIC_L_SPEED_KF_DYNAMIC);
 	K_FF_init(&shoot_init->shoot_fric_R_motor.shoot_speed_pid,PID_POSITION,Shoot_fric_R_speed_pid,FRIC_R_SPEED_PID_MAX_OUT,FRIC_R_SPEED_PID_MAX_IOUT,FRIC_R_SPEED_KF_STATIC,FRIC_R_SPEED_KF_DYNAMIC);
-	PID_init(&shoot_init->shoot_speed_compensate_pid,PID_POSITION,DATA_NORMAL,Shoot_Speed_compensate_pid,1,0,NONE);
+//	PID_init(&shoot_init->shoot_speed_compensate_pid,PID_POSITION,DATA_NORMAL,Shoot_Speed_compensate_pid,1,0,NONE);
 	
 	shoot_init->shoot_agency_state = SHOOT_OFF;
 	shoot_init->trig_mode = Cease_fire;

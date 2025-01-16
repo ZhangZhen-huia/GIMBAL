@@ -31,7 +31,6 @@ typedef struct
 
 
 const mini_data_t* get_mini_data_point(void);
-const Autofire_e * get_autofire_flag_point(void);
 extern mini_data_t auto_data;
 
 

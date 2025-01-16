@@ -150,11 +150,11 @@ void Key_Scan(Key_Scan_t * Key,ControlMode_e mode)
 	else
 		Key->Key_Value.CTRL = 0;
 	
-	
-	Key->Key_Value.CTRL_F = Key->Key_Value.CTRL & Key->Key_Value.F;
-	Key->Key_Value.CTRL_B = Key->Key_Value.CTRL & Key->Key_Value.B;
-	Key->Key_Value.Z_F = Key->Key_Value.Z & Key->Key_Value.F;
-	Key->Key_Value.Z_B = Key->Key_Value.Z & Key->Key_Value.B;
+//	
+//	Key->Key_Value.CTRL_F = Key->Key_Value.CTRL & Key->Key_Value.F;
+//	Key->Key_Value.CTRL_B = Key->Key_Value.CTRL & Key->Key_Value.B;
+//	Key->Key_Value.Z_F = Key->Key_Value.Z & Key->Key_Value.F;
+//	Key->Key_Value.Z_B = Key->Key_Value.Z & Key->Key_Value.B;
 	
 	
 }

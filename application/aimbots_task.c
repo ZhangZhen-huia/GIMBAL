@@ -39,7 +39,7 @@ void aimbots_task(void const * argument)
 //		CDC_Transmit_FS(Send_to_minpc,18);
 
 		Send_to_minpc[0]=0xFF;
-		Send_to_minpc[1]=0;
+		Send_to_minpc[1]=1;
 		memcpy(&Send_to_minpc[2],get_INS_angle(2),4);
 		//memcpy(&Send_to_minpc[6],get_INS_pitch_to_minpc(),4);
 		memcpy(&Send_to_minpc[6],&gimbal_control.gimbal_pitch_motor.relative_angle,4);
@@ -96,10 +96,7 @@ const mini_data_t* get_mini_data_point(void)
 	return &auto_data;
 }
 
-const uint8_t *get_autofire_flag_point(void)
-{
-		return &auto_data.auto_fireFlag;
-}
+
 
 
 
