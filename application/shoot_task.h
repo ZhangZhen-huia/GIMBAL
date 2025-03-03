@@ -10,7 +10,6 @@
 #include "remote_control.h"
 #include "vofa_task.h"
 #include "shoot_behaviour.h"
-#include "aimbots_task.h"
 
 //定义摩擦轮转速（rpm）转化为摩擦轮线速（m/s）
 //rpm/60*60*3.1415926*10^-3//摩擦轮受损，直径可能会变小

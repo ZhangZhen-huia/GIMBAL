@@ -5,7 +5,6 @@
 static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set);
 void gimbal_behaviour_mode_set(gimbal_control_t *gimbal_mode_set);
 static void gimbal_encode_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
-//static void gimbal_follow_radar_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
 
 
 /**
@@ -50,40 +49,6 @@ static void gimbal_gyro_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *
 
     *yaw = yaw_channel * YAW_RC_SEN - gimbal_control_set->gimbal_rc_ctrl->mouse.x * YAW_MOUSE_SEN;
     *pitch = -(pitch_channel * PITCH_RC_SEN + gimbal_control_set->gimbal_rc_ctrl->mouse.y * PITCH_MOUSE_SEN);
-//    {
-//        static uint16_t last_turn_keyboard = 0;
-//        static uint8_t gimbal_turn_flag = 0;
-//        static fp32 gimbal_end_angle = 0.0f;
-
-//        if ((gimbal_control_set->gimbal_rc_ctrl->key.v & TURN_KEYBOARD) && !(last_turn_keyboard & TURN_KEYBOARD))
-//        {
-//            if (gimbal_turn_flag == 0)
-//            {
-//                gimbal_turn_flag = 1;
-//                //保存掉头的目标值
-//                gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI);
-//            }
-//        }
-//        last_turn_keyboard = gimbal_control_set->gimbal_rc_ctrl->key.v ;
-
-//        if (gimbal_turn_flag)
-//        {
-//            //不断控制到掉头的目标值，正转，反装是随机
-//            if (rad_format(gimbal_end_angle - gimbal_control_set->gimbal_yaw_motor.absolute_angle) > 0.0f)
-//            {
-//                *yaw += TURN_SPEED;
-//            }
-//            else
-//            {
-//                *yaw -= TURN_SPEED;
-//            }
-//        }
-//        //到达pi （180°）后停止
-//        if (gimbal_turn_flag && fabs(rad_format(gimbal_end_angle - gimbal_control_set->gimbal_yaw_motor.absolute_angle)) < 0.01f)
-//        {
-//            gimbal_turn_flag = 0;
-//        }
-//    }
 }
 
 
@@ -139,46 +104,6 @@ static void gimbal_auto_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *
 
 
 }
-
-
-/*-- 这一版本所有的雷达控制都取消了 --*/
-///**
-//  * @brief          雷达控制，半自动模式
-//  * @param[in]      yaw: yaw轴角度控制，陀螺仪控制为角度的增量 单位 rad
-//  * @param[in]      pitch: pitch轴角度控制，编码值控制，为角度的增量 单位 rad
-//  * @param[in]      gimbal_control_set: 云台数据指针
-//  * @retval         none
-//  */
-//static void gimbal_follow_radar_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set)
-//{
-
-//	static int8_t turn_flag = 1;
-//	    if (yaw == NULL || pitch == NULL || gimbal_control_set == NULL)
-//    {
-//        return;
-//    }
-
-
-//		//*yaw = 0.3;
-//		
-//		if(turn_flag == 1)
-//		{
-//			*pitch = 0.1;
-//			if(gimbal_control_set->gimbal_pitch_motor.relative_angle_set == gimbal_control_set->gimbal_pitch_motor.max_relative_angle)
-//				turn_flag = -1;
-//		}
-//		
-//		else if(turn_flag == -1)
-//		{
-//			*pitch = -0.1;
-//			if(gimbal_control_set->gimbal_pitch_motor.relative_angle_set == gimbal_control_set->gimbal_pitch_motor.min_relative_angle)
-//				turn_flag = 1;
-
-//		}
-
-
-//}
-
 
 
 

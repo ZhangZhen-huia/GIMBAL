@@ -63,5 +63,5 @@
 .\gimbal\remote_control.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\math.h
 .\gimbal\remote_control.o: ..\application\INS_task.h
 .\gimbal\remote_control.o: ../components/devices/BMI088driver.h
-.\gimbal\remote_control.o: ..\application\aimbots_task.h
+.\gimbal\remote_control.o: ..\application\communicate_task.h
 .\gimbal\remote_control.o: ..\application\detect_task.h

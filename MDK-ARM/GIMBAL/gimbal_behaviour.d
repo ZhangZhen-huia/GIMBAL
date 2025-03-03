@@ -63,7 +63,7 @@
 .\gimbal\gimbal_behaviour.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\math.h
 .\gimbal\gimbal_behaviour.o: ..\application\INS_task.h
 .\gimbal\gimbal_behaviour.o: ../components/devices/BMI088driver.h
-.\gimbal\gimbal_behaviour.o: ..\application\aimbots_task.h
+.\gimbal\gimbal_behaviour.o: ..\application\communicate_task.h
 .\gimbal\gimbal_behaviour.o: ..\application\referee.h
 .\gimbal\gimbal_behaviour.o: ../components/algorithm/user_lib.h
 .\gimbal\gimbal_behaviour.o: ..\application\detect_task.h

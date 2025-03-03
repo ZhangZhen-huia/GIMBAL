@@ -9,7 +9,7 @@ shoot_control_t shoot_control;
 
 
 //在当前比例下摩擦轮最大能到达转速29-->9300rpm差不多
-fp32 fric1=-MAX_SPEED,fric2=MAX_SPEED;
+fp32 fric1=MAX_SPEED,fric2=-MAX_SPEED;
 
 static void shoot_init(shoot_control_t *shoot_init);
 static void shoot_motor_control(shoot_motor_t *shoot_motor);

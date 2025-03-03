@@ -61,7 +61,6 @@
 .\gimbal\shoot_task.o: ..\application\vofa_task.h
 .\gimbal\shoot_task.o: ../Core/Inc/usart.h
 .\gimbal\shoot_task.o: ..\application\shoot_behaviour.h
-.\gimbal\shoot_task.o: ..\application\aimbots_task.h
 .\gimbal\shoot_task.o: ../Core/Inc/tim.h
 .\gimbal\shoot_task.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\math.h
 .\gimbal\shoot_task.o: ..\application\communicate_task.h

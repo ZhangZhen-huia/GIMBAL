@@ -63,8 +63,8 @@
 .\gimbal\shoot_behaviour.o: ../bsp/boards/bsp_rc.h
 .\gimbal\shoot_behaviour.o: ..\application\vofa_task.h
 .\gimbal\shoot_behaviour.o: ../Core/Inc/usart.h
-.\gimbal\shoot_behaviour.o: ..\application\aimbots_task.h
 .\gimbal\shoot_behaviour.o: ../Core/Inc/tim.h
+.\gimbal\shoot_behaviour.o: ..\application\communicate_task.h
 .\gimbal\shoot_behaviour.o: ..\application\gimbal_task.h
 .\gimbal\shoot_behaviour.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 .\gimbal\shoot_behaviour.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\math.h

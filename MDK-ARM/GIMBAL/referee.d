@@ -56,6 +56,6 @@
 .\gimbal\referee.o: ..\application\detect_task.h
 .\gimbal\referee.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\string.h
 .\gimbal\referee.o: ../Core/Inc/usart.h
-.\gimbal\referee.o: ..\components\support\crc8_crc16.h
+.\gimbal\referee.o: ../components/support/crc8_crc16.h
 .\gimbal\referee.o: ../bsp/boards/bsp_usart.h
 .\gimbal\referee.o: ..\application\vofa_task.h

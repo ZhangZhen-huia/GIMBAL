@@ -51,7 +51,6 @@
 ".\gimbal\usbd_ctlreq.o"
 ".\gimbal\usbd_ioreq.o"
 ".\gimbal\usbd_cdc.o"
-".\gimbal\aimbots_task.o"
 ".\gimbal\communicate_task.o"
 ".\gimbal\detect_task.o"
 ".\gimbal\gimbal_behaviour.o"

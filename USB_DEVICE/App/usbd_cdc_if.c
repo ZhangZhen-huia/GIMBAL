@@ -22,7 +22,7 @@
 #include "usbd_cdc_if.h"
 
 /* USER CODE BEGIN INCLUDE */
-
+#include "communicate_task.h"
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -261,6 +261,7 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
+	
 		if(*Len < 0x100)
 	{
 		for(uint16_t i = 0;i < *Len;i++)
@@ -268,6 +269,21 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 	}
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+	
+		/*-- ¹¨£¬Ö¡Í·Ö¡Î² --*/
+	memcpy(&auto_data.heading,&usb_recive_buffer[0],1);
+	memcpy(&auto_data.tailing,&usb_recive_buffer[15],1);
+	
+	/*-- ¿ª»ð£¬pitch£¬yaw --*/
+	if (auto_data.heading == 0xFF && auto_data.tailing == 0x0D)
+	{
+
+			memcpy(&auto_data.auto_fireFlag,&usb_recive_buffer[1],1);
+
+		memcpy(&auto_data.auto_pitch_set,&usb_recive_buffer[2],4);
+		memcpy(&auto_data.auto_yaw_set,&usb_recive_buffer[6],4);
+	}
+	
   return (USBD_OK);
   /* USER CODE END 6 */
 }

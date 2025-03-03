@@ -90,9 +90,9 @@ void gimbal_task(void const *pvParameters)
   */
 static void gimbal_init(gimbal_control_t *init)
 {
-	uint16_t Pitch_offset_ecd = 4072;
-	fp32 pitch_max_relative_angle=3500;
-	fp32 pitch_min_relative_angle=4420;
+	uint16_t Pitch_offset_ecd = 4138;
+	fp32 pitch_max_relative_angle=3450;
+	fp32 pitch_min_relative_angle=4351;
 	uint16_t Yaw_offset_ecd = 3473;
 	
 	static const fp32 Yaw_gyro_speed_pid[3] = {YAW_GYRO_SPEED_PID_KP, YAW_GYRO_SPEED_PID_KI, YAW_GYRO_SPEED_PID_KD};
@@ -235,7 +235,7 @@ static void gimbal_mode_change_control_transit(gimbal_control_t *gimbal_mode_cha
 }
 
 
-fp32 pitch_set;
+
 /**
   * @brief          设置云台控制设定值，控制值是通过gimbal_behaviour_control_set函数设置的
   * @param[out]     gimbal_set_control:"gimbal_control"变量指针.
@@ -371,7 +371,7 @@ static void gimbal_auto_angle_limit(gimbal_motor_t *gimbal_motor,fp32 aim_angle)
 	//pitch轴电机
 	else if(gimbal_motor == &gimbal_control.gimbal_pitch_motor)
 	{
-//		gimbal_motor->absolute_angle_set = aim_angle;
+
 		
     if (gimbal_motor->relative_angle >= gimbal_motor->max_relative_angle)
     {

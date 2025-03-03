@@ -5,11 +5,24 @@
 
 
 
+typedef struct
+{
+	uint8_t heading;
+	uint8_t tailing;
+	uint8_t auto_fireFlag;
+	fp32 auto_pitch_set;
+	fp32 auto_yaw_set;
+}mini_data_t;
+
+
+const mini_data_t* get_mini_data_point(void);
+extern mini_data_t auto_data;
 
 
 #define CHASSIS_X_CHANNEL	2
 #define CHASSIS_Y_CHANNEL 3
 #define CHASSIS_W_CHANNEL 0
+
 
 typedef struct
 {

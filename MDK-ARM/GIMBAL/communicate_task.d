@@ -63,7 +63,6 @@
 .\gimbal\communicate_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 .\gimbal\communicate_task.o: ../Core/Inc/usart.h
 .\gimbal\communicate_task.o: C:\Keil5 MDK\ARM\ARMCC\Bin\..\include\math.h
-.\gimbal\communicate_task.o: ..\application\aimbots_task.h
 .\gimbal\communicate_task.o: ..\application\detect_task.h
 .\gimbal\communicate_task.o: ../components/algorithm/user_lib.h
 .\gimbal\communicate_task.o: ..\application\shoot_task.h

@@ -62,4 +62,3 @@
 .\gimbal\vofa_task.o: ..\application\remote_control.h
 .\gimbal\vofa_task.o: ../bsp/boards/bsp_rc.h
 .\gimbal\vofa_task.o: ..\application\shoot_behaviour.h
-.\gimbal\vofa_task.o: ..\application\aimbots_task.h
