@@ -15,7 +15,7 @@ enum errorList
     
     FRIC_L_TOE,
     FRIC_R_TOE,
-//    PITCH_GIMBAL_MOTOR_TOE,
+    AIMBOT_TOE,
 //    BOARD_GYRO_TOE,
 //    BOARD_ACCEL_TOE,
 //    BOARD_MAG_TOE,

@@ -44,7 +44,7 @@ void shoot_task(void const * argument)
 				 //CAN_cmd_firc(0,0);
 				CAN_cmd_firc(shoot_control.shoot_fric_L_motor.current_set,shoot_control.shoot_fric_R_motor.current_set);
       }
-			osDelay(1);
+			osDelay(10);
 		
 		}
 

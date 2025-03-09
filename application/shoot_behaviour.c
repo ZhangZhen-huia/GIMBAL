@@ -63,7 +63,7 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 		if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >= 5000)
 		{
 			shoot_flag++;
-			if(shoot_flag >= 400)
+			if(shoot_flag >= 80)
 			{
 				shoot_behaviour->shoot_agency_state = SHOOT_OFF;//发射机构关
 				shoot_flag=0;

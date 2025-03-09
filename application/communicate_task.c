@@ -17,7 +17,8 @@ void USB_CMD_PC(void);
 chassis_data_t chassis_data;
 mini_data_t auto_data;
 
-
+#define RED 0
+#define BLUE 1
 uint8_t a[18]={1,2,3,4,1,6,7,0,1};
 
 void communicate_task(void const * argument)
@@ -41,9 +42,8 @@ void USB_CMD_PC(void)
 		static uint8_t Send_to_minpc[16];
 	
 		Send_to_minpc[0]=0xFF;
-		Send_to_minpc[1]=0;
+		Send_to_minpc[1]=RED;
 		memcpy(&Send_to_minpc[2],get_INS_angle(2),4);
-		//memcpy(&Send_to_minpc[6],get_INS_pitch_to_minpc(),4);
 		memcpy(&Send_to_minpc[6],&gimbal_control.gimbal_pitch_motor.relative_angle,4);
 		memcpy(&Send_to_minpc[10],get_INS_angle(0),4);
 		memcpy(&Send_to_minpc[14],a,1);

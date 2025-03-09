@@ -434,7 +434,7 @@ static void gimbal_control_loop(gimbal_control_t *control_loop)
     {
         gimbal_motor_gyro_angle_control(&control_loop->gimbal_yaw_motor);
     }
-    else if (control_loop->gimbal_yaw_motor.gimbal_motor_mode == GIMBAL_MOTOR_ENCONDE)
+    if (control_loop->gimbal_yaw_motor.gimbal_motor_mode == GIMBAL_MOTOR_ENCONDE)
     {
         gimbal_motor_encode_angle_control(&control_loop->gimbal_yaw_motor);
     }
@@ -449,7 +449,7 @@ static void gimbal_control_loop(gimbal_control_t *control_loop)
     {
         gimbal_motor_gyro_angle_control(&control_loop->gimbal_pitch_motor);
     }
-    else if (control_loop->gimbal_pitch_motor.gimbal_motor_mode == GIMBAL_MOTOR_ENCONDE)
+    if (control_loop->gimbal_pitch_motor.gimbal_motor_mode == GIMBAL_MOTOR_ENCONDE)
     {
         gimbal_motor_encode_angle_control(&control_loop->gimbal_pitch_motor);
     }

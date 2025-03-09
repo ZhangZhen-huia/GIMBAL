@@ -23,6 +23,7 @@
 
 /* USER CODE BEGIN INCLUDE */
 #include "communicate_task.h"
+#include "detect_task.h"
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -273,17 +274,15 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 		/*-- ¹¨£¬Ö¡Í·Ö¡Î² --*/
 	memcpy(&auto_data.heading,&usb_recive_buffer[0],1);
 	memcpy(&auto_data.tailing,&usb_recive_buffer[15],1);
-	
 	/*-- ¿ª»ð£¬pitch£¬yaw --*/
 	if (auto_data.heading == 0xFF && auto_data.tailing == 0x0D)
 	{
-
-			memcpy(&auto_data.auto_fireFlag,&usb_recive_buffer[1],1);
-
+		
+		memcpy(&auto_data.auto_fireFlag,&usb_recive_buffer[1],1);
 		memcpy(&auto_data.auto_pitch_set,&usb_recive_buffer[2],4);
 		memcpy(&auto_data.auto_yaw_set,&usb_recive_buffer[6],4);
 	}
-	
+	detect_hook(AIMBOT_TOE);
   return (USBD_OK);
   /* USER CODE END 6 */
 }

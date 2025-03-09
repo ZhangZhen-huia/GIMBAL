@@ -76,10 +76,10 @@
 #define YAW_GYRO_SPEED_PID_MAX_IOUT  0.0f
 
 #define YAW_GYRO_ANGLE_PID_KP        0.5f//1.0f //0.4
-#define YAW_GYRO_ANGLE_PID_KI        0.1f
+#define YAW_GYRO_ANGLE_PID_KI        0.01f
 #define YAW_GYRO_ANGLE_PID_KD        0.0f
 #define YAW_GYRO_ANGLE_PID_MAX_OUT   360.0f
-#define YAW_GYRO_ANGLE_PID_MAX_IOUT  0.25f
+#define YAW_GYRO_ANGLE_PID_MAX_IOUT  0.2f
 
 
 //×ÔÃé
@@ -90,10 +90,10 @@
 #define YAW_AUTO_SPEED_PID_MAX_IOUT  0.0f
                                      
 #define YAW_AUTO_ANGLE_PID_KP        0.5f//1.0f //0.4
-#define YAW_AUTO_ANGLE_PID_KI        0.1f
+#define YAW_AUTO_ANGLE_PID_KI        0.01f
 #define YAW_AUTO_ANGLE_PID_KD        0.0f
 #define YAW_AUTO_ANGLE_PID_MAX_OUT   360.0f
-#define YAW_AUTO_ANGLE_PID_MAX_IOUT  0.25f//0.001f
+#define YAW_AUTO_ANGLE_PID_MAX_IOUT  0.2f//0.001f
 
 
 

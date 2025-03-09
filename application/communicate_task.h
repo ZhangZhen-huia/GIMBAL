@@ -9,6 +9,7 @@ typedef struct
 {
 	uint8_t heading;
 	uint8_t tailing;
+	uint8_t permit;
 	uint8_t auto_fireFlag;
 	fp32 auto_pitch_set;
 	fp32 auto_yaw_set;
