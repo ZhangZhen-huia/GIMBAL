@@ -27,7 +27,7 @@
 #define PITCH_GYRO_ANGLE_PID_MAX_IOUT 	0.0f//0.3f
 
 //±àÂëÆ÷
-#define PITCH_ENCODE_SPEED_PID_KP        16000.f
+#define PITCH_ENCODE_SPEED_PID_KP        12000.f
 #define PITCH_ENCODE_SPEED_PID_KI        0.0f
 #define PITCH_ENCODE_SPEED_PID_KD        0.0f
 #define PITCH_ENCODE_SPEED_PID_MAX_OUT   30000.0f
@@ -41,7 +41,7 @@
 #define PITCH_ENCODE_ANGLE_PID_MAX_IOUT 	 0.1f
 
 //×ÔÃé
-#define PITCH_AUTO_SPEED_PID_KP        16000.0f
+#define PITCH_AUTO_SPEED_PID_KP        12000.0f
 #define PITCH_AUTO_SPEED_PID_KI        0.0f
 #define PITCH_AUTO_SPEED_PID_KD        0.0f
 #define PITCH_AUTO_SPEED_PID_MAX_OUT   30000.0f
@@ -60,22 +60,16 @@
 /*--------------------------------------Yaw--------------------------------------*/
 
 
-////µ¼º½
-//#define YAW_RADAR_SPEED_PID_KP        6000.0f//20000.0f //35000
-//#define YAW_RADAR_SPEED_PID_KI        100.0f
-//#define YAW_RADAR_SPEED_PID_KD        0.0f
-//#define YAW_RADAR_SPEED_PID_MAX_OUT   30000.0f
-//#define YAW_RADAR_SPEED_PID_MAX_IOUT  700.0f
 
 
 //ÍÓÂÝÒÇ
-#define YAW_GYRO_SPEED_PID_KP        10000.0f//20000.0f //35000
+#define YAW_GYRO_SPEED_PID_KP        12500.0f//20000.0f //35000
 #define YAW_GYRO_SPEED_PID_KI        0.0f
-#define YAW_GYRO_SPEED_PID_KD        0.0f
+#define YAW_GYRO_SPEED_PID_KD        1.0f
 #define YAW_GYRO_SPEED_PID_MAX_OUT   30000.0f
 #define YAW_GYRO_SPEED_PID_MAX_IOUT  0.0f
 
-#define YAW_GYRO_ANGLE_PID_KP        0.5f//1.0f //0.4
+#define YAW_GYRO_ANGLE_PID_KP        0.35f//1.0f //0.4
 #define YAW_GYRO_ANGLE_PID_KI        0.01f
 #define YAW_GYRO_ANGLE_PID_KD        0.0f
 #define YAW_GYRO_ANGLE_PID_MAX_OUT   360.0f
@@ -83,13 +77,13 @@
 
 
 //×ÔÃé
-#define YAW_AUTO_SPEED_PID_KP        10000.0f//20000.0f //35000
+#define YAW_AUTO_SPEED_PID_KP        12500.0f//20000.0f //35000
 #define YAW_AUTO_SPEED_PID_KI        0.0f
-#define YAW_AUTO_SPEED_PID_KD        0.0f
+#define YAW_AUTO_SPEED_PID_KD        1.0f
 #define YAW_AUTO_SPEED_PID_MAX_OUT   30000.0f
 #define YAW_AUTO_SPEED_PID_MAX_IOUT  0.0f
                                      
-#define YAW_AUTO_ANGLE_PID_KP        0.5f//1.0f //0.4
+#define YAW_AUTO_ANGLE_PID_KP        0.35f//1.0f //0.4
 #define YAW_AUTO_ANGLE_PID_KI        0.01f
 #define YAW_AUTO_ANGLE_PID_KD        0.0f
 #define YAW_AUTO_ANGLE_PID_MAX_OUT   360.0f
@@ -189,7 +183,7 @@ extern gimbal_control_t gimbal_control;
 
 
 
-#define YAW_RC_SEN    -0.001f
+#define YAW_RC_SEN    -0.002f
 #define PITCH_RC_SEN  -0.0005f //0.005
 
 #define YAW_MOUSE_SEN   0.005f

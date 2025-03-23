@@ -2,6 +2,7 @@
 #include "remote_control.h"
 #include "referee.h"
 #include "detect_task.h"
+#include "communicate_task.h"
 
 Key_Scan_t Key_ScanValue;
 Mouse_Data_t Mouse_Data;
@@ -11,7 +12,7 @@ ControlMode_e ControlMode;
 static void MouseData_Combine(Mouse_Data_t * Data,ControlMode_e mode);
 void Key_Scan(Key_Scan_t * Key,ControlMode_e mode);
 void ControlMode_Get(void);
-
+static EnemyColor_e Aimbot_KeyFunc(void);
 //uint8_t Key_Function(uint16_t key);
 
 void key_task(void const * argument)
@@ -24,6 +25,8 @@ void key_task(void const * argument)
 		ControlMode_Get();
 		Key_Scan(&Key_ScanValue,ControlMode);
 		MouseData_Combine(&Mouse_Data,ControlMode);
+		EnemyColor = Aimbot_KeyFunc();
+
 		osDelay(10);
     
 	}
@@ -182,8 +185,18 @@ static void MouseData_Combine(Mouse_Data_t * Data,ControlMode_e mode)
 		default:break;
 	}
 
-	
 
+}
+
+static EnemyColor_e Aimbot_KeyFunc(void)
+{
+	static  EnemyColor_e color = BLUE;
+	if(Key_ScanValue.Key_Value.Z)
+	{
+		color++;
+		color%=2;
+	}
+	return color;
 }
 
 //	Key_ScanValue.Key_Value.Q = Key_Function(KEY_PRESSED_OFFSET_Q);

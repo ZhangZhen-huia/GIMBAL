@@ -90,9 +90,9 @@ void gimbal_task(void const *pvParameters)
   */
 static void gimbal_init(gimbal_control_t *init)
 {
-	uint16_t Pitch_offset_ecd = 4138;
-	fp32 pitch_max_relative_angle=3450;
-	fp32 pitch_min_relative_angle=4351;
+	uint16_t Pitch_offset_ecd = 4079;
+	fp32 pitch_max_relative_angle=3380;
+	fp32 pitch_min_relative_angle=4352;
 	uint16_t Yaw_offset_ecd = 3473;
 	
 	static const fp32 Yaw_gyro_speed_pid[3] = {YAW_GYRO_SPEED_PID_KP, YAW_GYRO_SPEED_PID_KI, YAW_GYRO_SPEED_PID_KD};

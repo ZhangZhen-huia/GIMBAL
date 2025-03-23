@@ -9,12 +9,16 @@ typedef struct
 {
 	uint8_t heading;
 	uint8_t tailing;
-	uint8_t permit;
 	uint8_t auto_fireFlag;
 	fp32 auto_pitch_set;
 	fp32 auto_yaw_set;
 }mini_data_t;
 
+typedef enum
+{
+	BLUE = 1,
+	RED	 = 0
+}EnemyColor_e;
 
 const mini_data_t* get_mini_data_point(void);
 extern mini_data_t auto_data;
@@ -31,5 +35,7 @@ typedef struct
 	fp32 shoot_cooling_heat;
 }chassis_data_t;
 
+extern EnemyColor_e EnemyColor;
 extern chassis_data_t chassis_data;
+
 #endif

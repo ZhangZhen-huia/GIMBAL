@@ -208,7 +208,7 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
 		if(toe_is_error(DBUS_TOE) && !toe_is_error(REFEREE_TOE))
 		{
 					//右键按下进入自瞄，并且瞄到了，就进入自瞄模式
-					if(Mouse_Data.mouse_r == 1 && !toe_is_error(AIMBOT_TOE))
+					if(Mouse_Data.mouse_r == 1 )//&& !toe_is_error(AIMBOT_TOE))
 					{
 						gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
 					}
@@ -218,11 +218,11 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
 						gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
 					}	
 		}
-		//遥控器没有丢失，右边再最上面
+		//遥控器没有丢失，右边在最上面
 		else if ( !toe_is_error(DBUS_TOE) && switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
 		{			
 					//右键按下进入自瞄，并且瞄到了，就进入自瞄模式
-					if(Mouse_Data.mouse_r == 1 && !toe_is_error(AIMBOT_TOE))
+					if(Mouse_Data.mouse_r == 1 )//&& !toe_is_error(AIMBOT_TOE))
 					{
 						gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
 					}

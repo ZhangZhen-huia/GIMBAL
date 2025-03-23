@@ -57,3 +57,4 @@
 .\gimbal\key_task.o: ..\application\referee.h
 .\gimbal\key_task.o: ../components/algorithm/user_lib.h
 .\gimbal\key_task.o: ..\application\detect_task.h
+.\gimbal\key_task.o: ..\application\communicate_task.h

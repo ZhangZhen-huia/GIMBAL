@@ -46,7 +46,7 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 	{
 		shoot_behaviour->trig_mode = Cease_fire;
 	}
-	
+
 	//如果发射机构总开关关了，那么所有的都关闭
 	if(shoot_behaviour->shoot_agency_state == SHOOT_OFF)
 	{
@@ -56,14 +56,15 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 		
 	}
 	
-	
+	if(ControlMode == Rc)
+	{
 	//发射机构开关判断，在这里多加了一级发射机构的状态是为了防止遥控器误触导致摩擦轮开启
 	if(((shoot_behaviour->shoot_agency_state == SHOOT_ON && shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >= 5000)) || (Key_ScanValue.Key_Value.B && !Key_ScanValue.Key_Value_Last.B))
 	{
 		if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >= 5000)
 		{
 			shoot_flag++;
-			if(shoot_flag >= 80)
+			if(shoot_flag >= 50)
 			{
 				shoot_behaviour->shoot_agency_state = SHOOT_OFF;//发射机构关
 				shoot_flag=0;
@@ -96,8 +97,28 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 		{
 			shoot_behaviour->fric_mode = STOP;	
 		}
-
-
+	}
+	else
+	{
+//		/*键盘直接控制开关摩擦轮*/
+//		if(Key_ScanValue.Key_Value.G)
+//		{
+//			shoot_behaviour->shoot_agency_state++;
+//			shoot_behaviour->shoot_agency_state%=2;
+//			shoot_behaviour->fric_mode++;
+//			shoot_behaviour->fric_mode%=2;
+//		}
+		if(Referee_System.Image_trans_remote.mouse_z != 0)
+		{
+			shoot_behaviour->shoot_agency_state = SHOOT_ON;
+			shoot_behaviour->fric_mode = START;
+		}
+		if(Key_ScanValue.Key_Value.G)
+		{
+			shoot_behaviour->shoot_agency_state = SHOOT_OFF;
+			shoot_behaviour->fric_mode = STOP;
+		}
+	}
 	/*-- 模式选择 --*/
 	//不是自瞄模式
 	if(gimbal_control.gimbal_behaviour != GIMBAL_AUTO_ANGLE)
@@ -136,7 +157,7 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 		}
 
 					//拨弹盘开启判断
-				if((shoot_behaviour->fric_mode == START &&  auto_data.auto_fireFlag) || shoot_force)//shoot_behaviour->auto_fireFlag[0] == fire)
+				if((shoot_behaviour->fric_mode == START &&  auto_data.auto_fireFlag) || shoot_force)
 				{
 					
 					shoot_behaviour->trig_mode = Start_fire;

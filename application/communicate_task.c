@@ -16,10 +16,10 @@ void USB_CMD_PC(void);
 
 chassis_data_t chassis_data;
 mini_data_t auto_data;
+EnemyColor_e EnemyColor;
 
-#define RED 0
-#define BLUE 1
-uint8_t a[18]={1,2,3,4,1,6,7,0,1};
+
+
 
 void communicate_task(void const * argument)
 {
@@ -42,11 +42,16 @@ void USB_CMD_PC(void)
 		static uint8_t Send_to_minpc[16];
 	
 		Send_to_minpc[0]=0xFF;
-		Send_to_minpc[1]=RED;
-		memcpy(&Send_to_minpc[2],get_INS_angle(2),4);
+		Send_to_minpc[1]=EnemyColor;
+		//memcpy(&Send_to_minpc[2],get_INS_angle(2),4);
+		Send_to_minpc[2]=0;
+		Send_to_minpc[3]=0;
+		Send_to_minpc[4]=0;
+		Send_to_minpc[5]=0;
 		memcpy(&Send_to_minpc[6],&gimbal_control.gimbal_pitch_motor.relative_angle,4);
 		memcpy(&Send_to_minpc[10],get_INS_angle(0),4);
-		memcpy(&Send_to_minpc[14],a,1);
+		//memcpy(&Send_to_minpc[14],a,1);
+		Send_to_minpc[14]=22;
 		Send_to_minpc[15]=0x0D;
 		CDC_Transmit_FS(Send_to_minpc,16);
 }
@@ -117,6 +122,15 @@ static void Gimbal_data_transfer(void)
 	else
 		gimbal_mode &= 0xFB;	
 	
+	if(EnemyColor == RED)
+		gimbal_mode |= 0x08;
+	else
+		gimbal_mode &= 0xF7;
+	
+	if(EnemyColor == BLUE)
+		gimbal_mode |= 0x10;
+	else
+		gimbal_mode &= 0xEF;
 	buf[0] = vx_set;
 	buf[1] = vy_set;
 	buf[2] = rc_err;

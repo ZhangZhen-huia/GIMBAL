@@ -220,7 +220,7 @@ static void detect_init(uint32_t time)
 //            {2, 3, 7},      //board gyro
 //            {5, 5, 7},      //board accel
 //            {40, 200, 7},   //board mag
-            {100, 100, 15},  //referee
+            {300, 100, 15},  //referee
 //            {10, 10, 7},    //rm imu
 //            {100, 100, 1},  //oled
 				};
