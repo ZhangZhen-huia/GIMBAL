@@ -56,7 +56,7 @@ void canfilter_init_start(void)
 }
 
 
-
+uint8_t RotateMode[2];
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*hcan)//  CAN FIFO0µÄÖĞ¶Ï»Øµ÷º¯Êı£¬ÔÚÀïÃæÍê³ÉÊı¾İµÄ½ÓÊÕ
 {
 	CAN_RxHeaderTypeDef rx_header2,rx_header1;
@@ -95,7 +95,10 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*hcan)//  CAN FIFO0µÄÖĞ¶
 				detect_hook(YAW_TOE);	
 				break;
 
-
+			case CHASSIS_ID:
+				RotateMode[0] = rx_data1[0] & 0x01;
+				RotateMode[1] = rx_data1[0] & 0x02;
+				break;
 
 				
 		}

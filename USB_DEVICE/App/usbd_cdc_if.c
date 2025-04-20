@@ -282,7 +282,8 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 		memcpy(&auto_data.auto_pitch_set,&usb_recive_buffer[2],4);
 		memcpy(&auto_data.auto_yaw_set,&usb_recive_buffer[6],4);
 	}
-	detect_hook(AIMBOT_TOE);
+	if(auto_data.auto_pitch_set!=0 && auto_data.auto_yaw_set!=0)
+		detect_hook(AIMBOT_TOE);
   return (USBD_OK);
   /* USER CODE END 6 */
 }

@@ -55,13 +55,11 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 		shoot_flag = 0;
 		
 	}
-	
-	if(ControlMode == Rc)
-	{
+
 	//发射机构开关判断，在这里多加了一级发射机构的状态是为了防止遥控器误触导致摩擦轮开启
-	if(((shoot_behaviour->shoot_agency_state == SHOOT_ON && shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >= 5000)) || (Key_ScanValue.Key_Value.B && !Key_ScanValue.Key_Value_Last.B))
+	if(((shoot_behaviour->shoot_agency_state == SHOOT_ON && shoot_behaviour->shoot_rc_ctrl->rc.ch[4] <=-600)))
 	{
-		if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >= 5000)
+		if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] <= -600)
 		{
 			shoot_flag++;
 			if(shoot_flag >= 50)
@@ -70,13 +68,8 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 				shoot_flag=0;
 			}
 		}
-		else if((Key_ScanValue.Key_Value.B && !Key_ScanValue.Key_Value_Last.B))
-		{
-			shoot_behaviour->shoot_agency_state = SHOOT_OFF;
-		}
-
 	}
-	else if((shoot_behaviour->shoot_rc_ctrl->rc.ch[4] ==660 && (!switch_is_up(shoot_behaviour->shoot_rc_ctrl->rc.s[SHOOT_MODE_CHANNEL]))) || (Key_ScanValue.Key_Value.G && !Key_ScanValue.Key_Value_Last.G))//右中
+	else if((shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >= 600))
 	{
 		shoot_behaviour->shoot_agency_state = SHOOT_ON;//发射结构开
 		shoot_flag = 0;
@@ -89,7 +82,7 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 	//摩擦轮开启判断
 		if(shoot_behaviour->shoot_agency_state == SHOOT_ON)	
 		{	
-			if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >= 5000 || (Key_ScanValue.Key_Value.G && !Key_ScanValue.Key_Value_Last.G))	
+			if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] <= -600)
 					shoot_behaviour->fric_mode = START;	
 		}	
 		
@@ -97,18 +90,25 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 		{
 			shoot_behaviour->fric_mode = STOP;	
 		}
-	}
-	else
-	{
-//		/*键盘直接控制开关摩擦轮*/
-//		if(Key_ScanValue.Key_Value.G)
-//		{
-//			shoot_behaviour->shoot_agency_state++;
-//			shoot_behaviour->shoot_agency_state%=2;
-//			shoot_behaviour->fric_mode++;
-//			shoot_behaviour->fric_mode%=2;
-//		}
-		if(Referee_System.Image_trans_remote.mouse_z != 0)
+
+		if(Key_ScanValue.Key_Value.FN_2)
+		{
+			static uint8_t flag;
+			flag++;
+			flag%=2;
+			if(flag)
+			{
+				shoot_behaviour->shoot_agency_state = SHOOT_ON;
+				shoot_behaviour->fric_mode = START;
+			}
+			else
+			{
+				shoot_behaviour->shoot_agency_state = SHOOT_OFF;
+				shoot_behaviour->fric_mode = STOP;
+			}
+		}
+
+		if(Mouse_Data.mouse_z != 0)
 		{
 			shoot_behaviour->shoot_agency_state = SHOOT_ON;
 			shoot_behaviour->fric_mode = START;
@@ -118,7 +118,7 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 			shoot_behaviour->shoot_agency_state = SHOOT_OFF;
 			shoot_behaviour->fric_mode = STOP;
 		}
-	}
+	
 	/*-- 模式选择 --*/
 	//不是自瞄模式
 	if(gimbal_control.gimbal_behaviour != GIMBAL_AUTO_ANGLE)
@@ -129,7 +129,7 @@ static void shoot_motor_behaviour_set(shoot_control_t *shoot_behaviour)
 				if(shoot_behaviour->shoot_agency_state == SHOOT_OFF || shoot_behaviour->fric_mode == STOP)
 						shoot_behaviour->trig_mode = Cease_fire;
 				
-				else if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] == 660 || Mouse_Data.mouse_l)
+				else if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >=600 || Mouse_Data.mouse_l || Referee_System.new_remote_data.wheel==364)
 				{
 					shoot_behaviour->trig_mode = Start_fire;
 				}
@@ -181,3 +181,50 @@ void shoot_motor_mode_set(shoot_control_t *shoot_mode)
 	shoot_motor_behaviour_set(shoot_mode);
 }
 
+//		if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >= 5000)
+//		{
+//			shoot_flag++;
+//			if(shoot_flag >= 50)
+//			{
+//				shoot_behaviour->shoot_agency_state = SHOOT_OFF;//发射机构关
+//				shoot_flag=0;
+//			}
+//		}
+//		else if((Key_ScanValue.Key_Value.B && !Key_ScanValue.Key_Value_Last.B))
+//		{
+//			shoot_behaviour->shoot_agency_state = SHOOT_OFF;
+//		}
+
+//	}
+//	else if((shoot_behaviour->shoot_rc_ctrl->rc.ch[4] ==660 ) || (Key_ScanValue.Key_Value.G && !Key_ScanValue.Key_Value_Last.G))//右中
+//	{
+//		shoot_behaviour->shoot_agency_state = SHOOT_ON;//发射结构开
+//		shoot_flag = 0;
+//	}
+//	else
+//	{
+//		shoot_flag=0;
+//	}
+//	
+//	//摩擦轮开启判断
+//		if(shoot_behaviour->shoot_agency_state == SHOOT_ON)	
+//		{	
+//			if(shoot_behaviour->shoot_rc_ctrl->rc.ch[4] >= 5000 || (Key_ScanValue.Key_Value.G && !Key_ScanValue.Key_Value_Last.G))	
+//					shoot_behaviour->fric_mode = START;	
+//		}	
+//		
+//		else
+//		{
+//			shoot_behaviour->fric_mode = STOP;	
+//		}
+//	}
+//	else
+//	{
+//		/*键盘直接控制开关摩擦轮*/
+//		if(Key_ScanValue.Key_Value.G)
+//		{
+//			shoot_behaviour->shoot_agency_state++;
+//			shoot_behaviour->shoot_agency_state%=2;
+//			shoot_behaviour->fric_mode++;
+//			shoot_behaviour->fric_mode%=2;
+//		}

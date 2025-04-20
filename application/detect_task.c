@@ -214,13 +214,13 @@ static void detect_init(uint32_t time)
 						{10, 10, 10},   //pitch
             {10, 10, 10},    //fric_l
             {10, 10, 10},     //fric_r
-						{10, 10, 10},    //AIMBOT_TOE
+						{50, 10, 10},    //AIMBOT_TOE
 //            {2, 3, 13},     //pitch
 //            {10, 10, 12},   //trigger
 //            {2, 3, 7},      //board gyro
 //            {5, 5, 7},      //board accel
 //            {40, 200, 7},   //board mag
-            {300, 100, 15},  //referee
+            {500, 100, 15},  //referee
 //            {10, 10, 7},    //rm imu
 //            {100, 100, 1},  //oled
 				};

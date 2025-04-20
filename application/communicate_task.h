@@ -16,8 +16,19 @@ typedef struct
 
 typedef enum
 {
+	NORMAL = 0,
+	BIG = 4,
+	SMALL = 2,
+}Aimbot_Mode_e;
+
+//小符红是2
+//大符红是3
+//小符蓝是4
+//大符蓝是5
+typedef enum
+{
 	BLUE = 1,
-	RED	 = 0
+	RED	 = 0,
 }EnemyColor_e;
 
 const mini_data_t* get_mini_data_point(void);

@@ -13,11 +13,12 @@
 static void can_cmd_to_chassis(CAN_HandleTypeDef*hcan,int16_t can_id,uint8_t *buf,uint8_t num);
 static void Gimbal_data_transfer(void);
 void USB_CMD_PC(void);
+static void AIMBOT_MODE(uint8_t* mode);
 
 chassis_data_t chassis_data;
 mini_data_t auto_data;
-EnemyColor_e EnemyColor;
-
+EnemyColor_e EnemyColor = RED;
+Aimbot_Mode_e Aimbot_Mode;
 
 
 
@@ -42,7 +43,7 @@ void USB_CMD_PC(void)
 		static uint8_t Send_to_minpc[16];
 	
 		Send_to_minpc[0]=0xFF;
-		Send_to_minpc[1]=EnemyColor;
+		AIMBOT_MODE(&Send_to_minpc[1]);
 		//memcpy(&Send_to_minpc[2],get_INS_angle(2),4);
 		Send_to_minpc[2]=0;
 		Send_to_minpc[3]=0;
@@ -60,8 +61,6 @@ const mini_data_t* get_mini_data_point(void)
 {
 	return &auto_data;
 }
-
-
 static void Gimbal_data_transfer(void)
 {
 	static uint8_t gimbal_mode = 0x00;
@@ -72,15 +71,23 @@ static void Gimbal_data_transfer(void)
 	uint8_t rc_err;
 	uint8_t rc_sl; 
 	uint8_t rc_sr; 
+	uint16_t ImghandleKey = ImgTransferKey>>16;
 	
 	if(ControlMode == Rc)
-	rc_key_v = rc_ctrl.key.v;		
+	{
+		rc_key_v = rc_ctrl.key.v;		
+		buf[3] = rc_sl;
+		buf[4] = rc_sr;
+	}
 	else
-	rc_key_v = Referee_System.Image_trans_remote.keyboard_value;
+	{
+		rc_key_v = Referee_System.new_remote_data.key;
+		memcpy(&buf[3],&ImghandleKey,2);
+	}
 	
-	vx_set = (rc_ctrl.rc.ch[CHASSIS_X_CHANNEL]+660)/20.0f;//(0-66)
-	vy_set = (rc_ctrl.rc.ch[CHASSIS_Y_CHANNEL]+660)/20.0f;//(0-66)
-	
+	vx_set = (rc_ctrl.rc.ch[CHASSIS_X_CHANNEL]+660)/20.0f+(Referee_System.new_remote_data.ch_3-1024+660)/20.0f;//(0-66)
+	vy_set = (rc_ctrl.rc.ch[CHASSIS_Y_CHANNEL]+660)/20.0f+(Referee_System.new_remote_data.ch_2-1024+660)/20.0f;//(0-66)
+
 
 	
 	if(ControlMode == Rc)
@@ -134,8 +141,6 @@ static void Gimbal_data_transfer(void)
 	buf[0] = vx_set;
 	buf[1] = vy_set;
 	buf[2] = rc_err;
-	buf[3] = rc_sl;
-	buf[4] = rc_sr;
 	buf[5] = gimbal_mode;
 	memcpy(&buf[6],&rc_key_v,2);
 	
@@ -143,7 +148,33 @@ static void Gimbal_data_transfer(void)
 	
 }
 
+static void AIMBOT_MODE(uint8_t* mode)
+{
+	if(gimbal_control.gimbal_behaviour == GIMBAL_AUTO_ANGLE)
+	{
+		switch(Referee_System.new_remote_data.mode_sw)
+		{
+			case 0:Aimbot_Mode = NORMAL;break;
+			case 1:Aimbot_Mode = BIG;break;
+			case 2:Aimbot_Mode = SMALL;break;
+		}
+	}
+	
+	if(Aimbot_Mode == NORMAL)
+	{
+		*mode = EnemyColor;
+	}
+	else if(Aimbot_Mode == BIG)
+	{
 
+			*mode = BIG+EnemyColor;
+
+	}
+	else if(Aimbot_Mode == SMALL)
+	{
+			*mode = SMALL+EnemyColor;
+	}
+}
 static void can_cmd_to_chassis(CAN_HandleTypeDef*hcan,int16_t can_id,uint8_t *buf,uint8_t num)
 {
 	uint32_t send_mail_box;

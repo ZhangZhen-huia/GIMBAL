@@ -3,30 +3,33 @@
 #include "referee.h"
 #include "detect_task.h"
 #include "communicate_task.h"
+#include "can.h"
+#include "Can_receive.h"
 
 Key_Scan_t Key_ScanValue;
 Mouse_Data_t Mouse_Data;
 ControlMode_e ControlMode;
+ChassisMode_e ChassisMode;
+uint32_t ImgTransferKey;
 
-
+static void Gimbal_Reset(void);
 static void MouseData_Combine(Mouse_Data_t * Data,ControlMode_e mode);
 void Key_Scan(Key_Scan_t * Key,ControlMode_e mode);
 void ControlMode_Get(void);
 static EnemyColor_e Aimbot_KeyFunc(void);
 //uint8_t Key_Function(uint16_t key);
-
+uint32_t ImgTransfer_KeyCombine(void);
 void key_task(void const * argument)
 {
-	
 	while(1)
-	{
-		
+	{	
 		/*-- 10ms扫描一次按键 --*/
 		ControlMode_Get();
+		ImgTransferKey = ImgTransfer_KeyCombine();
 		Key_Scan(&Key_ScanValue,ControlMode);
 		MouseData_Combine(&Mouse_Data,ControlMode);
 		EnemyColor = Aimbot_KeyFunc();
-
+		Gimbal_Reset();
 		osDelay(10);
     
 	}
@@ -47,21 +50,36 @@ void key_task(void const * argument)
 
 void ControlMode_Get(void)
 {
-	if(toe_is_error(REFEREE_TOE))
+	static uint8_t mode = 0;
+
+	if(Key_ScanValue.Key_Value.V)
+	{
+		mode++;
+		mode%=2;
+	}
+	if(mode == 0)
+	{
+		ControlMode = ImageTransfer;
+	if( toe_is_error(REFEREE_TOE))
 		ControlMode = Rc;
 	else
 		ControlMode = ImageTransfer;
+	}
+	else if(mode == 1)
+	{
+		ControlMode = Rc;
+	}
 }
 
 void Key_Scan(Key_Scan_t * Key,ControlMode_e mode)
 {
-	uint16_t Key_Temp,Key_Down,Key_Up;
-	static uint16_t Key_Last;
+	uint32_t Key_Temp,Key_Down,Key_Up;
+	static uint32_t Key_Last;
 	
 	if(mode == Rc)
 	Key_Temp = rc_ctrl.key.v;
 	else
-	Key_Temp = Referee_System.Image_trans_remote.keyboard_value;
+	Key_Temp = ImgTransferKey;
 	
 	Key_Down = Key_Temp & (Key_Last ^ Key_Temp);//异或运算，相同为0，不同为1     
 	Key_Up 	= ~Key_Temp & (Key_Last ^ Key_Temp);//异或运算，相同为0，不同为1 
@@ -152,7 +170,30 @@ void Key_Scan(Key_Scan_t * Key,ControlMode_e mode)
 	}
 	else
 		Key->Key_Value.CTRL = 0;
-	
+	if(Key_Up == IMG_TRANSFER_KEY_FN1)
+	{
+		Key->Key_Value.FN_1 = 1;
+	}
+	else
+		Key->Key_Value.FN_1 = 0;
+	if(Key_Up == IMG_TRANSFER_KEY_FN2)
+	{
+		Key->Key_Value.FN_2 = 1;
+	}
+	else
+		Key->Key_Value.FN_2 = 0;	
+	if(Key_Up == IMG_TRANSFER_KEY_PAUSE)
+	{
+		Key->Key_Value.PAUSE = 1;
+	}
+	else
+		Key->Key_Value.PAUSE = 0;	
+	if(Key_Up == IMG_TRANSFER_KEY_TRIGGER)
+	{
+		Key->Key_Value.TRIGGER = 1;
+	}
+	else
+		Key->Key_Value.TRIGGER = 0;		
 //	
 //	Key->Key_Value.CTRL_F = Key->Key_Value.CTRL & Key->Key_Value.F;
 //	Key->Key_Value.CTRL_B = Key->Key_Value.CTRL & Key->Key_Value.B;
@@ -168,11 +209,11 @@ static void MouseData_Combine(Mouse_Data_t * Data,ControlMode_e mode)
 	switch(mode)
 	{
 		case ImageTransfer:
-					Data->mouse_x = Referee_System.Image_trans_remote.mouse_x;
-					Data->mouse_y = Referee_System.Image_trans_remote.mouse_y;
-					Data->mouse_z = Referee_System.Image_trans_remote.mouse_z;
-					Data->mouse_l = Referee_System.Image_trans_remote.left_button_down;
-					Data->mouse_r = Referee_System.Image_trans_remote.right_button_down;
+					Data->mouse_x = Referee_System.new_remote_data.mouse_x;
+					Data->mouse_y = -Referee_System.new_remote_data.mouse_y;
+					Data->mouse_z = Referee_System.new_remote_data.mouse_z;
+					Data->mouse_l = Referee_System.new_remote_data.mouse_left;
+					Data->mouse_r = Referee_System.new_remote_data.mouse_right;
 					break;
 		case Rc:
 					Data->mouse_x = rc_ctrl.mouse.x;
@@ -190,13 +231,66 @@ static void MouseData_Combine(Mouse_Data_t * Data,ControlMode_e mode)
 
 static EnemyColor_e Aimbot_KeyFunc(void)
 {
-	static  EnemyColor_e color = BLUE;
-	if(Key_ScanValue.Key_Value.Z)
+	static  EnemyColor_e color = RED;
+	if(Key_ScanValue.Key_Value.Z || (Key_ScanValue.Key_Value.PAUSE && Referee_System.new_remote_data.wheel == 1684))
 	{
 		color++;
 		color%=2;
 	}
 	return color;
+}
+
+
+static void Gimbal_Reset(void)
+{
+	if(Key_ScanValue.Key_Value.X)
+	{
+		HAL_CAN_Stop(&hcan1);
+		HAL_CAN_Stop(&hcan2);
+		MX_CAN1_Init();
+		MX_CAN2_Init();
+		canfilter_init_start();
+	}
+}
+uint32_t ImgTransfer_KeyCombine()
+{
+	uint32_t Key;
+	Key = (uint32_t)Referee_System.new_remote_data.key;
+	if(Referee_System.new_remote_data.fn_1)
+		Key |= (uint32_t)(1<<16);
+	else
+		Key &= ~(uint32_t)(1<<16);
+
+	if(Referee_System.new_remote_data.fn_2)
+		Key |= (uint32_t)(1<<17);
+	else
+		Key &= ~(uint32_t)(1<<17);	
+	
+	if(Referee_System.new_remote_data.trigger)
+		Key |= (uint32_t)(1<<18);
+	else
+		Key &= ~(uint32_t)(1<<18);	
+	
+	if(Referee_System.new_remote_data.pause)
+		Key |= (uint32_t)(1<<19);
+	else
+		Key &= ~(uint32_t)(1<<19);	
+
+	if(Referee_System.new_remote_data.mode_sw == 0)
+		Key |= (uint32_t)(1<<20);
+	else
+		Key &= ~(uint32_t)(1<<20);
+	
+	if(Referee_System.new_remote_data.mode_sw == 1)
+		Key |= (uint32_t)(1<<21);
+	else
+		Key &= ~(uint32_t)(1<<21);
+	
+	if(Referee_System.new_remote_data.mode_sw == 2)
+		Key |= (uint32_t)(1<<22);
+	else
+		Key &= ~(uint32_t)(1<<22);
+	return Key;
 }
 
 //	Key_ScanValue.Key_Value.Q = Key_Function(KEY_PRESSED_OFFSET_Q);

@@ -5,6 +5,10 @@
 #include "main.h"
 
 
+#define IMG_TRANSFER_KEY_FN1	(uint32_t)(1<<16)
+#define IMG_TRANSFER_KEY_FN2	(uint32_t)(1<<17)
+#define IMG_TRANSFER_KEY_TRIGGER	(uint32_t)(1<<18)
+#define IMG_TRANSFER_KEY_PAUSE	(uint32_t)(1<<19)
 typedef enum
 {
 	Rc,
@@ -34,13 +38,26 @@ typedef struct
 	uint8_t CTRL_B;
 	uint8_t Z_F;
 	uint8_t Z_B;
+	uint8_t FN_1;
+	uint8_t FN_2;
+	uint8_t TRIGGER;
+	uint8_t PAUSE;
 }Key_Value_t;
+
 
 typedef struct
 {
 	Key_Value_t Key_Value;
 	Key_Value_t Key_Value_Last;
 }Key_Scan_t;
+
+
+typedef enum
+{
+	rotate,
+	normal,
+	release
+}ChassisMode_e;
 
 typedef struct
 {
@@ -50,7 +67,7 @@ typedef struct
 	uint8_t mouse_l;
 	uint8_t mouse_r;
 }Mouse_Data_t;
-
+extern uint32_t ImgTransferKey;
 extern Mouse_Data_t Mouse_Data;
 extern Key_Scan_t Key_ScanValue;
 extern ControlMode_e ControlMode;

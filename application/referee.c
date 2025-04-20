@@ -7,8 +7,8 @@
 #include "vofa_task.h"
 
 static void Referee_Data_Process(uint8_t *data);
-static void Referee_Data_Receive(uint8_t *data);
-static void Referee_0x0301Data_Receive(uint8_t *data);
+//static void Referee_Data_Receive(uint8_t *data);
+//static void Referee_0x0301Data_Receive(uint8_t *data);
 
 //static void Referee_Data_sentry_process();
 /*------------------------------------------------------*/	
@@ -76,77 +76,78 @@ void USART6_IRQHandler(void)
 void Referee_Data_Process(uint8_t *data)
 {
 	//系统帧头指针指向第一个字节
-	Referee_System.RS_frame_point = (RS_frame_point_t*)data;
+	Referee_System.new_remote_data_point = (new_remote_data_t*)data;
 	
-	while( Referee_System.this_time_rx_len > 0 )
-	{
-		if(Referee_System.RS_frame_point->frame_header.SOF ==0xA5)
+
+		if(Referee_System.new_remote_data_point->sof_1 ==0xA9)
 		{
-			if(Verify_CRC8_Check_Sum(&(Referee_System.RS_frame_point->frame_header.SOF),5) == 1)
+			if(Referee_System.new_remote_data_point->sof_2==0x53)
 			{
-                 //数据赋值函数
-			     Referee_Data_Receive(&Referee_System.RS_frame_point->data_0);
-			     
-		         //获取剩余帧长度
-			     Referee_System.this_time_rx_len -= (Referee_System.RS_frame_point->frame_header.data_length + 9);
+						memmove(&Referee_System.new_remote_data,data,21);
+			}
 			
-			     //切换帧头指针
-			     Referee_System.RS_frame_point = (RS_frame_point_t*)((uint8_t*)Referee_System.RS_frame_point +
-				(Referee_System.RS_frame_point->frame_header.data_length + 9));
-			}
-			else
-			{
-			   break;
-			}
+			
+//			if(Verify_CRC8_Check_Sum(&(Referee_System.RS_frame_point->frame_header.SOF),5) == 1)
+//			{
+//                 //数据赋值函数
+//			     Referee_Data_Receive(&Referee_System.RS_frame_point->data_0);
+//			     
+//		         //获取剩余帧长度
+//			     Referee_System.this_time_rx_len -= (Referee_System.RS_frame_point->frame_header.data_length + 9);
+//			
+//			     //切换帧头指针
+//			     Referee_System.RS_frame_point = (RS_frame_point_t*)((uint8_t*)Referee_System.RS_frame_point +
+//				(Referee_System.RS_frame_point->frame_header.data_length + 9));
+//			}
+//			else
+//			{
+//			   break;
+//			}
 		}
-		else
-		{
-		   break;
-		}
-	}
+
+	
 }
 
 /*------------------------------------------------------*/	
 /*                       数据赋值函数                   */	
 /*------------------------------------------------------*/
 
-void Referee_Data_Receive(uint8_t *data)
-{
-	switch(Referee_System.RS_frame_point->cmd_id)
-	{
+//void Referee_Data_Receive(uint8_t *data)
+//{
+//	switch(Referee_System.RS_frame_point->cmd_id)
+//	{
 
-		case 0x0301:
-		  Referee_0x0301Data_Receive(data);
-		  break;
-		
-		case 0x304:
-			memmove(&Referee_System.Image_trans_remote,data,12);
-			break;
-		default: break;
-		  
-	} 
-}
+//		case 0x0301:
+//		  Referee_0x0301Data_Receive(data);
+//		  break;
+//		
+//		case 0x304:
+//			memmove(&Referee_System.Image_trans_remote,data,12);
+//			break;
+//		default: break;
+//		  
+//	} 
+//}
 
-/*------------------------------------------------------*/	
-/*             数据赋值函数(0x0301数据)                  */	
-/*------------------------------------------------------*/
+///*------------------------------------------------------*/	
+///*             数据赋值函数(0x0301数据)                  */	
+///*------------------------------------------------------*/
 
-void Referee_0x0301Data_Receive(uint8_t *data)
-{
-	//数据段帧头指向数据段第一个字节
-   	Referee_System.Data_frame_point = (Data_frame_point_t*)data;
-	
-	//判断接收者ID是否自己
-	if( (Referee_System.Data_frame_point->receiver_ID == Hero_R) || (Referee_System.Data_frame_point->receiver_ID == Hero_B))
-	{   
-	    switch(Referee_System.Data_frame_point->data_cmd_id)
-		{
-			
-			default: break;
-		}
-	}
-}
-
+//void Referee_0x0301Data_Receive(uint8_t *data)
+//{
+//	//数据段帧头指向数据段第一个字节
+//   	Referee_System.Data_frame_point = (Data_frame_point_t*)data;
+//	
+//	//判断接收者ID是否自己
+//	if( (Referee_System.Data_frame_point->receiver_ID == Hero_R) || (Referee_System.Data_frame_point->receiver_ID == Hero_B))
+//	{   
+//	    switch(Referee_System.Data_frame_point->data_cmd_id)
+//		{
+//			
+//			default: break;
+//		}
+//	}
+//}
 
 
 

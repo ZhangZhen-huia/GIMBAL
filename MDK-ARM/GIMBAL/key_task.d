@@ -58,3 +58,5 @@
 .\gimbal\key_task.o: ../components/algorithm/user_lib.h
 .\gimbal\key_task.o: ..\application\detect_task.h
 .\gimbal\key_task.o: ..\application\communicate_task.h
+.\gimbal\key_task.o: ../Core/Inc/can.h
+.\gimbal\key_task.o: ../bsp/Can_receive.h

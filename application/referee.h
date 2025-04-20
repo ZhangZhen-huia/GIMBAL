@@ -640,6 +640,30 @@ typedef struct
 
 
 
+typedef __packed struct
+{
+    uint8_t sof_1;
+    uint8_t sof_2;
+    uint64_t ch_0:11;//右横
+    uint64_t ch_1:11;//右上
+    uint64_t ch_2:11;//左上
+    uint64_t ch_3:11;//左横
+    uint64_t mode_sw:2;//中间滑块，从左到右为0，1，2
+    uint64_t pause:1;//带有H的按键
+    uint64_t fn_1:1;//fn
+    uint64_t fn_2:1;//fn右边的
+    uint64_t wheel:11;//滑轮
+    uint64_t trigger:1;//相机键
+
+    int16_t mouse_x;
+    int16_t mouse_y;
+    int16_t mouse_z;
+    uint8_t mouse_left:2;
+    uint8_t mouse_right:2;
+    uint8_t mouse_middle:2;
+    uint16_t key;
+    uint16_t crc16;
+}new_remote_data_t;
 
 typedef struct 
 {
@@ -652,6 +676,8 @@ typedef struct
   Data_frame_point_t  *Data_frame_point;  //数据段帧头格式指针
 	
 	remote_control_t                     Image_trans_remote;//图传数据	
+	new_remote_data_t											*new_remote_data_point;
+	new_remote_data_t										new_remote_data;
 
 }Referee_System_t;
 

@@ -85,7 +85,11 @@ static void shoot_init(shoot_control_t *shoot_init)
 	shoot_init->shoot_agency_state = SHOOT_OFF;
 	shoot_init->trig_mode = Cease_fire;
 	shoot_init->fric_mode = STOP;
-	
+//	
+//	shoot_init->shoot_agency_state = SHOOT_ON;
+//	shoot_init->trig_mode = Cease_fire;
+//	shoot_init->fric_mode = START;
+//	
 	shoot_feedback_update(shoot_init);
 }
 

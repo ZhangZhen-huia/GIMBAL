@@ -90,7 +90,7 @@ void gimbal_task(void const *pvParameters)
   */
 static void gimbal_init(gimbal_control_t *init)
 {
-	uint16_t Pitch_offset_ecd = 4079;
+	uint16_t Pitch_offset_ecd = 4031;
 	fp32 pitch_max_relative_angle=3380;
 	fp32 pitch_min_relative_angle=4352;
 	uint16_t Yaw_offset_ecd = 3473;
@@ -346,7 +346,7 @@ static void gimbal_gyro_angle_limit(gimbal_motor_t *gimbal_motor, fp32 add)
 	}
 }
 
-
+extern uint8_t RotateMode[2];
 /**
   * @brief          云台控制模式:GIMBAL_MOTOR_AUTO，使用陀螺仪计算的欧拉角进行控制
   * @param[out]     gimbal_motor:yaw电机或者pitch电机
@@ -365,7 +365,17 @@ static void gimbal_auto_angle_limit(gimbal_motor_t *gimbal_motor,fp32 aim_angle)
 			aim_angle = aim_angle >  180 ? aim_angle-360:aim_angle;
 			aim_angle = aim_angle <	-180 ? aim_angle+360:aim_angle;
 		
-		gimbal_motor->absolute_angle_set  = aim_angle;
+	
+		if(RotateMode[0])
+		{
+			//
+			if(RotateMode[1] == 0)
+					gimbal_motor->absolute_angle_set  = aim_angle - 2.2f;
+			else
+				gimbal_motor->absolute_angle_set  = aim_angle + 2.2f;
+		}
+		else
+			gimbal_motor->absolute_angle_set  = aim_angle ;
 	}
 	
 	//pitch轴电机

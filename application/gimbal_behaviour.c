@@ -71,8 +71,8 @@ static void gimbal_encode_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t
     rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[PITCH_CHANNEL], pitch_channel, RC_DEADBAND);
 
 
-    *yaw = yaw_channel * YAW_RC_SEN - Mouse_Data.mouse_x * YAW_MOUSE_SEN;
-    *pitch = -(pitch_channel * PITCH_RC_SEN + Mouse_Data.mouse_y * PITCH_MOUSE_SEN);
+    *yaw = yaw_channel * YAW_RC_SEN - Mouse_Data.mouse_x * YAW_MOUSE_SEN + (Referee_System.new_remote_data.ch_0-1024) * YAW_RC_SEN/1.5f;
+    *pitch = -(pitch_channel * PITCH_RC_SEN + Mouse_Data.mouse_y * PITCH_MOUSE_SEN + (Referee_System.new_remote_data.ch_1-1024) * PITCH_RC_SEN);
 	
 		/*-- 一键掉头 --*/
 		if(Key_ScanValue.Key_Value.r)
@@ -197,47 +197,52 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
     {
         return;
     }
-
-		//中间是编码值控制（yaw陀螺仪，pitch编码值）
-    if (switch_is_mid(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
-    {
-        gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
-    }
 		
-		//遥控器丢失，但是图传连接了
-		if(toe_is_error(DBUS_TOE) && !toe_is_error(REFEREE_TOE))
-		{
-					//右键按下进入自瞄，并且瞄到了，就进入自瞄模式
-					if(Mouse_Data.mouse_r == 1 )//&& !toe_is_error(AIMBOT_TOE))
-					{
-						gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
-					}
-					//不自喵
-					else
-					{
-						gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
-					}	
-		}
-		//遥控器没有丢失，右边在最上面
-		else if ( !toe_is_error(DBUS_TOE) && switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
-		{			
-					//右键按下进入自瞄，并且瞄到了，就进入自瞄模式
-					if(Mouse_Data.mouse_r == 1 )//&& !toe_is_error(AIMBOT_TOE))
-					{
-						gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
-					}
-					//没有瞄到就不自瞄
-					else
-					{
-						gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
-					}	
-	
-		}
-		//遥控器直接右边拨到最下面，强制自瞄，不管是否收到了视觉消息
-		else if (switch_is_down(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
-		{
+			if((Referee_System.new_remote_data.trigger || Mouse_Data.mouse_r || switch_is_down(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))/*&& !toe_is_error(AIMBOT_TOE)*/)
 				gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
-		}
+			else
+			gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
+		
+//		//中间是编码值控制（yaw陀螺仪，pitch编码值）
+//    if (switch_is_mid(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
+//    {
+//        gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
+//    }
+//		
+//		//遥控器丢失，但是图传连接了
+//		if(toe_is_error(DBUS_TOE) && !toe_is_error(REFEREE_TOE))
+//		{
+//					//右键按下进入自瞄，并且瞄到了，就进入自瞄模式
+//					if(Mouse_Data.mouse_r == 1 && !toe_is_error(AIMBOT_TOE))
+//					{
+//						gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
+//					}
+//					//不自喵
+//					else
+//					{
+//						gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
+//					}	
+//		}
+//		//遥控器没有丢失，右边在最上面
+//		else if ( !toe_is_error(DBUS_TOE) && switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
+//		{			
+//					//右键按下进入自瞄，并且瞄到了，就进入自瞄模式
+//					if(Mouse_Data.mouse_r == 1 && !toe_is_error(AIMBOT_TOE))
+//					{
+//						gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
+//					}
+//					//没有瞄到就不自瞄
+//					else
+//					{
+//						gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
+//					}	
+//	
+//		}
+//		//遥控器直接右边拨到最下面，强制自瞄，不管是否收到了视觉消息
+//		else if (switch_is_down(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
+//		{
+//				gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
+//		}
 }
 
 
