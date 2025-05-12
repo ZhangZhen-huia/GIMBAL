@@ -64,7 +64,7 @@ void gimbal_task(void const *pvParameters)
 				gimbal_feedback_update(&gimbal_control);                //云台数据反馈
         gimbal_set_control(&gimbal_control);                    //设置云台控制量
         gimbal_control_loop(&gimbal_control);                   //云台控制PID计算
-
+				MouseData_Combine(&Mouse_Data,ControlMode);
 
 
 			if(POWER_OFF)//((ControlMode == Rc && toe_is_error(DBUS_TOE)) || (ControlMode == ImageTransfer && toe_is_error(REFEREE_TOE)))
@@ -413,17 +413,30 @@ static void gimbal_encode_angle_limit(gimbal_motor_t *gimbal_motor, fp32 add)
     {
         return;
     }
-    gimbal_motor->relative_angle_set += add;
+		static uint8_t cnt = 0;
+
 		
-    //是否超过最大 最小值
-    if (gimbal_motor->relative_angle_set > gimbal_motor->max_relative_angle)
-    {
-        gimbal_motor->relative_angle_set = gimbal_motor->max_relative_angle;
-    }
-    else if (gimbal_motor->relative_angle_set < gimbal_motor->min_relative_angle)
-    {
-        gimbal_motor->relative_angle_set = gimbal_motor->min_relative_angle;
-    }
+		if(Key_ScanValue.Key_Value.G)
+		{
+			cnt++;
+			cnt%=2;
+		}
+		if(cnt)
+			gimbal_motor->relative_angle_set = 0;
+		else
+		{
+			gimbal_motor->relative_angle_set += add;
+			
+			//是否超过最大 最小值
+			if (gimbal_motor->relative_angle_set > gimbal_motor->max_relative_angle)
+			{
+					gimbal_motor->relative_angle_set = gimbal_motor->max_relative_angle;
+			}
+			else if (gimbal_motor->relative_angle_set < gimbal_motor->min_relative_angle)
+			{
+					gimbal_motor->relative_angle_set = gimbal_motor->min_relative_angle;
+			}
+		}
 }
 
 

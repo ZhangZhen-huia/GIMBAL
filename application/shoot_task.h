@@ -43,7 +43,7 @@
 #define FRIC_R_SPEED_KF_STATIC      20.0f
 #define FRIC_R_SPEED_KF_DYNAMIC     0.0f
 
-#define MAX_SPEED   20
+#define MAX_SPEED   19.5f
 
 
 

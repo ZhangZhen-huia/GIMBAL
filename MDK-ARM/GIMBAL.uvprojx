@@ -1198,6 +1198,11 @@
               <FileType>1</FileType>
               <FilePath>..\application\referee.c</FilePath>
             </File>
+            <File>
+              <FileName>sound_effects_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\application\sound_effects_task.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

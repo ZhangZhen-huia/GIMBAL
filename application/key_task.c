@@ -5,6 +5,9 @@
 #include "communicate_task.h"
 #include "can.h"
 #include "Can_receive.h"
+#include "queue.h"
+#include "freertos.h"
+
 
 Key_Scan_t Key_ScanValue;
 Mouse_Data_t Mouse_Data;
@@ -13,7 +16,7 @@ ChassisMode_e ChassisMode;
 uint32_t ImgTransferKey;
 
 static void Gimbal_Reset(void);
-static void MouseData_Combine(Mouse_Data_t * Data,ControlMode_e mode);
+
 void Key_Scan(Key_Scan_t * Key,ControlMode_e mode);
 void ControlMode_Get(void);
 static EnemyColor_e Aimbot_KeyFunc(void);
@@ -21,13 +24,13 @@ static EnemyColor_e Aimbot_KeyFunc(void);
 uint32_t ImgTransfer_KeyCombine(void);
 void key_task(void const * argument)
 {
+	
 	while(1)
 	{	
 		/*-- 10ms扫描一次按键 --*/
 		ControlMode_Get();
 		ImgTransferKey = ImgTransfer_KeyCombine();
 		Key_Scan(&Key_ScanValue,ControlMode);
-		MouseData_Combine(&Mouse_Data,ControlMode);
 		EnemyColor = Aimbot_KeyFunc();
 		Gimbal_Reset();
 		osDelay(10);
@@ -51,11 +54,26 @@ void key_task(void const * argument)
 void ControlMode_Get(void)
 {
 	static uint8_t mode = 0;
-
-	if(Key_ScanValue.Key_Value.V)
+	static uint8_t VPress_cnt;
+	static uint8_t CtrlPress;
+	if(Key_ScanValue.Key_Value.CTRL)
+	{
+		CtrlPress = 1;
+		VPress_cnt = 20;
+	}
+	if(CtrlPress)
+		VPress_cnt--;
+	if(VPress_cnt <=0)
+	{
+		VPress_cnt = 0;
+		CtrlPress = 0;
+	}
+	if( Key_ScanValue.Key_Value.V && VPress_cnt!=0)
 	{
 		mode++;
 		mode%=2;
+		VPress_cnt = 0;
+		CtrlPress = 0;
 	}
 	if(mode == 0)
 	{
@@ -68,6 +86,8 @@ void ControlMode_Get(void)
 	else if(mode == 1)
 	{
 		ControlMode = Rc;
+		if(toe_is_error(DBUS_TOE))
+		ControlMode = ImageTransfer;
 	}
 }
 
@@ -81,7 +101,7 @@ void Key_Scan(Key_Scan_t * Key,ControlMode_e mode)
 	else
 	Key_Temp = ImgTransferKey;
 	
-	Key_Down = Key_Temp & (Key_Last ^ Key_Temp);//异或运算，相同为0，不同为1     
+//	Key_Down = Key_Temp & (Key_Last ^ Key_Temp);//异或运算，相同为0，不同为1     
 	Key_Up 	= ~Key_Temp & (Key_Last ^ Key_Temp);//异或运算，相同为0，不同为1 
 	Key_Last = Key_Temp;
 	
@@ -194,6 +214,12 @@ void Key_Scan(Key_Scan_t * Key,ControlMode_e mode)
 	}
 	else
 		Key->Key_Value.TRIGGER = 0;		
+	if(Key_Up == IMG_TRANSFER_KEY_MOUSE_MIDDLE)
+	{
+		Key->Key_Value.MIDDLE = 1;
+	}
+	else
+		Key->Key_Value.MIDDLE = 0;		
 //	
 //	Key->Key_Value.CTRL_F = Key->Key_Value.CTRL & Key->Key_Value.F;
 //	Key->Key_Value.CTRL_B = Key->Key_Value.CTRL & Key->Key_Value.B;
@@ -204,7 +230,7 @@ void Key_Scan(Key_Scan_t * Key,ControlMode_e mode)
 }
 
 
-static void MouseData_Combine(Mouse_Data_t * Data,ControlMode_e mode)
+void MouseData_Combine(Mouse_Data_t * Data,ControlMode_e mode)
 {
 	switch(mode)
 	{
@@ -232,7 +258,7 @@ static void MouseData_Combine(Mouse_Data_t * Data,ControlMode_e mode)
 static EnemyColor_e Aimbot_KeyFunc(void)
 {
 	static  EnemyColor_e color = RED;
-	if(Key_ScanValue.Key_Value.Z || (Key_ScanValue.Key_Value.PAUSE && Referee_System.new_remote_data.wheel == 1684))
+	if(Key_ScanValue.Key_Value.MIDDLE || (Key_ScanValue.Key_Value.PAUSE && Referee_System.new_remote_data.wheel == 1684))
 	{
 		color++;
 		color%=2;
@@ -290,19 +316,21 @@ uint32_t ImgTransfer_KeyCombine()
 		Key |= (uint32_t)(1<<22);
 	else
 		Key &= ~(uint32_t)(1<<22);
+	
+	if(Referee_System.new_remote_data.mouse_middle)
+		Key |= (uint32_t)(1<<23);
+	else
+		Key &= ~(uint32_t)(1<<23);
+	
+	if(Referee_System.new_remote_data.wheel == IMG_SW_RIGHT)
+		Key |= (uint32_t)(1<<24);
+	else
+		Key &= ~(uint32_t)(1<<24);
+
+	if(Referee_System.new_remote_data.wheel == IMG_SW_LEFT)
+		Key |= (uint32_t)(1<<25);
+	else
+		Key &= ~(uint32_t)(1<<25);
 	return Key;
 }
-
-//	Key_ScanValue.Key_Value.Q = Key_Function(KEY_PRESSED_OFFSET_Q);
-//	Key_ScanValue.Key_Value.E = Key_Function(KEY_PRESSED_OFFSET_E);
-//	Key_ScanValue.Key_Value.r = Key_Function(KEY_PRESSED_OFFSET_R);
-//	Key_ScanValue.Key_Value.F = Key_Function(KEY_PRESSED_OFFSET_F);
-//	Key_ScanValue.Key_Value.G = Key_Function(KEY_PRESSED_OFFSET_G);
-//	Key_ScanValue.Key_Value.Z = Key_Function(KEY_PRESSED_OFFSET_Z);
-//	Key_ScanValue.Key_Value.X = Key_Function(KEY_PRESSED_OFFSET_X);
-//	Key_ScanValue.Key_Value.C = Key_Function(KEY_PRESSED_OFFSET_C);
-//	Key_ScanValue.Key_Value.V = Key_Function(KEY_PRESSED_OFFSET_V);	
-//	Key_ScanValue.Key_Value.B = Key_Function(KEY_PRESSED_OFFSET_B);
-//	Key_ScanValue.Key_Value.SHIFT = Key_Function(KEY_PRESSED_OFFSET_SHIFT);
-//	Key_ScanValue.Key_Value.CTRL = Key_Function(KEY_PRESSED_OFFSET_CTRL);
 

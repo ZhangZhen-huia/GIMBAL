@@ -8,9 +8,7 @@
 #include "stm32f4xx_hal_spi.h"
 #include "tim.h"
 #include "bsp_buzzer.h"
-uint8_t Bee_flag=1;
-uint16_t psc = 1;
-uint16_t pwm = 5000;
+
 
 bmi088_real_data_t bmi088_real_data;
 
@@ -31,6 +29,7 @@ void imu_offset_remove(fp32 gyro[3],fp32 cali_offset[3]);
 void imu_turn(void);
 fp32 imu_to_pc[1];
 
+uint8_t ins_init = 0;
 void INS_task(void const * argument)
 {
 
@@ -75,17 +74,9 @@ void INS_task(void const * argument)
 		}		
 		imu_to_pc[0] = bmi088_real_data.INS_angle[1];
 		bmi088_real_data.INS_angle[1] *= -1.0f;
-		
+		ins_init = 1;
 	//	CAN_cmd_INS(bmi088_real_data.INS_angle[0], -bmi088_real_data.INS_angle[1], bmi088_real_data.gyro[2], bmi088_real_data.gyro[1]);
 		//计算周期为2ms（与四元数解算中的解算频率有关）
-			if(Bee_flag==1)
-			{	
-					Bee_flag=0;
-					buzzer_on(psc, pwm);
-					osDelay(500);
-					buzzer_off();
-
-			}
 		osDelay(1);
 	}
 }

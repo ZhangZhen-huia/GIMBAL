@@ -54,7 +54,7 @@ osThreadId SHOOT_TASKHandle;
 osThreadId VOFA_TASKHandle;
 osThreadId COMMUNICATE_TASHandle;
 osThreadId KEY_TASKHandle;
-
+osThreadId BUZZER_TASKHandle;
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
 
@@ -67,6 +67,7 @@ void shoot_task(void const * argument);
 void vofa_task(void const * argument);
 void communicate_task(void const * argument);
 void key_task(void const * argument);
+void buzzer_effects_task(void const *argument);
 
 extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -142,7 +143,11 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(KEY_TASK, key_task, osPriorityLow, 0, 128);
   KEY_TASKHandle = osThreadCreate(osThread(KEY_TASK), NULL);
 
-  /* USER CODE BEGIN RTOS_THREADS */
+  osThreadDef(BUZZER_EFFECTS_TASK, buzzer_effects_task, osPriorityLow, 0, 128);
+  BUZZER_TASKHandle = osThreadCreate(osThread(BUZZER_EFFECTS_TASK), NULL);
+	
+	
+	/* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
 
@@ -276,6 +281,12 @@ __weak void key_task(void const * argument)
   /* USER CODE END key_task */
 }
 
+
+__weak void buzzer_effects_task(void const * argument)
+{
+	for(;;)
+	osDelay(1);
+}
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
 

@@ -9,6 +9,11 @@
 #define IMG_TRANSFER_KEY_FN2	(uint32_t)(1<<17)
 #define IMG_TRANSFER_KEY_TRIGGER	(uint32_t)(1<<18)
 #define IMG_TRANSFER_KEY_PAUSE	(uint32_t)(1<<19)
+#define IMG_TRANSFER_KEY_MOUSE_MIDDLE	(uint32_t)(1<<23)
+
+
+#define IMG_SW_LEFT		384
+#define IMG_SW_RIGHT	1684
 typedef enum
 {
 	Rc,
@@ -42,6 +47,7 @@ typedef struct
 	uint8_t FN_2;
 	uint8_t TRIGGER;
 	uint8_t PAUSE;
+	uint8_t MIDDLE;
 }Key_Value_t;
 
 
@@ -71,5 +77,5 @@ extern uint32_t ImgTransferKey;
 extern Mouse_Data_t Mouse_Data;
 extern Key_Scan_t Key_ScanValue;
 extern ControlMode_e ControlMode;
-
+void MouseData_Combine(Mouse_Data_t * Data,ControlMode_e mode);
 #endif

@@ -62,6 +62,7 @@
 ".\gimbal\remote_control.o"
 ".\gimbal\key_task.o"
 ".\gimbal\referee.o"
+".\gimbal\sound_effects_task.o"
 ".\gimbal\bsp_usart.o"
 ".\gimbal\can_receive.o"
 ".\gimbal\bsp_buzzer.o"

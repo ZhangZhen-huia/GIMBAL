@@ -41,8 +41,8 @@ void USB_CMD_PC(void)
 {
 	
 		static uint8_t Send_to_minpc[16];
-	
-		Send_to_minpc[0]=0xFF;
+		//模式，roll,pitch,yaw,弹速
+		Send_to_minpc[0]=0xFF;//'I';
 		AIMBOT_MODE(&Send_to_minpc[1]);
 		//memcpy(&Send_to_minpc[2],get_INS_angle(2),4);
 		Send_to_minpc[2]=0;
@@ -53,7 +53,7 @@ void USB_CMD_PC(void)
 		memcpy(&Send_to_minpc[10],get_INS_angle(0),4);
 		//memcpy(&Send_to_minpc[14],a,1);
 		Send_to_minpc[14]=22;
-		Send_to_minpc[15]=0x0D;
+		Send_to_minpc[15]=0x0D;//'O';
 		CDC_Transmit_FS(Send_to_minpc,16);
 }
 
@@ -112,14 +112,14 @@ static void Gimbal_data_transfer(void)
 	
 	rc_sl = rc_ctrl.rc.s[RC_sl_channel];
 	rc_sr = rc_ctrl.rc.s[RC_sr_channel];
-	
+
 	/*-- 传输开火 --*/
 	if(shoot_control.trig_mode == Start_fire)
 		gimbal_mode |= 0x01; 
 	else
 		gimbal_mode &= 0xFE; 
 	
-	if(gimbal_control.gimbal_behaviour == GIMBAL_INIT)
+	if(gimbal_control.gimbal_behaviour != GIMBAL_ZERO_FORCE)
 		gimbal_mode |= 0x02;
 	else
 		gimbal_mode &= 0xFD;
@@ -150,16 +150,14 @@ static void Gimbal_data_transfer(void)
 
 static void AIMBOT_MODE(uint8_t* mode)
 {
-	if(gimbal_control.gimbal_behaviour == GIMBAL_AUTO_ANGLE)
-	{
 		switch(Referee_System.new_remote_data.mode_sw)
 		{
 			case 0:Aimbot_Mode = NORMAL;break;
 			case 1:Aimbot_Mode = BIG;break;
 			case 2:Aimbot_Mode = SMALL;break;
 		}
-	}
-	
+		
+
 	if(Aimbot_Mode == NORMAL)
 	{
 		*mode = EnemyColor;

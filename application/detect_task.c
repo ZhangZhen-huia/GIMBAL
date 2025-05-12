@@ -215,7 +215,7 @@ static void detect_init(uint32_t time)
             {10, 10, 10},    //fric_l
             {10, 10, 10},     //fric_r
 						{50, 10, 10},    //AIMBOT_TOE
-//            {2, 3, 13},     //pitch
+//            {10, 10, 10},     //Chassis
 //            {10, 10, 12},   //trigger
 //            {2, 3, 7},      //board gyro
 //            {5, 5, 7},      //board accel

@@ -63,9 +63,9 @@
 
 
 //陀螺仪
-#define YAW_GYRO_SPEED_PID_KP        12500.0f//20000.0f //35000
+#define YAW_GYRO_SPEED_PID_KP        15000.0f//20000.0f //35000
 #define YAW_GYRO_SPEED_PID_KI        0.0f
-#define YAW_GYRO_SPEED_PID_KD        1.0f
+#define YAW_GYRO_SPEED_PID_KD        0.0f
 #define YAW_GYRO_SPEED_PID_MAX_OUT   30000.0f
 #define YAW_GYRO_SPEED_PID_MAX_IOUT  0.0f
 
@@ -77,9 +77,9 @@
 
 
 //自瞄
-#define YAW_AUTO_SPEED_PID_KP        12500.0f//20000.0f //35000
+#define YAW_AUTO_SPEED_PID_KP        15000.0f//20000.0f //35000
 #define YAW_AUTO_SPEED_PID_KI        0.0f
-#define YAW_AUTO_SPEED_PID_KD        1.0f
+#define YAW_AUTO_SPEED_PID_KD        0.0f
 #define YAW_AUTO_SPEED_PID_MAX_OUT   30000.0f
 #define YAW_AUTO_SPEED_PID_MAX_IOUT  0.0f
                                      
@@ -112,11 +112,9 @@ typedef enum
 typedef enum
 {
   GIMBAL_ZERO_FORCE = 0, 
-  GIMBAL_INIT,           
-  GIMBAL_CALI,           
+  GIMBAL_INIT,                     
   GIMBAL_GYRO_ANGLE, 
-  GIMBAL_ENCODE_ANGLE, 
-  GIMBAL_MOTIONLESS,    
+  GIMBAL_ENCODE_ANGLE,     
 	GIMBAL_AUTO_ANGLE,
 
 } gimbal_behaviour_e;
@@ -163,7 +161,6 @@ typedef struct
 		const bmi088_real_data_t *gimbal_bmi088_data;     										//获取陀螺仪解算出的欧拉角指针
     gimbal_motor_t gimbal_yaw_motor;																			//yaw轴电机数据
     gimbal_motor_t gimbal_pitch_motor;																		//pitch轴电机数据
-   //gimbal_step_cali_t gimbal_cali;
 		gimbal_behaviour_e  gimbal_behaviour;																	//云台状态控制
 		gimbal_behaviour_e  last_gimbal_behaviour;														//云台状态控制
 } gimbal_control_t;
@@ -189,8 +186,6 @@ extern gimbal_control_t gimbal_control;
 #define YAW_MOUSE_SEN   0.005f
 #define PITCH_MOUSE_SEN 0.005f
 
-
-#define GIMBAL_CONTROL_TIME 1
 
 //电机编码值转化成角度值
 #ifndef MOTOR_ECD_TO_RAD

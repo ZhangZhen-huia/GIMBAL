@@ -71,7 +71,7 @@ static void gimbal_encode_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t
     rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[PITCH_CHANNEL], pitch_channel, RC_DEADBAND);
 
 
-    *yaw = yaw_channel * YAW_RC_SEN - Mouse_Data.mouse_x * YAW_MOUSE_SEN + (Referee_System.new_remote_data.ch_0-1024) * YAW_RC_SEN/1.5f;
+    *yaw = yaw_channel * YAW_RC_SEN - Mouse_Data.mouse_x * YAW_MOUSE_SEN + (Referee_System.new_remote_data.ch_0-1024) * YAW_RC_SEN/1.5f;			
     *pitch = -(pitch_channel * PITCH_RC_SEN + Mouse_Data.mouse_y * PITCH_MOUSE_SEN + (Referee_System.new_remote_data.ch_1-1024) * PITCH_RC_SEN);
 	
 		/*-- 一键掉头 --*/
@@ -126,11 +126,6 @@ void gimbal_behaviour_control_set(fp32 *add_yaw, fp32 *add_pitch, gimbal_control
         return;
     }
 
-//		 /*-- 根据不同模式进行pitch和yaw增量获取 --*/
-//    if (gimbal_control_set->gimbal_behaviour == GIMBAL_GYRO_ANGLE )
-//    {
-//        gimbal_gyro_angle_control(add_yaw, add_pitch, gimbal_control_set);
-//    }
     if (gimbal_control_set->gimbal_behaviour == GIMBAL_ENCODE_ANGLE)
     {
         gimbal_encode_angle_control(add_yaw, add_pitch, gimbal_control_set);
@@ -164,13 +159,7 @@ void gimbal_behaviour_mode_set(gimbal_control_t *gimbal_mode_set)
     //云台行为状态机设置（6种模式，但是只用的上陀螺仪绝对角度控制和编码器相对角度控制）
     gimbal_behavour_set(gimbal_mode_set);
 
-    //accoring to gimbal_behaviour, set motor control mode
-//    //根据云台行为状态机设置电机状态机
-//    if (gimbal_mode_set->gimbal_behaviour == GIMBAL_GYRO_ANGLE)
-//    {
-//        gimbal_mode_set->gimbal_yaw_motor.gimbal_motor_mode = GIMBAL_MOTOR_GYRO;
-//        gimbal_mode_set->gimbal_pitch_motor.gimbal_motor_mode = GIMBAL_MOTOR_GYRO;
-//    }
+
     if (gimbal_mode_set->gimbal_behaviour == GIMBAL_ENCODE_ANGLE)
     {
         gimbal_mode_set->gimbal_yaw_motor.gimbal_motor_mode = GIMBAL_MOTOR_GYRO;

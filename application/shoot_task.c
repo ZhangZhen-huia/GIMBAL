@@ -158,6 +158,7 @@ static void shoot_control_loop(shoot_control_t *control_loop)
   */
 static void fric_motor_control(shoot_control_t * control_loop)
 {
+	static uint8_t speed;
 	if (control_loop == NULL)
   {
       return;
@@ -179,6 +180,16 @@ static void fric_motor_control(shoot_control_t * control_loop)
 //		}
 //		else
 //		{
+		if(Key_ScanValue.Key_Value.C)
+		{
+			fric1-=0.5f;
+			fric2+=0.5f;
+		}
+		if(Key_ScanValue.Key_Value.B)
+		{
+			fric1+=0.5f;
+			fric2-=0.5f;
+		}
 			control_loop->shoot_fric_L_motor.motor_speed_set = fric1;
 			control_loop->shoot_fric_R_motor.motor_speed_set = fric2;
 //		}

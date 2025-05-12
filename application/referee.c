@@ -83,6 +83,7 @@ void Referee_Data_Process(uint8_t *data)
 		{
 			if(Referee_System.new_remote_data_point->sof_2==0x53)
 			{
+				if(Get_CRC16_Check_Sum(data,19,0xffff) == Referee_System.new_remote_data_point->crc16)
 						memmove(&Referee_System.new_remote_data,data,21);
 			}
 			
