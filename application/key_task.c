@@ -31,7 +31,7 @@ void key_task(void const * argument)
 		ControlMode_Get();
 		ImgTransferKey = ImgTransfer_KeyCombine();
 		Key_Scan(&Key_ScanValue,ControlMode);
-		EnemyColor = Aimbot_KeyFunc();
+//		EnemyColor = Aimbot_KeyFunc();
 		Gimbal_Reset();
 		osDelay(10);
     
@@ -265,6 +265,7 @@ static EnemyColor_e Aimbot_KeyFunc(void)
 	}
 	return color;
 }
+
 
 
 static void Gimbal_Reset(void)

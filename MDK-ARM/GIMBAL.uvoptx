@@ -153,87 +153,92 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Key,0x10</ItemText>
+          <ItemText>ImgTransferKey,0x10</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ImghandleKey</ItemText>
+          <ItemText>Aimbot_Mode</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Send_to_minpc,0x0A</ItemText>
+          <ItemText>gimbal_control,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
           <WinNumber>1</WinNumber>
-          <ItemText>gimbal_mode,0x10</ItemText>
+          <ItemText>yaw_motor,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>4</count>
           <WinNumber>1</WinNumber>
-          <ItemText>VPress_cnt,0x0A</ItemText>
+          <ItemText>ins_init,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>5</count>
           <WinNumber>1</WinNumber>
-          <ItemText>CtrlPress,0x0A</ItemText>
+          <ItemText>bmi088_real_data</ItemText>
         </Ww>
         <Ww>
           <count>6</count>
           <WinNumber>1</WinNumber>
-          <ItemText>mode</ItemText>
+          <ItemText>Send_to_minpc,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>7</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ImgTransferKey,0x10</ItemText>
+          <ItemText>auto_data,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>8</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Send_to_minpc</ItemText>
+          <ItemText>fric1</ItemText>
         </Ww>
         <Ww>
           <count>9</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Aimbot_Mode</ItemText>
+          <ItemText>fric2</ItemText>
         </Ww>
         <Ww>
           <count>10</count>
           <WinNumber>1</WinNumber>
-          <ItemText>gimbal_control,0x0A</ItemText>
+          <ItemText>EnemyColor</ItemText>
         </Ww>
         <Ww>
           <count>11</count>
           <WinNumber>1</WinNumber>
-          <ItemText>mode</ItemText>
+          <ItemText>RotateMode,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>12</count>
           <WinNumber>1</WinNumber>
-          <ItemText>state,0x0A</ItemText>
+          <ItemText>yaw_err</ItemText>
         </Ww>
         <Ww>
           <count>13</count>
           <WinNumber>1</WinNumber>
-          <ItemText>time,0x0A</ItemText>
+          <ItemText>usb_recive_buffer</ItemText>
         </Ww>
         <Ww>
           <count>14</count>
           <WinNumber>1</WinNumber>
-          <ItemText>yaw_motor,0x0A</ItemText>
+          <ItemText>pitch_err</ItemText>
         </Ww>
         <Ww>
           <count>15</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ins_init,0x0A</ItemText>
+          <ItemText>aim_pitch_err</ItemText>
         </Ww>
         <Ww>
           <count>16</count>
           <WinNumber>1</WinNumber>
-          <ItemText>bmi088_real_data</ItemText>
+          <ItemText>gimbal_mode</ItemText>
+        </Ww>
+        <Ww>
+          <count>17</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>buzzer_control</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>
@@ -1013,8 +1018,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\application\gimbal_behaviour.c</PathWithFileName>
-      <FilenameWithoutPath>gimbal_behaviour.c</FilenameWithoutPath>
+      <PathWithFileName>..\application\shoot_task.c</PathWithFileName>
+      <FilenameWithoutPath>shoot_task.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1025,8 +1030,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\application\gimbal_task.c</PathWithFileName>
-      <FilenameWithoutPath>gimbal_task.c</FilenameWithoutPath>
+      <PathWithFileName>..\application\gimbal_behaviour.c</PathWithFileName>
+      <FilenameWithoutPath>gimbal_behaviour.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1037,8 +1042,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\application\INS_task.c</PathWithFileName>
-      <FilenameWithoutPath>INS_task.c</FilenameWithoutPath>
+      <PathWithFileName>..\application\gimbal_task.c</PathWithFileName>
+      <FilenameWithoutPath>gimbal_task.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1061,8 +1066,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\application\shoot_task.c</PathWithFileName>
-      <FilenameWithoutPath>shoot_task.c</FilenameWithoutPath>
+      <PathWithFileName>..\application\INS_task.c</PathWithFileName>
+      <FilenameWithoutPath>INS_task.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1130,7 +1135,7 @@
 
   <Group>
     <GroupName>BSP</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>

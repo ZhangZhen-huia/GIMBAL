@@ -143,7 +143,7 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(KEY_TASK, key_task, osPriorityLow, 0, 128);
   KEY_TASKHandle = osThreadCreate(osThread(KEY_TASK), NULL);
 
-  osThreadDef(BUZZER_EFFECTS_TASK, buzzer_effects_task, osPriorityLow, 0, 128);
+  osThreadDef(BUZZER_EFFECTS_TASK, buzzer_effects_task, osPriorityBelowNormal, 0, 128);
   BUZZER_TASKHandle = osThreadCreate(osThread(BUZZER_EFFECTS_TASK), NULL);
 	
 	

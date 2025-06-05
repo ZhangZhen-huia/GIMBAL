@@ -17,11 +17,19 @@ static void AIMBOT_MODE(uint8_t* mode);
 
 chassis_data_t chassis_data;
 mini_data_t auto_data;
-EnemyColor_e EnemyColor = RED;
+EnemyColor_e EnemyColor = BLUE;
 Aimbot_Mode_e Aimbot_Mode;
 
-
-
+void CAN_BusOff_Recovery(void); 
+//1m 0.0
+//2m	0.21
+//3m 0.27
+//4m	0.1	低了
+//5m 0
+//6m  0.2
+//7m	0.17
+fp32 yaw_err;
+fp32 pitch_err;
 void communicate_task(void const * argument)
 {
 	
@@ -29,38 +37,56 @@ void communicate_task(void const * argument)
 	{
 		USB_CMD_PC();//自瞄
 		Gimbal_data_transfer();//双板通信
-
+//	 yaw_err = auto_data.auto_yaw_set - gimbal_control.gimbal_yaw_motor.absolute_angle;
+//		pitch_err = auto_data.auto_pitch_set - gimbal_control.gimbal_pitch_motor.relative_angle;
 		osDelay(2);
 	}
 }
+ 
 
 
-
-
+extern fp32 aim_pitch_err;
+fp32 pitch_To_Pc;
 void USB_CMD_PC(void)
 {
 	
 		static uint8_t Send_to_minpc[16];
 		//模式，roll,pitch,yaw,弹速
-		Send_to_minpc[0]=0xFF;//'I';
-		AIMBOT_MODE(&Send_to_minpc[1]);
-		//memcpy(&Send_to_minpc[2],get_INS_angle(2),4);
+//		Send_to_minpc[0]=Heading;//0xFF;
+//		//AIMBOT_MODE(&Send_to_minpc[1]);
+//		Send_to_minpc[1] = EnemyColor;//赛场上修改颜色直接在定义处赋值，平常线下调试切换颜色把key_task.c中的函数打开就行
+//		//memcpy(&Send_to_minpc[2],get_INS_angle(2),4);
+//		Send_to_minpc[2]=0;
+//		Send_to_minpc[3]=0;
+//		Send_to_minpc[4]=0;
+//		Send_to_minpc[5]=0;
+//		memcpy(&Send_to_minpc[6],&gimbal_control.gimbal_pitch_motor.relative_angle,4);
+//		memcpy(&Send_to_minpc[10],get_INS_angle(0),4);
+//		//memcpy(&Send_to_minpc[14],a,1);
+//		Send_to_minpc[14]=22;
+//		Send_to_minpc[15]=Tail;//0x0D;
+//		CDC_Transmit_FS(Send_to_minpc,16);
+	        Send_to_minpc[0]=Heading;
+        Send_to_minpc[1]=EnemyColor; //red
+        
 		Send_to_minpc[2]=0;
 		Send_to_minpc[3]=0;
 		Send_to_minpc[4]=0;
 		Send_to_minpc[5]=0;
+		//pitch_To_Pc = gimbal_control.gimbal_pitch_motor.relative_angle - aim_pitch_err;
 		memcpy(&Send_to_minpc[6],&gimbal_control.gimbal_pitch_motor.relative_angle,4);
 		memcpy(&Send_to_minpc[10],get_INS_angle(0),4);
-		//memcpy(&Send_to_minpc[14],a,1);
-		Send_to_minpc[14]=22;
-		Send_to_minpc[15]=0x0D;//'O';
-		CDC_Transmit_FS(Send_to_minpc,16);
+        
+        Send_to_minpc[15]=Tail;
+        CDC_Transmit_FS(Send_to_minpc,16);
 }
 
 const mini_data_t* get_mini_data_point(void)
 {
 	return &auto_data;
 }
+
+
 static void Gimbal_data_transfer(void)
 {
 	static uint8_t gimbal_mode = 0x00;
@@ -138,6 +164,14 @@ static void Gimbal_data_transfer(void)
 		gimbal_mode |= 0x10;
 	else
 		gimbal_mode &= 0xEF;
+	
+	//如果收到了自瞄的消息
+	if(!toe_is_error(AIMBOT_TOE))
+		gimbal_mode |= 0x20;
+	else
+		gimbal_mode &= 0xDF;
+	
+	
 	buf[0] = vx_set;
 	buf[1] = vy_set;
 	buf[2] = rc_err;
@@ -194,4 +228,24 @@ static void can_cmd_to_chassis(CAN_HandleTypeDef*hcan,int16_t can_id,uint8_t *bu
 
 
 
+//void CAN_BusOff_Recovery(void) 
+//{
+//    if (__HAL_CAN_GET_FLAG(&hcan2, CAN_FLAG_BOF) != RESET)
+//		{
+//        // CAN2进入Bus-Off状态
+//			 __HAL_CAN_CLEAR_FLAG(&hcan2, CAN_FLAG_BOF); // 清除Bus-Off标志
+//			HAL_CAN_Stop(&hcan2);
+//			MX_CAN2_Init();
+//			canfilter_init_start();
+//    }
+//		
+//		 if (__HAL_CAN_GET_FLAG(&hcan1, CAN_FLAG_BOF) != RESET)
+//		{
+//        // CAN1进入Bus-Off状态
+//			 __HAL_CAN_CLEAR_FLAG(&hcan1, CAN_FLAG_BOF); // 清除Bus-Off标志
+//			HAL_CAN_Stop(&hcan1);
+//			MX_CAN1_Init();
+//			canfilter_init_start();
+//    }
+//}
 

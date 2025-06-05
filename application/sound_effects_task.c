@@ -130,7 +130,7 @@ void buzzer_effects_task(void const *argument)
 			case B_:
 				buzzer_control.sound_effect = STOP;
 				buzzer_is_busy = TRUE;
-				buzzer_on(1, 10000);	osDelay(70);
+				buzzer_on(4, 10000);	osDelay(100);
 				buzzer_off();
 				buzzer_is_busy = FALSE;
 				break;
@@ -197,6 +197,7 @@ void buzzer_effects_task(void const *argument)
 				buzzer_on(1, 5000);	osDelay(500);
 				buzzer_off();
 				buzzer_is_busy = FALSE;
+
 				break;
 
 			case D___:
@@ -210,6 +211,7 @@ void buzzer_effects_task(void const *argument)
 				buzzer_is_busy = TRUE;
 				buzzer_on(4, 10000);    osDelay(100);
 				buzzer_off();           osDelay(50);
+				buzzer_is_busy = FALSE;//若是不想一直D的话就加上这句话
 				break;
 
 			case D_B_B_:

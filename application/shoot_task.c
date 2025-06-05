@@ -190,6 +190,14 @@ static void fric_motor_control(shoot_control_t * control_loop)
 			fric1+=0.5f;
 			fric2-=0.5f;
 		}
+		
+		//默认18.5
+		fric1 = fric1 > 21.5f ? 21.5f : fric1;
+		fric1 = fric1 < 15.5f ? 15.5f : fric1;
+		
+		fric2 = fric2 < -21.5f ? -21.5f : fric2;
+		fric2 = fric2 > -15.5f ? -15.5f : fric2;
+		
 			control_loop->shoot_fric_L_motor.motor_speed_set = fric1;
 			control_loop->shoot_fric_R_motor.motor_speed_set = fric2;
 //		}

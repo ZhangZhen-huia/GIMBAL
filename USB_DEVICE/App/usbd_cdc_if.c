@@ -24,6 +24,8 @@
 /* USER CODE BEGIN INCLUDE */
 #include "communicate_task.h"
 #include "detect_task.h"
+#include "sound_effects_task.h"
+
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -275,15 +277,20 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 	memcpy(&auto_data.heading,&usb_recive_buffer[0],1);
 	memcpy(&auto_data.tailing,&usb_recive_buffer[15],1);
 	/*-- ¿ª»ð£¬pitch£¬yaw --*/
-	if (auto_data.heading == 0xFF && auto_data.tailing == 0x0D)
+	if (auto_data.heading == Heading && auto_data.tailing == Tail)
 	{
 		
 		memcpy(&auto_data.auto_fireFlag,&usb_recive_buffer[1],1);
 		memcpy(&auto_data.auto_pitch_set,&usb_recive_buffer[2],4);
 		memcpy(&auto_data.auto_yaw_set,&usb_recive_buffer[6],4);
+    //memcpy(&auto_data.distance,&usb_recive_buffer[10],4);//distance
+
 	}
 	if(auto_data.auto_pitch_set!=0 && auto_data.auto_yaw_set!=0)
+	{
+		buzzer_control.sound_effect = B_;
 		detect_hook(AIMBOT_TOE);
+	}
   return (USBD_OK);
   /* USER CODE END 6 */
 }

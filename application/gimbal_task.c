@@ -90,9 +90,9 @@ void gimbal_task(void const *pvParameters)
   */
 static void gimbal_init(gimbal_control_t *init)
 {
-	uint16_t Pitch_offset_ecd = 4031;
-	fp32 pitch_max_relative_angle=3380;
-	fp32 pitch_min_relative_angle=4352;
+	uint16_t Pitch_offset_ecd = 4032;
+	fp32 pitch_max_relative_angle=3434;
+	fp32 pitch_min_relative_angle=4337;
 	uint16_t Yaw_offset_ecd = 3473;
 	
 	static const fp32 Yaw_gyro_speed_pid[3] = {YAW_GYRO_SPEED_PID_KP, YAW_GYRO_SPEED_PID_KI, YAW_GYRO_SPEED_PID_KD};
@@ -346,6 +346,9 @@ static void gimbal_gyro_angle_limit(gimbal_motor_t *gimbal_motor, fp32 add)
 	}
 }
 
+//0 是否小陀螺
+//1 正反	1顺时针	0逆时针
+//2 转速	0不开超电	1开超电
 extern uint8_t RotateMode[2];
 /**
   * @brief          云台控制模式:GIMBAL_MOTOR_AUTO，使用陀螺仪计算的欧拉角进行控制
@@ -366,11 +369,12 @@ static void gimbal_auto_angle_limit(gimbal_motor_t *gimbal_motor,fp32 aim_angle)
 			aim_angle = aim_angle <	-180 ? aim_angle+360:aim_angle;
 		
 	
+		//可以手动补偿，也可以在自瞄下调一个特定的pid进行补偿
 		if(RotateMode[0])
 		{
-			//
+			//正反转
 			if(RotateMode[1] == 0)
-					gimbal_motor->absolute_angle_set  = aim_angle - 2.2f;
+					gimbal_motor->absolute_angle_set  = aim_angle - 1.5f;
 			else
 				gimbal_motor->absolute_angle_set  = aim_angle + 2.2f;
 		}
@@ -416,15 +420,22 @@ static void gimbal_encode_angle_limit(gimbal_motor_t *gimbal_motor, fp32 add)
 		static uint8_t cnt = 0;
 
 		
-		if(Key_ScanValue.Key_Value.G)
+		if(Key_ScanValue.Key_Value.CTRL)
 		{
 			cnt++;
 			cnt%=2;
 		}
 		if(cnt)
+		{
 			gimbal_motor->relative_angle_set = 0;
+			gimbal_control.gimbal_pitch_motor.gimbal_motor_encode_speed_pid.Kp = 12000;
+		}
+
+
 		else
 		{
+			gimbal_control.gimbal_pitch_motor.gimbal_motor_encode_speed_pid.Kp = 4500;
+
 			gimbal_motor->relative_angle_set += add;
 			
 			//是否超过最大 最小值
@@ -495,7 +506,18 @@ static void gimbal_motor_gyro_angle_control(gimbal_motor_t *gimbal_motor)
     {
         return;
     }
-
+		
+		//小陀螺模式下对yaw进行pid补偿
+		if(RotateMode[0])
+		{
+			gimbal_control.gimbal_yaw_motor.gimbal_motor_gyro_angle_pid.max_iout = 1;
+			gimbal_control.gimbal_yaw_motor.gimbal_motor_gyro_angle_pid.Kp = 0.45;
+		}
+		else
+		{
+			gimbal_control.gimbal_yaw_motor.gimbal_motor_gyro_angle_pid.max_iout = 0.1;
+			gimbal_control.gimbal_yaw_motor.gimbal_motor_gyro_angle_pid.Kp = 0.35;
+		}
 		gimbal_motor->motor_gyro_set = PID_calc(&gimbal_motor->gimbal_motor_gyro_angle_pid,gimbal_motor->absolute_angle,gimbal_motor->absolute_angle_set);
 		gimbal_motor->current_set = PID_calc(&gimbal_motor->gimbal_motor_gyro_speed_pid,gimbal_motor->motor_gyro, gimbal_motor->motor_gyro_set);
 		
@@ -540,6 +562,8 @@ static void gimbal_motor_auto_angle_control(gimbal_motor_t *gimbal_motor)
 			//控制值赋值
 			gimbal_motor->given_current = (int16_t)(gimbal_motor->current_set);
 		}
+		
+		
 		else if(gimbal_motor == &gimbal_control.gimbal_yaw_motor)
 		{
 			//角度环，速度环串级pid调试

@@ -46,17 +46,21 @@ void canfilter_init_start(void)
 	
     HAL_CAN_Start(&hcan1);								//Ê¹ÄÜCAN1¿ØÖÆÆ÷
     HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);//Ê¹ÄÜCANµÄ¸÷ÖÖÖÐ¶Ï
-	
-	
-    can_filter_st.SlaveStartFilterBank = 14;   //Ë«CANÄ£Ê½ÏÂ¹æ¶¨CANµÄÖ÷´ÓÄ£Ê½µÄ¹ýÂËÆ÷·ÖÅä£¬´Ó¹ýÂËÆ÷Îª14
+		HAL_CAN_ActivateNotification(&hcan1, CAN_IT_BUSOFF);
+		HAL_CAN_ActivateNotification(&hcan1, CAN_IT_ERROR);
+  
+		can_filter_st.SlaveStartFilterBank = 14;   //Ë«CANÄ£Ê½ÏÂ¹æ¶¨CANµÄÖ÷´ÓÄ£Ê½µÄ¹ýÂËÆ÷·ÖÅä£¬´Ó¹ýÂËÆ÷Îª14
     can_filter_st.FilterBank = 14;						//¹ýÂËÆ÷×é-Ë«CAN¿ÉÖ¸¶¨0~27
     HAL_CAN_ConfigFilter(&hcan2, &can_filter_st);		//HAL¿âÅäÖÃ¹ýÂËÆ÷º¯Êý
     HAL_CAN_Start(&hcan2);								//Ê¹ÄÜCAN2¿ØÖÆÆ÷
     HAL_CAN_ActivateNotification(&hcan2, CAN_IT_RX_FIFO0_MSG_PENDING);//Ê¹ÄÜCANµÄ¸÷ÖÖÖÐ¶Ï
+		HAL_CAN_ActivateNotification(&hcan2, CAN_IT_BUSOFF);//Ê¹ÄÜCAN2µÄ×ÜÏß¹Ø±ÕÖÐ¶Ï
+		HAL_CAN_ActivateNotification(&hcan2, CAN_IT_ERROR);
+
 }
 
 
-uint8_t RotateMode[2];
+uint8_t RotateMode[3];
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*hcan)//  CAN FIFO0µÄÖÐ¶Ï»Øµ÷º¯Êý£¬ÔÚÀïÃæÍê³ÉÊý¾ÝµÄ½ÓÊÕ
 {
 	CAN_RxHeaderTypeDef rx_header2,rx_header1;
@@ -98,6 +102,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*hcan)//  CAN FIFO0µÄÖÐ¶
 			case CHASSIS_ID:
 				RotateMode[0] = rx_data1[0] & 0x01;
 				RotateMode[1] = rx_data1[0] & 0x02;
+				RotateMode[2] = rx_data1[0] & 0x04;
 				break;
 
 				
@@ -109,7 +114,28 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*hcan)//  CAN FIFO0µÄÖÐ¶
 }
 
 
-
+void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan) {
+    if (hcan->Instance == CAN2) {
+        if (__HAL_CAN_GET_FLAG(hcan, CAN_FLAG_BOF) != RESET) {
+            // CAN2½øÈëBus-Off×´Ì¬
+            // Çå³ýBus-Off±êÖ¾
+            __HAL_CAN_CLEAR_FLAG(hcan, CAN_FLAG_BOF);
+						HAL_CAN_Stop(&hcan2);
+            MX_CAN2_Init();
+						canfilter_init_start();
+        }
+    }
+		 if (hcan->Instance == CAN1) {
+        if (__HAL_CAN_GET_FLAG(hcan, CAN_FLAG_BOF) != RESET) {
+            // CAN2½øÈëBus-Off×´Ì¬
+            // Çå³ýBus-Off±êÖ¾
+            __HAL_CAN_CLEAR_FLAG(hcan, CAN_FLAG_BOF);
+						HAL_CAN_Stop(&hcan1);
+            MX_CAN1_Init();
+						canfilter_init_start();
+        }
+    }
+}
 
 //·¢ËÍÔÆÌ¨ pitch
 void CAN_cmd_gimbal_pitch(int16_t pitch)

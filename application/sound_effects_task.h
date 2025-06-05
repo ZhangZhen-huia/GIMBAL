@@ -142,7 +142,7 @@ extern void buzzer_effects_task(void const *argument);
   * @retval         none
   */
 extern buzzer_t *get_buzzer_effect_point(void);
-
+extern buzzer_t buzzer_control;
 #ifdef __cplusplus
 }
 #endif

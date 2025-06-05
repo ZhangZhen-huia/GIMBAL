@@ -3,7 +3,8 @@
 
 #include "main.h"
 
-
+#define Heading	0xFF//'I'
+#define Tail		0x0D//'O'
 
 typedef struct
 {
@@ -12,6 +13,7 @@ typedef struct
 	uint8_t auto_fireFlag;
 	fp32 auto_pitch_set;
 	fp32 auto_yaw_set;
+	fp32 distance;
 }mini_data_t;
 
 typedef enum

@@ -64,3 +64,7 @@
 .\gimbal\usbd_cdc_if.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h
 .\gimbal\usbd_cdc_if.o: ../application/communicate_task.h
 .\gimbal\usbd_cdc_if.o: ../application/detect_task.h
+.\gimbal\usbd_cdc_if.o: ../application/sound_effects_task.h
+.\gimbal\usbd_cdc_if.o: ../Core/Inc/tim.h
+.\gimbal\usbd_cdc_if.o: ../bsp/boards/bsp_buzzer.h
+.\gimbal\usbd_cdc_if.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h

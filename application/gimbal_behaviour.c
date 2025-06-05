@@ -51,7 +51,6 @@ static void gimbal_encode_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t
 //    *pitch = -(pitch_channel * PITCH_RC_SEN + gimbal_control_set->gimbal_rc_ctrl->mouse.y * PITCH_MOUSE_SEN);
 //}
 
-
 /**
   * @brief          云台编码值控制，电机是相对角度控制，
   * @param[in]      yaw: yaw轴角度控制，为角度的增量 单位 rad
@@ -74,17 +73,18 @@ static void gimbal_encode_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t
     *yaw = yaw_channel * YAW_RC_SEN - Mouse_Data.mouse_x * YAW_MOUSE_SEN + (Referee_System.new_remote_data.ch_0-1024) * YAW_RC_SEN/1.5f;			
     *pitch = -(pitch_channel * PITCH_RC_SEN + Mouse_Data.mouse_y * PITCH_MOUSE_SEN + (Referee_System.new_remote_data.ch_1-1024) * PITCH_RC_SEN);
 	
+
 		/*-- 一键掉头 --*/
 		if(Key_ScanValue.Key_Value.r)
-		{
 			 *yaw = 180;
-		}
+
 
 }
 
-/*-- 调试用 --*/
-//fp32 aim_yaw_set;
-//fp32 aim_pitch_set;
+///*-- 调试用 --*/
+//fp32 aim_yaw_err = 0;
+//fp32 aim_pitch_err = 0;
+////2m -1
 /**
   * @brief          云台编码值控制，电机是相对角度控制，
   * @param[in]      yaw: yaw轴角度控制，为角度的增量 单位 rad
@@ -98,9 +98,9 @@ static void gimbal_auto_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *
     {
         return;
     }
-
-    *yaw = auto_data.auto_yaw_set;//aim_yaw_set;//gimbal_control_set->gimbal_mini_data->auto_yaw_set;
-    *pitch =auto_data.auto_pitch_set;//aim_pitch_set;//gimbal_control_set->gimbal_mini_data->auto_pitch_set;
+		
+    *yaw = auto_data.auto_yaw_set;//+aim_yaw_err;//aim_yaw_set;//gimbal_control_set->gimbal_mini_data->auto_yaw_set;
+    *pitch =auto_data.auto_pitch_set;//+2*aim_pitch_err;//aim_pitch_set;//gimbal_control_set->gimbal_mini_data->auto_pitch_set;
 
 
 }
@@ -187,7 +187,7 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
         return;
     }
 		
-			if((Referee_System.new_remote_data.trigger || Mouse_Data.mouse_r || switch_is_down(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))/*&& !toe_is_error(AIMBOT_TOE)*/)
+			if((Referee_System.new_remote_data.trigger || Mouse_Data.mouse_r || switch_is_down(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL])) && !toe_is_error(AIMBOT_TOE))
 				gimbal_mode_set->gimbal_behaviour = GIMBAL_AUTO_ANGLE;
 			else
 			gimbal_mode_set->gimbal_behaviour = GIMBAL_ENCODE_ANGLE;
